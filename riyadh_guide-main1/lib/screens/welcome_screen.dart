@@ -153,9 +153,9 @@ class WelcomeScreen extends StatelessWidget {
                             // just for testing
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => category()),
+                              MaterialPageRoute(
+                                  builder: (context) => category()),
                             );
-                            print('hello');
                           },
                         ),
                         SizedBox(height: 10),
@@ -178,4 +178,3 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
-

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       home: navigate(),
     );
