@@ -9,6 +9,14 @@ class category extends StatefulWidget {
 
 class _categoryState extends State<category> {
   @override
+  var catNames = [
+    'مقاهي',
+    'مطاعم',
+    'تسوق',
+    'مراكز تجميل',
+    'ترفيه',
+    'معالم سياحية'
+  ];
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -19,7 +27,7 @@ class _categoryState extends State<category> {
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 3),
             child: SizedBox(
-              height: 50,
+              height: 70,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Padding(
@@ -31,15 +39,15 @@ class _categoryState extends State<category> {
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 255, 254, 255),
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
                                 BoxShadow(color: Colors.black26, blurRadius: 4)
                               ]),
                           child: Text(
-                            'Places',
+                            catNames[i],
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w500),
+                                fontSize: 15, fontWeight: FontWeight.w700),
                           ),
                         )
                     ],
