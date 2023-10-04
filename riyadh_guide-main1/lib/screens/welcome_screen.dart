@@ -4,7 +4,7 @@ import 'package:riyadh_guide/screens/category.dart';
 Widget cat = category();
 
 class WelcomeScreen extends StatelessWidget {
-  List catNames = [
+ final List catNames = [
     "مقاهي",
     "مطاعم",
     "تسوق",
@@ -14,7 +14,7 @@ class WelcomeScreen extends StatelessWidget {
   ];
 //hello
 
-  List<Color> catColors = [
+  final List<Color> catColors = [
     (Colors.white),
     (Color.fromARGB(255, 227, 208, 239)),
     (Color.fromARGB(255, 207, 159, 237)),
@@ -23,7 +23,7 @@ class WelcomeScreen extends StatelessWidget {
     (Color.fromARGB(255, 207, 159, 237)),
   ];
 
-  List<Icon> catIcons = [
+  final List<Icon> catIcons = [
     Icon(
       Icons.local_cafe,
       color: Colors.black,
@@ -136,37 +136,39 @@ class WelcomeScreen extends StatelessWidget {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, childAspectRatio: 1.1),
                   itemBuilder: ((context, index) {
-                    return Column(
-                      children: [
-                        InkWell(
-                          child: Container(
-                            height: 70,
-                            width: 70,
-                            decoration: BoxDecoration(
-                                color: catColors[index],
-                                shape: BoxShape.circle),
-                            child: Center(
-                              child: catIcons[index],
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          InkWell(
+                            child: Container(
+                              height: 70,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                  color: catColors[index],
+                                  shape: BoxShape.circle),
+                              child: Center(
+                                child: catIcons[index],
+                              ),
                             ),
+                            onTap: () {
+                              // just for testing
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => category()),
+                              );
+                            },
                           ),
-                          onTap: () {
-                            // just for testing
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => category()),
-                            );
-                          },
-                        ),
-                        SizedBox(height: 10),
-                        Text(
-                          catNames[index],
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.6)),
-                        )
-                      ],
+                          SizedBox(height: 10),
+                          Text(
+                            catNames[index],
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.6)),
+                          )
+                        ],
+                      ),
                     );
                   }),
                 )

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/account.dart';
-import 'package:riyadh_guide/screens/category.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
 import 'package:riyadh_guide/screens/news.dart';
 import 'package:riyadh_guide/screens/search.dart';
@@ -22,7 +21,6 @@ class _navigateState extends State<navigate> {
     search(),
     news(),
     favourites(),
-    category(),
   ];
 
   final PageStorageBucket bucket = PageStorageBucket();

@@ -11,7 +11,9 @@ class _newsState extends State<news> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('أحداث اليوم')),
+      appBar: AppBar(
+        title: Text('أحداث اليوم'),
+        backgroundColor: Color.fromARGB(255, 200, 161, 250)),
       body: Center(
         child: Text('أحداث اليوم')
         ),
