@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "725770823630",
+    "project_id": "riyadh-guide-database-9528e",
+    "storage_bucket": "riyadh-guide-database-9528e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725770823630:android:16c44d4c751d0af1502d9f",
+        "android_client_info": {
+          "package_name": "com.example.riyadh_guide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwBM7s3ZPW0o7C4YiTJ2T74xf_IWnPvEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
