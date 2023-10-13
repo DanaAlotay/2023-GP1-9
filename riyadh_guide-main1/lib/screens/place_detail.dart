@@ -1,11 +1,63 @@
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firebase Firestore
+
+class PlaceDetails extends StatefulWidget {
+  final String placeID;
+
+
+  const PlaceDetails({Key? key, required this.placeID}):super(key: key);
+  @override
+  _PlaceDetailsState createState() => _PlaceDetailsState();
+}
 
 // ignore: camel_case_types
-class placeDetails extends StatelessWidget{
-  const placeDetails({Key? key}) : super(key: key);
+class _PlaceDetailsState extends State<PlaceDetails> {
+  late DocumentSnapshot placeData;
+   String imageUrl = '';
+   String categoryName = '';
+   
+
+    @override
+  void initState() {
+    super.initState();
+    _fetchPlaceData();
+  }
+
+  Future<void> _fetchPlaceData() async {
+    // Fetch place data from Firebase Firestore based on the placeID
+    //place id
+//get the place id according to the chosen place => it should be sent from category.dart
+
+
+    final placeDocument = await FirebaseFirestore.instance.collection('place').doc(widget.placeID).get();
+
+    setState(() {
+      placeData = placeDocument;
+      imageUrl = placeData['image'];
+    });
+     // Fetch the category name based on categoryID
+    final categoryID = placeData['categoryID'];
+    final categoryDocument = await FirebaseFirestore.instance.collection('category').doc(categoryID).get();
+
+    // Set the categoryName
+    setState(() {
+      categoryName = categoryDocument['name'];
+    });
+    
+    if(categoryName=="coffee"){
+      
+    }
+
+  }
+
+
+
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -22,9 +74,7 @@ class placeDetails extends StatelessWidget{
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage(
-                      "lib/icons/Restraunt.jpg"
-                    )
+                    image: NetworkImage(imageUrl),
                   )
                 ),
             )),
@@ -58,7 +108,7 @@ class placeDetails extends StatelessWidget{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                    Text(
-  "بيتزاريا دا ميمو",
+  placeData['name'],
   style: TextStyle(
     fontSize: 24, // Adjust the font size as needed
     fontWeight: FontWeight.bold, // You can also apply other styles
@@ -81,11 +131,11 @@ class placeDetails extends StatelessWidget{
                       SizedBox(height:20,),
                       Row(
                         children: [
-                          IconAndTextWidget(icon: Icons.circle_sharp, text: "مطعم", iconColor: Colors.purple),
+                          IconAndTextWidget(icon: Icons.circle_sharp, text: "مطعم" , iconColor: Colors.purple),
                            SizedBox(width: 20,),
                           IconAndTextWidget(icon: Icons.location_on, text: "1.7كم", iconColor: Colors.blueAccent),
                            SizedBox(width: 20,),
-                          IconAndTextWidget(icon: Icons.access_time_rounded, text: "9:00 ص - 12:00 م  ", iconColor: Colors.pinkAccent),
+                          IconAndTextWidget(icon: Icons.access_time_rounded, text: placeData['opening_hours'], iconColor: Colors.pinkAccent),
                          
                         ],
                         ),
@@ -95,7 +145,7 @@ class placeDetails extends StatelessWidget{
     fontSize: 24, // Adjust the font size as needed
     fontWeight: FontWeight.bold, // You can also apply other styles
   )),
-  Text("في قلب مدينة الرياض، تجد بيتزاريا دا ميمو، المطعم الإيطالي الذي يعدّ افضل مطعم ايطالي في الرياض. يتميز هذا المطعم بجودة طعامه وخدمته الممتازة، حيث يقدم تجربة فريدة لمحبي المطبخ الإيطالي")
+  Text(placeData['description'])
                   ],
                   )
                 

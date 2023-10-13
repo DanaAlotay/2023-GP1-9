@@ -84,7 +84,7 @@ class _categoryState extends State<category> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => placeDetails()),
+                                  builder: (context) => PlaceDetails(placeID: "p15",)),
                             );
                           },
                         ),
