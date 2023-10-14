@@ -1,7 +1,10 @@
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-Widget cat = category();
+
 
 class WelcomeScreen extends StatelessWidget {
  final List catNames = [
@@ -12,8 +15,33 @@ class WelcomeScreen extends StatelessWidget {
     "ترفيه",
     "معالم سياحية",
   ];
-//hello
 
+ final List catID= [
+    "c2",
+    "c1",
+    "c3",
+    "c4",
+    "c5",
+    "c6",
+  ];
+
+   /*
+ List<String> catID =[];
+
+   Future<List<String>> fetchDataFromFirestore() async {
+    
+  
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('category').get();
+
+      for (QueryDocumentSnapshot document in snapshot.docs) {
+        catID.add(document.id);
+      }
+    
+      return catID;
+      
+   }
+   */
+ 
   final List<Color> catColors = [
     (Colors.white),
     (Color.fromARGB(255, 227, 208, 239)),
@@ -55,6 +83,8 @@ class WelcomeScreen extends StatelessWidget {
       size: 40,
     ),
   ];
+ 
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,6 +166,7 @@ class WelcomeScreen extends StatelessWidget {
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, childAspectRatio: 1.1),
                   itemBuilder: ((context, index) {
+                    String categoryID = catID[index];
                     return SingleChildScrollView(
                       child: Column(
                         children: [
@@ -155,7 +186,7 @@ class WelcomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => category()),
+                                    builder: (context) => category(categoryID: categoryID)),
                               );
                             },
                           ),
