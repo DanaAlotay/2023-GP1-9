@@ -5,7 +5,7 @@ import 'package:riyadh_guide/screens/place_detail.dart';
 class category extends StatefulWidget {
   final String categoryID;
 
- const category({Key? key, required this.categoryID}):super(key: key);
+  const category({Key? key, required this.categoryID}) : super(key: key);
 
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
@@ -13,7 +13,8 @@ class category extends StatefulWidget {
 
 class _CategoryScreenState extends State<category> {
   // Define a collection reference to the "places" collection in Firestore
-  final CollectionReference placesCollection = FirebaseFirestore.instance.collection('place');
+  final CollectionReference placesCollection =
+      FirebaseFirestore.instance.collection('place');
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,9 @@ class _CategoryScreenState extends State<category> {
         title: Text('التصنيفات'),
       ),
       body: FutureBuilder<QuerySnapshot>(
-        future: placesCollection.where('categoryID', isEqualTo: widget.categoryID ).get(), // Fetch documents with categoryID equal to 'c2'
+        future: placesCollection
+            .where('categoryID', isEqualTo: widget.categoryID)
+            .get(), // Fetch documents with categoryID equal to 'c2'
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -39,14 +42,16 @@ class _CategoryScreenState extends State<category> {
           return SingleChildScrollView(
             child: ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(), // Disable scrolling of the ListView
+              physics:
+                  NeverScrollableScrollPhysics(), // Disable scrolling of the ListView
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 DocumentSnapshot placeDocument = snapshot.data!.docs[index];
                 String placeName = placeDocument.get('name').toString();
                 String placeID = placeDocument.get('placeID').toString();
                 String placeImage = placeDocument.get('image').toString();
-                String openingHours = placeDocument.get('opening_hours').toString();
+                String openingHours =
+                    placeDocument.get('opening_hours').toString();
 
                 return InkWell(
                   onTap: () {
@@ -82,12 +87,16 @@ class _CategoryScreenState extends State<category> {
                             Container(
                               height: 250,
                               alignment: Alignment.bottomRight,
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
-                                  colors: [Colors.black.withOpacity(0), Colors.black.withOpacity(0.8)],
+                                  colors: [
+                                    Colors.black.withOpacity(0),
+                                    Colors.black.withOpacity(0.8)
+                                  ],
                                   stops: [0.6, 1],
                                 ),
                               ),
@@ -95,7 +104,7 @@ class _CategoryScreenState extends State<category> {
                                 placeName,
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 25,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   overflow: TextOverflow.fade,
                                 ),
@@ -118,7 +127,8 @@ class _CategoryScreenState extends State<category> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => PlaceDetails(placeID: placeID),
+                                      builder: (context) =>
+                                          PlaceDetails(placeID: placeID),
                                     ),
                                   );
                                 },
@@ -152,7 +162,7 @@ class _CategoryScreenState extends State<category> {
             ),
           );
         },
-     ),
- );
-}
+      ),
+    );
+  }
 }
