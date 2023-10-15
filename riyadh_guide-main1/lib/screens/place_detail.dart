@@ -123,11 +123,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         SizedBox(
                           width: 10,
                         ),
-                        Text("230"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("تعليق")
                       ],
                     ),
                     SizedBox(
@@ -142,10 +137,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         SizedBox(
                           width: 20,
                         ),
-                        IconAndTextWidget(
-                            icon: Icons.location_on,
-                            text: "1.7كم",
-                            iconColor: Colors.blueAccent),
                         SizedBox(
                           width: 20,
                         ),
