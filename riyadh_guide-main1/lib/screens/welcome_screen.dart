@@ -1,13 +1,10 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-
 class WelcomeScreen extends StatelessWidget {
- final List catNames = [
+  final List catNames = [
     "مقاهي",
     "مطاعم",
     "تسوق",
@@ -16,7 +13,7 @@ class WelcomeScreen extends StatelessWidget {
     "معالم سياحية",
   ];
 
- final List catID= [
+  /*final List catID = [
     "c2",
     "c1",
     "c3",
@@ -24,8 +21,8 @@ class WelcomeScreen extends StatelessWidget {
     "c5",
     "c6",
   ];
-
-   /*
+*/
+  /*
  List<String> catID =[];
 
    Future<List<String>> fetchDataFromFirestore() async {
@@ -41,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
       
    }
    */
- 
+
   final List<Color> catColors = [
     (Colors.white),
     (Color.fromARGB(255, 227, 208, 239)),
@@ -83,8 +80,8 @@ class WelcomeScreen extends StatelessWidget {
       size: 40,
     ),
   ];
- 
- 
+
+  /*
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -207,6 +204,188 @@ class WelcomeScreen extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+*/
+  @override
+  Widget build(BuildContext context) {
+    String categoryID = 'c2';
+    var str = <Widget>[
+      Text(
+        "التصنيفات",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, color: Colors.grey[800], fontSize: 20),
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      Container(
+        height: 200,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            makeItem(
+                image: 'lib/icons/Co.jpeg',
+                title: 'مقاهي',
+                context: context,
+                categoryID: 'c2'),
+            makeItem(
+                image: 'lib/icons/Rs.jpeg',
+                title: 'مطاعم',
+                context: context,
+                categoryID: 'c1'),
+            makeItem(
+                image: 'lib/icons/shop.jpeg',
+                title: 'تسوق',
+                context: context,
+                categoryID: 'c3'),
+            makeItem(
+                image: 'lib/icons/tourist.jpeg',
+                title: 'معالم سياحية',
+                context: context,
+                categoryID: 'c4'),
+            makeItem(
+                image: 'lib/icons/Entertain.jpeg',
+                title: 'ترفيه',
+                context: context,
+                categoryID: 'c5'),
+            makeItem(
+                image: 'lib/icons/beauty.jpeg',
+                title: 'مراكز تجميل',
+                context: context,
+                categoryID: 'c4'),
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      SizedBox(
+        height: 80,
+      ),
+    ];
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              height: 300,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('lib/icons/Bk.jpg'), fit: BoxFit.cover),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                    gradient:
+                        LinearGradient(begin: Alignment.bottomRight, colors: [
+                  Colors.black.withOpacity(.8),
+                  Colors.black.withOpacity(.2),
+                ])),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 10.0),
+                        child: Text(
+                          " اهلًا ",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 33,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: TextField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                              ),
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 15),
+                              hintText: "ابحث عن مكان..."),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: str,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  makeItem({image, title, context, categoryID}) {
+    int Index = 0;
+    String categoryi = categoryID;
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => category(categoryID: categoryi)),
+        );
+      },
+      child: AspectRatio(
+        aspectRatio: 1 / 1,
+        child: Container(
+          margin: EdgeInsets.only(right: 15),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image:
+                  DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
+                  Colors.black.withOpacity(.8),
+                  Colors.black.withOpacity(.2),
+                ])),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Text(
+                title,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

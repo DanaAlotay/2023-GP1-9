@@ -17,6 +17,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
   late DocumentSnapshot? placeData;
   String imageUrl = '';
   String categoryName = '';
+  String categoryNameInarabic = '';
 
   @override
   void initState() {
@@ -51,7 +52,19 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       categoryName = categoryDocument['name'];
     });
 
-    if (categoryName == "coffee") {}
+    if (categoryName == "coffee") {
+      categoryNameInarabic = 'مقهى';
+    } else if (categoryName == "restaurant") {
+      categoryNameInarabic = 'مطعم';
+    } else if (categoryName == "shopping") {
+      categoryNameInarabic = 'تسوق';
+    } else if (categoryName == "beauty") {
+      categoryNameInarabic = 'تجميل';
+    } else if (categoryName == "entertainment") {
+      categoryNameInarabic = 'ترفيه';
+    } else {
+      categoryNameInarabic = 'سياحة';
+    }
   }
 
   @override
@@ -78,7 +91,11 @@ class _PlaceDetailsState extends State<PlaceDetails> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppIcon(icon: Icons.arrow_back_ios),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: AppIcon(icon: Icons.arrow_back_ios)),
                 AppIcon(icon: Icons.favorite)
               ],
             )),
@@ -110,12 +127,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                     ),
                     Row(
                       children: [
-                        Wrap(
-                          children: List.generate(
-                              5,
-                              (index) => Icon(Icons.star,
-                                  color: Colors.yellow, size: 15)),
-                        ),
                         SizedBox(
                           width: 10,
                         ),
@@ -123,6 +134,11 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         SizedBox(
                           width: 10,
                         ),
+                        Text("230"),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text("تعليق")
                       ],
                     ),
                     SizedBox(
@@ -132,7 +148,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                       children: [
                         IconAndTextWidget(
                             icon: Icons.circle_sharp,
-                            text: "مطعم",
+                            text: categoryNameInarabic,
                             iconColor: Colors.purple),
                         SizedBox(
                           width: 20,
