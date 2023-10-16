@@ -245,7 +245,7 @@ class WelcomeScreen extends StatelessWidget {
                 image: 'lib/icons/tourist.jpeg',
                 title: 'معالم سياحية',
                 context: context,
-                categoryID: 'c4'),
+                categoryID: 'c6'),
             makeItem(
                 image: 'lib/icons/Entertain.jpeg',
                 title: 'ترفيه',
@@ -262,6 +262,36 @@ class WelcomeScreen extends StatelessWidget {
       SizedBox(
         height: 20,
       ),
+      Text(
+        "آخر الأخبار",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, color: Colors.grey[800], fontSize: 20),
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      //Start news
+      Container(
+        height: 340,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            makeItem2(
+              image: 'lib/icons/news1.jpeg',
+              title: 'عرض مسرحي',
+            ),
+            makeItem2(
+              image: 'lib/icons/news2.jpeg',
+              title: 'جروفز',
+            ),
+            makeItem2(
+              image: 'lib/icons/news3.jpeg',
+              title: 'واجهة روشن',
+            ),
+          ],
+        ),
+      ),
+      // End News
       SizedBox(
         height: 80,
       ),
@@ -389,4 +419,36 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+//class news
+makeItem2({image, title}) {
+  return GestureDetector(
+    child: AspectRatio(
+      aspectRatio: 1 / 1,
+      child: Container(
+        margin: EdgeInsets.only(right: 15),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            image:
+                DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
+        child: Container(
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
+                Colors.black.withOpacity(.8),
+                Colors.black.withOpacity(.2),
+              ])),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              title,
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
