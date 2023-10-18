@@ -20,8 +20,8 @@ class _CategoryScreenState extends State<category> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('التصنيفات'),
-      ),
+          title: Text('التصنيفات'),
+          backgroundColor: Color.fromARGB(255, 228, 207, 254)),
       body: FutureBuilder<QuerySnapshot>(
         future: placesCollection
             .where('categoryID', isEqualTo: widget.categoryID)
@@ -115,7 +115,7 @@ class _CategoryScreenState extends State<category> {
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               InkWell(
                                 child: Icon(
@@ -132,6 +132,10 @@ class _CategoryScreenState extends State<category> {
                                     ),
                                   );
                                 },
+                              ),
+                              Text(
+                                "للمزيد",
+                                style: TextStyle(fontWeight: FontWeight.w500),
                               ),
                               Icon(
                                 Icons.star,

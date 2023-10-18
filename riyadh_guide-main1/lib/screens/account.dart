@@ -12,11 +12,9 @@ class _accountState extends State<account> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('حسابي'),
-        backgroundColor: Color.fromARGB(255, 200, 161, 250)),
-      body: Center(
-        child: Text('حسابي')
-        ),
+          title: Text('حسابي'),
+          backgroundColor: Color.fromARGB(255, 228, 207, 254)),
+      body: Center(child: Text('حسابي')),
     );
   }
 }

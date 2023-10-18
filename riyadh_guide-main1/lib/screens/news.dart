@@ -12,11 +12,9 @@ class _newsState extends State<news> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('أحداث اليوم'),
-        backgroundColor: Color.fromARGB(255, 200, 161, 250)),
-      body: Center(
-        child: Text('أحداث اليوم')
-        ),
+          title: Text('أحداث اليوم'),
+          backgroundColor: Color.fromARGB(255, 228, 207, 254)),
+      body: Center(child: Text('أحداث اليوم')),
     );
   }
 }
