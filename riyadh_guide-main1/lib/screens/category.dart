@@ -21,7 +21,7 @@ class _CategoryScreenState extends State<category> {
     return Scaffold(
       appBar: AppBar(
           title: Text('التصنيفات'),
-          backgroundColor: Color.fromARGB(255, 228, 207, 254)),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
       body: FutureBuilder<QuerySnapshot>(
         future: placesCollection
             .where('categoryID', isEqualTo: widget.categoryID)
