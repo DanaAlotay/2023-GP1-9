@@ -13,7 +13,7 @@ class _accountState extends State<account> {
     return Scaffold(
       appBar: AppBar(
           title: Text('حسابي'),
-          backgroundColor: Color.fromARGB(255, 228, 207, 254)),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
       body: Center(child: Text('حسابي')),
     );
   }

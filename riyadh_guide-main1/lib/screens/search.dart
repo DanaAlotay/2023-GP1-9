@@ -13,7 +13,7 @@ class _searchState extends State<search> {
     return Scaffold(
       appBar: AppBar(
           title: Text('البحث'),
-          backgroundColor: Color.fromARGB(255, 228, 207, 254)),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
       body: Center(child: Text('البحث')),
     );
   }

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final List catNames = [
@@ -213,13 +214,48 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String categoryID = 'c2';
     var str = <Widget>[
+      ////
+      Text(
+        "آخر الأخبار",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[800],
+          fontSize: 20,
+        ),
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      //Start news
+      Container(
+          child: CarouselSlider(
+        options: CarouselOptions(
+          enlargeCenterPage: true,
+          enableInfiniteScroll:
+              true, // You can change this as per your requirements
+          viewportFraction:
+              0.65, // Adjust this value to control the visible portion of adjacent images
+          aspectRatio:
+              1.45, // Adjust this value to control the width-to-height ratio
+        ),
+        items: <Widget>[
+          makeItem2(image: 'lib/icons/news1.jpeg', title: 'عرض مسرحي'),
+          makeItem2(image: 'lib/icons/news2.jpeg', title: 'جروفز'),
+          makeItem2(image: 'lib/icons/news3.jpeg', title: 'واجهة روشن'),
+          // Add more items here as needed
+        ],
+      )),
+      // End News
+      SizedBox(
+        height: 30,
+      ),
       Text(
         "التصنيفات",
         style: TextStyle(
             fontWeight: FontWeight.bold, color: Colors.grey[800], fontSize: 20),
       ),
       SizedBox(
-        height: 20,
+        height: 15,
       ),
       Container(
         height: 200,
@@ -262,38 +298,8 @@ class WelcomeScreen extends StatelessWidget {
       SizedBox(
         height: 20,
       ),
-      Text(
-        "آخر الأخبار",
-        style: TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.grey[800], fontSize: 20),
-      ),
       SizedBox(
-        height: 20,
-      ),
-      //Start news
-      Container(
-        height: 340,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            makeItem2(
-              image: 'lib/icons/news1.jpeg',
-              title: 'عرض مسرحي',
-            ),
-            makeItem2(
-              image: 'lib/icons/news2.jpeg',
-              title: 'جروفز',
-            ),
-            makeItem2(
-              image: 'lib/icons/news3.jpeg',
-              title: 'واجهة روشن',
-            ),
-          ],
-        ),
-      ),
-      // End News
-      SizedBox(
-        height: 80,
+        height: 30,
       ),
     ];
     return Scaffold(
@@ -422,29 +428,43 @@ class WelcomeScreen extends StatelessWidget {
 }
 
 //class news
-makeItem2({image, title}) {
+makeItem2({image, title, isCenterItem = false}) {
   return GestureDetector(
     child: AspectRatio(
-      aspectRatio: 1 / 1,
+      aspectRatio: 1.5,
       child: Container(
-        margin: EdgeInsets.only(right: 15),
         decoration: BoxDecoration(
+            boxShadow: [
+              if (!isCenterItem)
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3), // Shadow color
+                  spreadRadius: 0.5, // Spread radius
+                  blurRadius: 5, // Blur radius
+                  offset: isCenterItem
+                      ? Offset(0, 0) // No shadow for the center item
+                      : Offset(0, 3), // Shadow offset for left and right items
+                ),
+            ],
             borderRadius: BorderRadius.circular(20),
             image:
                 DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
-        child: Container(
-          padding: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
-                Colors.black.withOpacity(.8),
-                Colors.black.withOpacity(.2),
-              ])),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              title,
-              style: TextStyle(color: Colors.white, fontSize: 20),
+        child: ClipRRect(
+          //Clip the child with a circular border radius
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(begin: Alignment.bottomRight, colors: [
+                  Colors.black.withOpacity(.8),
+                  Colors.black.withOpacity(.2),
+                ])),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Text(
+                title,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ),
           ),
         ),
