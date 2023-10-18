@@ -119,8 +119,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         placeData?['name'] ?? '',
                         style: TextStyle(
                           fontSize: 24, // Adjust the font size as needed
-                          fontWeight:
-                              FontWeight.bold, // You can also apply other styles
+                          fontWeight: FontWeight
+                              .bold, // You can also apply other styles
                         ),
                       ),
                       SizedBox(
@@ -135,11 +135,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text("230"),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text("تعليق")
                         ],
                       ),
                       SizedBox(
