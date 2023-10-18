@@ -111,65 +111,67 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         topRight: Radius.circular(20),
                         topLeft: Radius.circular(20)),
                     color: Colors.white),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      placeData?['name'] ?? '',
-                      style: TextStyle(
-                        fontSize: 24, // Adjust the font size as needed
-                        fontWeight:
-                            FontWeight.bold, // You can also apply other styles
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("4.5"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("230"),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text("تعليق")
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        IconAndTextWidget(
-                            icon: Icons.circle_sharp,
-                            text: categoryNameInarabic,
-                            iconColor: Colors.purple),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: placeData?['opening_hours'] ?? '',
-                            iconColor: Colors.pinkAccent),
-                      ],
-                    ),
-                    Text("الوصف",
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        placeData?['name'] ?? '',
                         style: TextStyle(
                           fontSize: 24, // Adjust the font size as needed
-                          fontWeight: FontWeight
-                              .bold, // You can also apply other styles
-                        )),
-                    Text(placeData?['description'] ?? '')
-                  ],
+                          fontWeight:
+                              FontWeight.bold, // You can also apply other styles
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("4.5"),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("230"),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text("تعليق")
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          IconAndTextWidget(
+                              icon: Icons.circle_sharp,
+                              text: categoryNameInarabic,
+                              iconColor: Colors.purple),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          IconAndTextWidget(
+                              icon: Icons.access_time_rounded,
+                              text: placeData?['opening_hours'] ?? '',
+                              iconColor: Colors.pinkAccent),
+                        ],
+                      ),
+                      Text("الوصف",
+                          style: TextStyle(
+                            fontSize: 24, // Adjust the font size as needed
+                            fontWeight: FontWeight
+                                .bold, // You can also apply other styles
+                          )),
+                      Text(placeData?['description'] ?? '')
+                    ],
+                  ),
                 )))
       ],
     ));
