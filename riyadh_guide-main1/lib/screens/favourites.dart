@@ -13,7 +13,7 @@ class _favouritesState extends State<favourites> {
     return Scaffold(
       appBar: AppBar(
           title: Text('المفضلة'),
-          backgroundColor: Color.fromARGB(255, 216, 194, 241)),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
       body: Center(child: Text('المفضلة')),
     );
   }
