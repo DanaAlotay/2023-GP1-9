@@ -11,7 +11,7 @@ class WelcomeScreen extends StatelessWidget {
     "تسوق",
     "مراكز تجميل",
     "ترفيه",
-    "معالم سياحية",
+    "أماكن سياحية",
   ];
 
   /*final List catID = [
@@ -84,7 +84,7 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String categoryID = 'c2';
+    String categoryID = '';
     var str = <Widget>[
       ////
       Text(
@@ -104,17 +104,17 @@ class WelcomeScreen extends StatelessWidget {
         options: CarouselOptions(
           enlargeCenterPage: true,
           enableInfiniteScroll:
-              true, // You can change this as per your requirements
+              true, 
           viewportFraction:
-              0.65, // Adjust this value to control the visible portion of adjacent images
+              0.65, // to control the visible portion of adjacent images
           aspectRatio:
-              1.45, // Adjust this value to control the width-to-height ratio
+              1.45, // to control the width-to-height ratio
         ),
         items: <Widget>[
           makeItem2(image: 'lib/icons/news1.jpeg', title: 'عرض مسرحي'),
           makeItem2(image: 'lib/icons/news2.jpeg', title: 'جروفز'),
           makeItem2(image: 'lib/icons/news3.jpeg', title: 'واجهة روشن'),
-          // Add more items here as needed
+          // Add more items here 
         ],
       )),
       // End News
@@ -151,7 +151,7 @@ class WelcomeScreen extends StatelessWidget {
                 categoryID: 'c3'),
             makeItem(
                 image: 'lib/icons/tourist.jpeg',
-                title: 'معالم سياحية',
+                title: 'أماكن سياحية',
                 context: context,
                 categoryID: 'c6'),
             makeItem(

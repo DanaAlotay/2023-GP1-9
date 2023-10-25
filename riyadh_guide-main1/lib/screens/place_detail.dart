@@ -1,21 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firebase Firestore
 
 class PlaceDetails extends StatefulWidget {
   final String placeID;
 
   const PlaceDetails({Key? key, required this.placeID}) : super(key: key);
+
   @override
   _PlaceDetailsState createState() => _PlaceDetailsState();
 }
 
-// ignore: camel_case_types
 class _PlaceDetailsState extends State<PlaceDetails> {
   late DocumentSnapshot? placeData;
-  String imageUrl = '';
+  List<String> imageUrls = [];
   String categoryName = '';
   String categoryNameInarabic = '';
 
@@ -28,9 +28,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
   Future<void> _fetchPlaceData() async {
     // Fetch place data from Firebase Firestore based on the placeID
-    //place id
-//get the place id according to the chosen place => it should be sent from category.dart
-
     final placeDocument = await FirebaseFirestore.instance
         .collection('place')
         .doc(widget.placeID)
@@ -38,8 +35,9 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
     setState(() {
       placeData = placeDocument;
-      imageUrl = placeData?['image'] ?? '';
+      imageUrls = List<String>.from(placeData?['images'] ?? []);
     });
+
     // Fetch the category name based on categoryID
     final categoryID = placeData?['categoryID'] ?? '';
     final categoryDocument = await FirebaseFirestore.instance
@@ -70,40 +68,51 @@ class _PlaceDetailsState extends State<PlaceDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Positioned(
+      appBar: AppBar(
+          title: Text(placeData?['name'] ?? ''),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
+      body: Stack(
+        children: [
+          Positioned(
             left: 0,
             right: 0,
             child: Container(
+              
               width: double.maxFinite,
-              height: 350, //change to screen hight
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(imageUrl),
-              )),
-            )),
+              height: 350,
+              
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 250,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                 // aspectRatio: 1,
+                  enableInfiniteScroll: true,
+                ),
+            items: imageUrls
+                  .map((url) => ClipRRect(
+                        borderRadius: BorderRadius.circular(15), 
+                        child: Image.network(
+                          url,
+                          fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ))
+                  .toList(),
+              ),
+            ),
+          ),
         Positioned(
             top: 45,
             left: 20,
-            right: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: AppIcon(icon: Icons.arrow_back_ios)),
-                AppIcon(icon: Icons.favorite)
-              ],
-            )),
+            //right: 20,
+            child:  
+            AppIcon(icon: Icons.favorite)),
         Positioned(
             left: 0,
             right: 0,
             bottom: 0,
-            top: 330, //make it the image diminsion
+            top: 330, //image diminsion
             child: Container(
                 padding: const EdgeInsets.only(left: 9, right: 9, top: 9),
                 decoration: BoxDecoration(
@@ -118,9 +127,9 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                       Text(
                         placeData?['name'] ?? '',
                         style: TextStyle(
-                          fontSize: 24, // Adjust the font size as needed
+                          fontSize: 24, 
                           fontWeight: FontWeight
-                              .bold, // You can also apply other styles
+                              .bold, 
                         ),
                       ),
                       SizedBox(
@@ -160,9 +169,9 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                       ),
                       Text("الوصف",
                           style: TextStyle(
-                            fontSize: 24, // Adjust the font size as needed
+                            fontSize: 24, 
                             fontWeight: FontWeight
-                                .bold, // You can also apply other styles
+                                .bold, 
                           )),
                       Text(placeData?['description'] ?? '')
                     ],

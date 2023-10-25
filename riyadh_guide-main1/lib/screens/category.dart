@@ -6,6 +6,7 @@ class category extends StatefulWidget {
   final String categoryID;
 
   const category({Key? key, required this.categoryID}) : super(key: key);
+  
 
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
@@ -16,16 +17,31 @@ class _CategoryScreenState extends State<category> {
   final CollectionReference placesCollection =
       FirebaseFirestore.instance.collection('place');
 
+      String categoryNameInarabic='';
+
   @override
   Widget build(BuildContext context) {
+    if (widget.categoryID == "c2") {
+      categoryNameInarabic = 'مقاهي';
+    } else if (widget.categoryID == "c1") {
+      categoryNameInarabic = 'مطاعم';
+    } else if (widget.categoryID == "c3") {
+      categoryNameInarabic = 'تسوق';
+    } else if (widget.categoryID == "c4") {
+      categoryNameInarabic = 'مراكز تجميل';
+    } else if (widget.categoryID == "c5") {
+      categoryNameInarabic = 'ترفيه';
+    } else {
+      categoryNameInarabic = 'أماكن سياحية';
+    }
     return Scaffold(
       appBar: AppBar(
-          title: Text('التصنيفات'),
+          title: Text(categoryNameInarabic),
           backgroundColor: Color.fromARGB(255, 211, 198, 226)),
       body: FutureBuilder<QuerySnapshot>(
         future: placesCollection
             .where('categoryID', isEqualTo: widget.categoryID)
-            .get(), // Fetch documents with categoryID equal to 'c2'
+            .get(), // Fetch documents with categoryID equal to the category ID send from homepage
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -49,7 +65,9 @@ class _CategoryScreenState extends State<category> {
                 DocumentSnapshot placeDocument = snapshot.data!.docs[index];
                 String placeName = placeDocument.get('name').toString();
                 String placeID = placeDocument.get('placeID').toString();
-                String placeImage = placeDocument.get('image').toString();
+                List<dynamic> imageArray = placeDocument.get('images') ?? [];
+                String placeImage = (imageArray.isNotEmpty) ? imageArray[0].toString() : '';
+               // String placeImage = placeDocument.get('image').toString();
                 String openingHours =
                     placeDocument.get('opening_hours').toString();
 
