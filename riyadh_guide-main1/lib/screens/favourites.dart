@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/AdminPlaces.dart';
 
 class favourites extends StatefulWidget {
   const favourites({super.key});
@@ -14,7 +15,20 @@ class _favouritesState extends State<favourites> {
       appBar: AppBar(
           title: Text('المفضلة'),
           backgroundColor: Color.fromARGB(255, 211, 198, 226)),
-      body: Center(child: Text('المفضلة')),
+      body: Center(
+        child: IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            // Navigate to the new page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AdminPlaces(),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
