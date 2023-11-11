@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riyadh_guide/screens/place_detail.dart';
+import 'package:riyadh_guide/widgets/Allplaces.dart';
 
 class AdminPlaces extends StatefulWidget {
   @override
@@ -37,7 +40,9 @@ class _AdminPlaces extends State<AdminPlaces> {
                               hintText: 'ابحث عن مكان',
                               border: InputBorder.none,
                             ),
-                            onChanged: (String value) {},
+                            onChanged: (String value) {
+                              // Handle search functionality if needed
+                            },
                           ),
                         ),
                       ],
@@ -67,7 +72,9 @@ class _AdminPlaces extends State<AdminPlaces> {
               ),
             ],
           ),
-          Center(),
+          Expanded(
+            child: AllPlaces(), // Display places using the AllPlaces widget
+          ),
         ],
       ),
     );
