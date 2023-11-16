@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/widgets/Allplaces.dart';
+import 'package:riyadh_guide/screens/AdminAddForm.dart';
 
 class AdminPlaces extends StatefulWidget {
   @override
@@ -66,6 +67,12 @@ class _AdminPlaces extends State<AdminPlaces> {
                 child: IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddPlaceForm(),
+                      ),
+                    );
                     // Handle "Add" action
                   },
                 ),
