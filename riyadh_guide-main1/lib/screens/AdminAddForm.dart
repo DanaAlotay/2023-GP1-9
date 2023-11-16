@@ -9,6 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddPlaceForm extends StatefulWidget {
   @override
@@ -79,6 +81,77 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       });
     }
   }
+
+  final OpenAiKey = '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';
+
+  Future<String> chatGPTAPI(
+      TextEditingController _descriptionController) async {
+    final String prompt = _descriptionController.text;
+    final List<Map<String, String>> messages = [
+      {
+        'role': 'user',
+        'content': prompt,
+      },
+    ];
+
+    try {
+      final res = await http.post(
+        Uri.parse('https://api.openai.com/v1/chat/completions'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $OpenAiKey',
+        },
+        body: jsonEncode({
+          "model": "gpt-3.5-turbo",
+          "messages": messages,
+        }),
+      );
+
+      if (res.statusCode == 200) {
+        String content =
+            jsonDecode(res.body)['choices'][0]['message']['content'];
+        content = content.trim();
+
+        return content;
+      }
+      return 'An internal error occurred';
+    } catch (e) {
+      return e.toString();
+    }
+  }
+/*
+  Future<void> generateAndDisplayDescription() async {
+    final apiKey = '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';
+    final url = 'https://api.openai.com/v1/chat/completions';
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $apiKey',
+    };
+
+    final body = {
+      'prompt': _descriptionController.text,
+      'max_tokens': 100,
+      'temperature': 0.2,
+      'n': 1,
+    };
+
+    final response = await http.post(Uri.parse(url),
+        headers: headers, body: jsonEncode(body));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final description = data['choices'][0]['text'].trim();
+
+      setState(() {
+        _descriptionController.text = description;
+      });
+    } else {
+      throw Exception(
+          'Failed to generate description: ${response.statusCode} and  ${response.body}');
+    }
+  }
+  */
 
   Future<List<String>> uploadImages(String placeId) async {
     List<String> imageUrls = [];
@@ -245,6 +318,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 },
               ),
               SizedBox(height: 16.0),
+              /*
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 3,
@@ -264,6 +338,40 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
                   return null;
                 },
+              ),*/
+
+              TextFormField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'الوصف',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  prefixIcon: Icon(Icons.description),
+                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                  filled: true,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ادخل الوصف';
+                  }
+
+                  return null;
+                },
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  String response = await chatGPTAPI(_descriptionController);
+                  setState(() {
+                    _descriptionController.text = response;
+                  });
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 143, 129, 152)),
+                ),
+                child: Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
               ),
               SizedBox(height: 16.0),
               TextFormField(
