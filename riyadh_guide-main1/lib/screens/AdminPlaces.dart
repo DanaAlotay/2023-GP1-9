@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riyadh_guide/screens/adminEditPlace.dart';
 import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/widgets/Allplaces.dart';
 import 'package:riyadh_guide/screens/AdminAddForm.dart';
@@ -10,6 +11,25 @@ class AdminPlaces extends StatefulWidget {
 }
 
 class _AdminPlaces extends State<AdminPlaces> {
+    @override
+    void initState() {
+    super.initState();
+    _fetchPlaceData();
+  }
+  final CollectionReference placesCollection =
+      FirebaseFirestore.instance.collection('place');
+  List<String> placeList = [];
+  Future<void> _fetchPlaceData() async {
+  FirebaseFirestore.instance.collection('place').get().then((querySnapshot) {
+  querySnapshot.docs.forEach((doc) {
+    var name = doc.data()['name'];
+    placeList.add(name);
+  });
+
+});
+  }
+
+
   String searchText = 'ابحث عن مكان';
 
   @override
@@ -17,7 +37,7 @@ class _AdminPlaces extends State<AdminPlaces> {
     return Scaffold(
       appBar: AppBar(
         title: Text('اضافة- حذف - تعديل الاماكن'),
-        backgroundColor: Colors.grey,
+        backgroundColor: Color.fromARGB(255, 66, 49, 76), 
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -37,13 +57,18 @@ class _AdminPlaces extends State<AdminPlaces> {
                         Icon(Icons.search),
                         Expanded(
                           child: TextField(
+                             readOnly: true,
                             decoration: InputDecoration(
                               hintText: 'ابحث عن مكان',
                               border: InputBorder.none,
                             ),
-                            onChanged: (String value) {
-                              // Handle search functionality if needed
-                            },
+                           onTap: () {
+                
+                showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate(placeList), 
+                );
+              },
                           ),
                         ),
                       ],
@@ -70,10 +95,10 @@ class _AdminPlaces extends State<AdminPlaces> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddPlaceForm(),
+                        builder: (context) => AddPlaceForm(),// Handle "Add" action
                       ),
                     );
-                    // Handle "Add" action
+                    
                   },
                 ),
               ),
@@ -87,3 +112,127 @@ class _AdminPlaces extends State<AdminPlaces> {
     );
   }
 }
+
+class CustomSearchDelegate extends SearchDelegate{
+
+  final List<String> placeList;
+  CustomSearchDelegate(this.placeList);
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return[
+      IconButton(
+        onPressed: (){
+          query ='';
+        }, 
+        icon: const Icon(Icons.clear),
+        ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: (){
+        close(context, null);
+      }, 
+      icon: const Icon(Icons.arrow_back),
+      );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var placeName in placeList) {
+      if (placeName.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(placeName);
+       
+      }  
+      
+    }
+    if(matchQuery.isEmpty)
+         matchQuery.add('لا يوجد نتائج مطابقة');
+    Future<void> fetchPlaceDetails(String placeName) async {
+  try {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('place')
+        .where('name', isEqualTo: placeName)
+        .get();
+    
+    if (snapshot.docs.isNotEmpty) {
+      final placeID = snapshot.docs.first['placeID'];
+      // Do something with placeID, e.g., navigate to 'PlaceDetails' page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => adminEditPlace(placeID: placeID),
+        ),
+      );
+    } 
+  } catch (e) {
+    // Handle any errors that may occur during the Firebase query
+  }
+}
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+          onTap: () {
+            fetchPlaceDetails(result);
+            
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    for (var placeName in placeList) {
+      if (placeName.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(placeName);
+      }
+      
+    }
+    if(matchQuery.isEmpty)
+         matchQuery.add('لا يوجد نتائج مطابقة');
+    Future<void> fetchPlaceDetails(String placeName) async {
+  try {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('place')
+        .where('name', isEqualTo: placeName)
+        .get();
+    
+    if (snapshot.docs.isNotEmpty) {
+      final placeID = snapshot.docs.first['placeID'];
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => adminEditPlace(placeID: placeID),
+        ),
+      );
+    } 
+  } catch (e) {
+    // Handle any errors that may occur during the Firebase query
+  }
+}
+    return ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result),
+          onTap: () {
+            fetchPlaceDetails(result);
+            
+          },
+        );
+      },
+    );
+  }
+}
+
