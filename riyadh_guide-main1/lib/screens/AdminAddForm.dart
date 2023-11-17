@@ -77,7 +77,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
-  final OpenAiKey = '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';
+//cannot Hard coded Key
+  final OpenAiKey = '';
 
   Future<String> chatGPTAPI(
       TextEditingController _descriptionController) async {
@@ -453,60 +454,58 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
               SizedBox(height: 10),
               //show delete button with images
               Container(
-  height: 120,
-  child: ListView.builder(
-    scrollDirection: Axis.horizontal,
-    itemCount: _images.length,
-    itemBuilder: (ctx, index) => GestureDetector(
-      child: Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            width: 120,
-            height: 150,
-            padding: EdgeInsets.symmetric(
-              vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 238, 227, 245),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: FileImage(_images[index]),
+                height: 120,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _images.length,
+                  itemBuilder: (ctx, index) => GestureDetector(
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 8),
+                          width: 120,
+                          height: 150,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(255, 238, 227, 245),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: FileImage(_images[index]),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 1 / 2,
+                          right: 1 / 2,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(255, 142, 27, 19),
+                            ),
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  _images.removeAt(index);
+                                  //deleteImage(context,_images, index); // Remove the image URL from the list
+                                });
+                              },
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 1/2,
-            right: 1/2,
-            child: Container(
-
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 142, 27, 19),     
-            ),
-              alignment: Alignment.center,
-              
-              child: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  setState(() {
-                    _images.removeAt(index);
-                    //deleteImage(context,_images, index); // Remove the image URL from the list
-                  });
-                },
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-             /* Container(
+              /* Container(
                 height: 120,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
