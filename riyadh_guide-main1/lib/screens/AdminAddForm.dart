@@ -77,7 +77,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
-//cannot Hard coded Key
+// For secuirty Reasons you need to enter your api key here
   final OpenAiKey = '';
 
   Future<String> chatGPTAPI(
@@ -94,7 +94,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       final res = await http.post(
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type':
+              'application/json; charset=UTF-8', // Specify UTF-8 encoding
           'Authorization': 'Bearer $OpenAiKey',
         },
         body: jsonEncode({
@@ -104,8 +105,9 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       );
 
       if (res.statusCode == 200) {
-        String content =
-            jsonDecode(res.body)['choices'][0]['message']['content'];
+        String content = utf8.decode(jsonDecode(res.body)['choices'][0]
+                ['message']['content']
+            .codeUnits); // Decode the response using UTF-8
         content = content.trim();
 
         return content;
@@ -115,39 +117,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       return e.toString();
     }
   }
-/*
-  Future<void> generateAndDisplayDescription() async {
-    final apiKey = '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';
-    final url = 'https://api.openai.com/v1/chat/completions';
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey',
-    };
-
-    final body = {
-      'prompt': _descriptionController.text,
-      'max_tokens': 100,
-      'temperature': 0.2,
-      'n': 1,
-    };
-
-    final response = await http.post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final description = data['choices'][0]['text'].trim();
-
-      setState(() {
-        _descriptionController.text = description;
-      });
-    } else {
-      throw Exception(
-          'Failed to generate description: ${response.statusCode} and  ${response.body}');
-    }
-  }
-  */
 
   Future<List<String>> uploadImages(String placeId) async {
     List<String> imageUrls = [];
@@ -177,34 +146,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
     return imageUrls;
   }
-
-/*
-  Future<void> pickImage(ImageSource source) async {
-    final pickedImage = await ImagePicker().pickImage(source: source);
-
-    if (pickedImage != null) {
-      final imageFile = File(pickedImage.path);
-
-      // Get the temporary directory path
-
-      Directory tempDir = await getTemporaryDirectory();
-
-      String tempPath = tempDir.path;
-
-      // Generate a unique filename for the image
-
-      String fileName = 'place_${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-      // Create a new File object with the temporary path and filename
-
-      File tempImage = await imageFile.copy('$tempPath/$fileName');
-
-      setState(() {
-        _images.add(tempImage);
-      });
-    }
-  }
-*/
 
   Future<void> pickImage(ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
