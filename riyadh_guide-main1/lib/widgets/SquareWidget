@@ -1,0 +1,31 @@
+class SquareWidget extends StatelessWidget {
+  final int count;
+  final String title;
+  final IconData icon;
+
+  SquareWidget({required this.count, required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      height: 150,
+      color: Colors.blue, // Set your desired color
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 50, color: Colors.white),
+          SizedBox(height: 10),
+          Text(
+            '$count',
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
+          Text(
+            title,
+            style: TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}
