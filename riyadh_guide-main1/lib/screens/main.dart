@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/firebase_options.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
+import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/navigate.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       //try push
-      home: WelcomeScreen(),
+      home: AdminPage(),
     );
   }
 }
