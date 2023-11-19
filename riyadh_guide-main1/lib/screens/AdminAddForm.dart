@@ -77,12 +77,38 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
-// For secuirty Reasons you need to enter your api key here
-  final OpenAiKey = '';
+// For secuirty Reasons
+
+  Future<String?> getApiKey() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('api_keys')
+        .doc('ai_key')
+        .get();
+
+    if (snapshot.exists) {
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+      print('Retrieved data: $data');
+      if (data != null) {
+        String? apiKey = data['OPENAI_API_KEY'] as String?;
+        print('Retrieved API Key: $apiKey');
+        if (apiKey != null) {
+          return apiKey;
+        } else {
+          throw Exception('API Key is null');
+        }
+      } else {
+        throw Exception('No data available');
+      }
+    } else {
+      throw Exception('Document not found');
+    }
+  }
 
   Future<String> chatGPTAPI(
       TextEditingController _descriptionController) async {
     final String prompt = _descriptionController.text;
+    final OpenAiKey = await getApiKey();
+
     final List<Map<String, String>> messages = [
       {
         'role': 'user',
@@ -255,28 +281,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 },
               ),
               SizedBox(height: 16.0),
-              /*
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: 'الوصف',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  prefixIcon: Icon(Icons.description),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'ادخل الوصف';
-                  }
-
-                  return null;
-                },
-              ),*/
-
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 3,
@@ -336,23 +340,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              /*
-              Row(
-                children: [
-                  TextButton.icon(
-                    icon: Icon(Icons.camera_alt),
-                    label: Text('التقاط صورة'),
-                    onPressed: () => pickImage(ImageSource.camera),
-                  ),
-                  SizedBox(width: 10),
-                  TextButton.icon(
-                    icon: Icon(Icons.image),
-                    label: Text('اختيار صورة'),
-                    onPressed: () => pickImage(ImageSource.gallery),
-                  ),
-                ],
-              ),*/
-
               Row(
                 children: [
                   TextButton.icon(
@@ -393,7 +380,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ],
               ),
               SizedBox(height: 10),
-              //show delete button with images
               Container(
                 height: 120,
                 child: ListView.builder(
@@ -446,27 +432,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                   ),
                 ),
               ),
-              /* Container(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _images.length,
-                  itemBuilder: (ctx, index) => Container(
-                    margin: EdgeInsets.only(right: 8),
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 238, 227, 245),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(_images[index]),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              */
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -501,307 +466,3 @@ void main() {
     home: AddPlaceForm(),
   ));
 }
-
-/* 
-
-  
-
-  
-
-import 'package:flutter/material.dart'; 
-
-  
-
-  
-
-import 'package:cloud_firestore/cloud_firestore.dart'; 
-
-  
-
-class AddPlaceForm extends StatefulWidget { 
-
-  @override 
-
-  _AddPlaceFormState createState() => _AddPlaceFormState(); 
-
-} 
-
-  
-
-class _AddPlaceFormState extends State<AddPlaceForm> { 
-
-  final _formKey = GlobalKey<FormState>(); 
-
-  final _categoryController = TextEditingController(); 
-
-  final _nameController = TextEditingController(); 
-
-  final _descriptionController = TextEditingController(); 
-
-  final _workingHoursController = TextEditingController(); 
-
-  String? _selectedCategory = 'c1'; // Set a default value 
-
-  
-
-  void _submitForm() { 
-
-    if (_formKey.currentState!.validate()) { 
-
-      _formKey.currentState!.save(); 
-
-  
-
-      // Save the form data to the database 
-
-      FirebaseFirestore.instance.collection('place').add({ 
-
-        'category_ID': _selectedCategory ?? '', // Add a null check here 
-
-        'name': _nameController.text, 
-
-        'description': _descriptionController.text, 
-
-        'opening_hours': _workingHoursController.text, 
-
-      }); 
-
-  
-
-      // Reset the form 
-
-      _formKey.currentState!.reset(); 
-
-    } 
-
-  } 
-
-  
-
-  @override 
-
-  Widget build(BuildContext context) { 
-
-    return Scaffold( 
-
-      appBar: AppBar( 
-
-        title: Text('اضافة مكان'), 
-
-      ), 
-
-      body: Padding( 
-
-        padding: EdgeInsets.all(16.0), 
-
-        child: Form( 
-
-          key: _formKey, 
-
-          child: ListView( 
-
-            children: [ 
-
-              DropdownButtonFormField<String>( 
-
-                value: _selectedCategory, 
-
-                decoration: InputDecoration(labelText: 'التصنيف'), 
-
-                items: [ 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c1', 
-
-                    child: Text('مطاعم'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c2', 
-
-                    child: Text('مقاهي'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c6', 
-
-                    child: Text('معالم سياحيه'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c5', 
-
-                    child: Text('ترفيه'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c4', 
-
-                    child: Text('مراكز تجميل'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c3', 
-
-                    child: Text('تسوق'), 
-
-                  ), 
-
-                ], 
-
-                onChanged: (value) { 
-
-                  setState(() { 
-
-                    _selectedCategory = value!; 
-
-                  }); 
-
-                }, 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'اختر التصنيف'; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              TextFormField( 
-
-                controller: _nameController, 
-
-                decoration: InputDecoration(labelText: 'اسم المكان'), 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'ادخل اسم المكان'; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              TextFormField( 
-
-                controller: _descriptionController, 
-
-                decoration: InputDecoration(labelText: 'الوصف'), 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'ادخل وصف المكان'; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              TextFormField( 
-
-                controller: _workingHoursController, 
-
-                decoration: InputDecoration(labelText: 'اوقات العمل'), 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'ادخل اوقات العمل '; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              ElevatedButton( 
-
-                onPressed: _submitForm, 
-
-                child: Text('اضافة'), 
-
-              ), 
-
-            ], 
-
-          ), 
-
-        ), 
-
-      ), 
-
-    ); 
-
-  } 
-
-} 
-
-  
-
-class AddPlacePage extends StatelessWidget { 
-
-  @override 
-
-  Widget build(BuildContext context) { 
-
-    return Scaffold( 
-
-      appBar: AppBar( 
-
-        title: Text('Add Place'), 
-
-      ), 
-
-      body: AddPlaceForm(), 
-
-    ); 
-
-  } 
-
-} 
-
-  
-
-void main() { 
-
-  runApp(MaterialApp( 
-
-    title: 'Add Place', 
-
-    home: AddPlacePage(), 
-
-  )); 
-
-} 
-
-*/
