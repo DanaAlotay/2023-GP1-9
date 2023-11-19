@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/account.dart';
+import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/news.dart';
 import 'package:riyadh_guide/screens/search.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
@@ -172,7 +173,7 @@ class _favouritesState extends State<favourites> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminPlaces(),
+                builder: (context) => MyAdminHomePage(),
               ),
             );
           },
