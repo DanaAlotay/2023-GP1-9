@@ -5,13 +5,15 @@ import 'package:riyadh_guide/screens/navigate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:riyadh_guide/screens/place_detail.dart';
+import 'package:riyadh_guide/screens/signin.dart';
 
-Future<void> main() async { 
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform, );
-  runApp(MyApp());}
-
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       //try push
-      home: navigate(),
+      home: SignInScreen(),
     );
   }
 }
