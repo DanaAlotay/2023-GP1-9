@@ -1,13 +1,8 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:image_picker/image_picker.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -82,11 +77,38 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
-  final OpenAiKey = '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';
+// For secuirty Reasons
+
+  Future<String?> getApiKey() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('api_keys')
+        .doc('ai_key')
+        .get();
+
+    if (snapshot.exists) {
+      Map<String, dynamic>? data = snapshot.data() as Map<String, dynamic>?;
+      print('Retrieved data: $data');
+      if (data != null) {
+        String? apiKey = data['OPENAI_API_KEY'] as String?;
+        print('Retrieved API Key: $apiKey');
+        if (apiKey != null) {
+          return apiKey;
+        } else {
+          throw Exception('API Key is null');
+        }
+      } else {
+        throw Exception('No data available');
+      }
+    } else {
+      throw Exception('Document not found');
+    }
+  }
 
   Future<String> chatGPTAPI(
       TextEditingController _descriptionController) async {
     final String prompt = _descriptionController.text;
+    final OpenAiKey = await getApiKey();
+
     final List<Map<String, String>> messages = [
       {
         'role': 'user',
@@ -98,7 +120,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       final res = await http.post(
         Uri.parse('https://api.openai.com/v1/chat/completions'),
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type':
+              'application/json; charset=UTF-8', // Specify UTF-8 encoding
           'Authorization': 'Bearer $OpenAiKey',
         },
         body: jsonEncode({
@@ -108,8 +131,9 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       );
 
       if (res.statusCode == 200) {
-        String content =
-            jsonDecode(res.body)['choices'][0]['message']['content'];
+        String content = utf8.decode(jsonDecode(res.body)['choices'][0]
+                ['message']['content']
+            .codeUnits); // Decode the response using UTF-8
         content = content.trim();
 
         return content;
@@ -119,39 +143,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       return e.toString();
     }
   }
-/*
-  Future<void> generateAndDisplayDescription() async {
-    final apiKey = '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';
-    final url = 'https://api.openai.com/v1/chat/completions';
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $apiKey',
-    };
-
-    final body = {
-      'prompt': _descriptionController.text,
-      'max_tokens': 100,
-      'temperature': 0.2,
-      'n': 1,
-    };
-
-    final response = await http.post(Uri.parse(url),
-        headers: headers, body: jsonEncode(body));
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final description = data['choices'][0]['text'].trim();
-
-      setState(() {
-        _descriptionController.text = description;
-      });
-    } else {
-      throw Exception(
-          'Failed to generate description: ${response.statusCode} and  ${response.body}');
-    }
-  }
-  */
 
   Future<List<String>> uploadImages(String placeId) async {
     List<String> imageUrls = [];
@@ -181,34 +172,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
     return imageUrls;
   }
-
-/*
-  Future<void> pickImage(ImageSource source) async {
-    final pickedImage = await ImagePicker().pickImage(source: source);
-
-    if (pickedImage != null) {
-      final imageFile = File(pickedImage.path);
-
-      // Get the temporary directory path
-
-      Directory tempDir = await getTemporaryDirectory();
-
-      String tempPath = tempDir.path;
-
-      // Generate a unique filename for the image
-
-      String fileName = 'place_${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-      // Create a new File object with the temporary path and filename
-
-      File tempImage = await imageFile.copy('$tempPath/$fileName');
-
-      setState(() {
-        _images.add(tempImage);
-      });
-    }
-  }
-*/
 
   Future<void> pickImage(ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
@@ -318,28 +281,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 },
               ),
               SizedBox(height: 16.0),
-              /*
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: 'الوصف',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  prefixIcon: Icon(Icons.description),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'ادخل الوصف';
-                  }
-
-                  return null;
-                },
-              ),*/
-
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 3,
@@ -399,23 +340,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              /*
-              Row(
-                children: [
-                  TextButton.icon(
-                    icon: Icon(Icons.camera_alt),
-                    label: Text('التقاط صورة'),
-                    onPressed: () => pickImage(ImageSource.camera),
-                  ),
-                  SizedBox(width: 10),
-                  TextButton.icon(
-                    icon: Icon(Icons.image),
-                    label: Text('اختيار صورة'),
-                    onPressed: () => pickImage(ImageSource.gallery),
-                  ),
-                ],
-              ),*/
-
               Row(
                 children: [
                   TextButton.icon(
@@ -461,17 +385,49 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: _images.length,
-                  itemBuilder: (ctx, index) => Container(
-                    margin: EdgeInsets.only(right: 8),
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 238, 227, 245),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(_images[index]),
-                      ),
+                  itemBuilder: (ctx, index) => GestureDetector(
+                    child: Stack(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 8),
+                          width: 120,
+                          height: 150,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromARGB(255, 238, 227, 245),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: FileImage(_images[index]),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 1 / 2,
+                          right: 1 / 2,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(255, 142, 27, 19),
+                            ),
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  _images.removeAt(index);
+                                  //deleteImage(context,_images, index); // Remove the image URL from the list
+                                });
+                              },
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -510,307 +466,3 @@ void main() {
     home: AddPlaceForm(),
   ));
 }
-
-/* 
-
-  
-
-  
-
-import 'package:flutter/material.dart'; 
-
-  
-
-  
-
-import 'package:cloud_firestore/cloud_firestore.dart'; 
-
-  
-
-class AddPlaceForm extends StatefulWidget { 
-
-  @override 
-
-  _AddPlaceFormState createState() => _AddPlaceFormState(); 
-
-} 
-
-  
-
-class _AddPlaceFormState extends State<AddPlaceForm> { 
-
-  final _formKey = GlobalKey<FormState>(); 
-
-  final _categoryController = TextEditingController(); 
-
-  final _nameController = TextEditingController(); 
-
-  final _descriptionController = TextEditingController(); 
-
-  final _workingHoursController = TextEditingController(); 
-
-  String? _selectedCategory = 'c1'; // Set a default value 
-
-  
-
-  void _submitForm() { 
-
-    if (_formKey.currentState!.validate()) { 
-
-      _formKey.currentState!.save(); 
-
-  
-
-      // Save the form data to the database 
-
-      FirebaseFirestore.instance.collection('place').add({ 
-
-        'category_ID': _selectedCategory ?? '', // Add a null check here 
-
-        'name': _nameController.text, 
-
-        'description': _descriptionController.text, 
-
-        'opening_hours': _workingHoursController.text, 
-
-      }); 
-
-  
-
-      // Reset the form 
-
-      _formKey.currentState!.reset(); 
-
-    } 
-
-  } 
-
-  
-
-  @override 
-
-  Widget build(BuildContext context) { 
-
-    return Scaffold( 
-
-      appBar: AppBar( 
-
-        title: Text('اضافة مكان'), 
-
-      ), 
-
-      body: Padding( 
-
-        padding: EdgeInsets.all(16.0), 
-
-        child: Form( 
-
-          key: _formKey, 
-
-          child: ListView( 
-
-            children: [ 
-
-              DropdownButtonFormField<String>( 
-
-                value: _selectedCategory, 
-
-                decoration: InputDecoration(labelText: 'التصنيف'), 
-
-                items: [ 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c1', 
-
-                    child: Text('مطاعم'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c2', 
-
-                    child: Text('مقاهي'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c6', 
-
-                    child: Text('معالم سياحيه'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c5', 
-
-                    child: Text('ترفيه'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c4', 
-
-                    child: Text('مراكز تجميل'), 
-
-                  ), 
-
-                  DropdownMenuItem<String>( 
-
-                    value: 'c3', 
-
-                    child: Text('تسوق'), 
-
-                  ), 
-
-                ], 
-
-                onChanged: (value) { 
-
-                  setState(() { 
-
-                    _selectedCategory = value!; 
-
-                  }); 
-
-                }, 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'اختر التصنيف'; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              TextFormField( 
-
-                controller: _nameController, 
-
-                decoration: InputDecoration(labelText: 'اسم المكان'), 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'ادخل اسم المكان'; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              TextFormField( 
-
-                controller: _descriptionController, 
-
-                decoration: InputDecoration(labelText: 'الوصف'), 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'ادخل وصف المكان'; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              TextFormField( 
-
-                controller: _workingHoursController, 
-
-                decoration: InputDecoration(labelText: 'اوقات العمل'), 
-
-                validator: (value) { 
-
-                  if (value == null || value.isEmpty) { 
-
-                    return 'ادخل اوقات العمل '; 
-
-                  } 
-
-                  return null; 
-
-                }, 
-
-              ), 
-
-              ElevatedButton( 
-
-                onPressed: _submitForm, 
-
-                child: Text('اضافة'), 
-
-              ), 
-
-            ], 
-
-          ), 
-
-        ), 
-
-      ), 
-
-    ); 
-
-  } 
-
-} 
-
-  
-
-class AddPlacePage extends StatelessWidget { 
-
-  @override 
-
-  Widget build(BuildContext context) { 
-
-    return Scaffold( 
-
-      appBar: AppBar( 
-
-        title: Text('Add Place'), 
-
-      ), 
-
-      body: AddPlaceForm(), 
-
-    ); 
-
-  } 
-
-} 
-
-  
-
-void main() { 
-
-  runApp(MaterialApp( 
-
-    title: 'Add Place', 
-
-    home: AddPlacePage(), 
-
-  )); 
-
-} 
-
-*/

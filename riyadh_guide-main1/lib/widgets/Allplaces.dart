@@ -1,5 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riyadh_guide/screens/AdminPlaces.dart';
+import 'package:riyadh_guide/screens/adminEditPlace.dart';
 import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/widgets/app_icon.dart';
 
@@ -41,14 +44,14 @@ class _AllPlacesState extends State<AllPlaces> {
             String openingHours = placeDocument.get('opening_hours').toString();
 
             return InkWell(
-              onTap: () {
+             /* onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => PlaceDetails(placeID: placeID),
                   ),
                 );
-              },
+              },*/
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
@@ -107,16 +110,24 @@ class _AllPlacesState extends State<AllPlaces> {
                                 icon:AppIcon(icon:Icons.edit) ,
                                 color: Colors.white,
                                 onPressed: () {
-                                  // Handle edit action
+                                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                   builder: (context) => adminEditPlace(placeID: placeID),
+                                  ),
+                                 );
                                 },
                               ),
-                              IconButton(
-                                icon: AppIcon(icon:Icons.delete),
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                onPressed: () {
-                                  // Handle delete action
-                                },
-                              ),
+                              
+                                 IconButton(
+                                  icon: AppIcon(icon:Icons.delete),
+                                  color: Color.fromARGB(255, 121, 19, 3),
+                                  onPressed: () {
+                                    // Handle delete action
+                                    deletePlaceWithConfirmation(context, placeID, placeName);
+                                  },
+                                ),
+                              
                             ],
                           ),
                         ),
@@ -127,7 +138,7 @@ class _AllPlacesState extends State<AllPlaces> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
+                          /*InkWell(
                             child: Icon(
                               Icons.more_vert,
                               color: Colors.black,
@@ -146,7 +157,7 @@ class _AllPlacesState extends State<AllPlaces> {
                           Text(
                             "للمزيد",
                             style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
+                          ),*/
                           Icon(
                             Icons.star,
                             color: Colors.amber,
@@ -177,4 +188,60 @@ class _AllPlacesState extends State<AllPlaces> {
       },
     );
   }
+}
+
+void deletePlaceWithConfirmation(BuildContext context, String placeID, String placeName) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('تأكيد'),
+        content: Text( ' هل أنت متأكد من حذف ' +placeName+'؟'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('إلغاء'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+          ),
+          TextButton(
+            child: Text('حذف'),
+            onPressed: () async {
+              // Delete the document
+              Navigator.of(context).pop();
+              deletePlace(context,placeID);
+               showSnackBar(context, 'تم الحذف بنجاح');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminPlaces(),
+                      ),
+                    );
+             
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> deletePlace(BuildContext context, String placeID) async {
+  try {
+    DocumentReference placeRef =
+        FirebaseFirestore.instance.collection('place').doc(placeID);
+    await placeRef.delete();
+
+
+  } catch (e) {
+    print('حدث خطأ أثناء الحذف: $e');
+  }
+}
+
+void showSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+    ),
+  );
 }
