@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
@@ -92,6 +92,61 @@ class _ResetPasswordState extends State<ResetPassword> {
                           // Validate the form
                           if (_formKey.currentState!.validate()) {
                             try {
+                              var email = _emailTextController.text.trim();
+
+                              // Reset Password
+                              await FirebaseAuth.instance
+                                  .sendPasswordResetEmail(email: email);
+
+                              // Password reset email sent successfully
+                              Navigator.of(context).pop();
+                            } catch (e) {
+                              print('Error resetting password: $e');
+                              // Check the error code to determine the reason for failure
+                              if (e is FirebaseAuthException) {
+                                print(
+                                    'FirebaseAuthException code: ${e.code}'); // Add this line to print the error code
+                                if (e.code == 'user-not-found') {
+                                  // Email not registered
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'البريد الإلكتروني غير مسجل. يرجى التحقق من البريد الإلكتروني.',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  );
+                                } else if (e.code == 'invalid-email') {
+                                  // Invalid email format
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'صيغة البريد الإلكتروني غير صالحة. يرجى التحقق من البريد الإلكتروني.',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  // Handle other errors
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'حدث خطأ أثناء إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          }
+                        }),
+
+                        /*firebaseUIButton(context, "إعادة تعيين كلمة المرور",
+                            () async {
+                          // Validate the form
+                          if (_formKey.currentState!.validate()) {
+                            try {
                               // Check if email exists
                               var email = _emailTextController.text.trim();
                               var signInMethods = await FirebaseAuth.instance
@@ -121,10 +176,175 @@ class _ResetPasswordState extends State<ResetPassword> {
                               // Handle error if any
                             }
                           }
-                        }),
+                        }),*/
                       ],
                     ),
                   )))),
+    );
+  }
+}*/
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/welcome_screen.dart';
+import 'package:riyadh_guide/screens/reusable.dart';
+
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({Key? key}) : super(key: key);
+
+  @override
+  _ResetPasswordState createState() => _ResetPasswordState();
+}
+
+class _ResetPasswordState extends State<ResetPassword> {
+  TextEditingController _emailTextController = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Add a form key
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "إعادة تعيين كلمة المرور",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.25,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('lib/icons/roro.JPG'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Expanded(
+              child: Container(
+                  color: Colors.white,
+                  child: SingleChildScrollView(
+                      child: Padding(
+                          padding: EdgeInsets.fromLTRB(20, 120, 20, 0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 120,
+                                  child: Stack(
+                                    alignment: Alignment.topLeft,
+                                    children: [
+                                      Container(
+                                        height: 140,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                                'lib/icons/rePP.png'),
+                                            // fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Text(
+                                    "أدخل بريدك الالكتروني لإعادة تعيين كلمة المرور",
+                                    style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 76, 53, 87))),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                reusableTextField(
+                                  "البريد الالكتروني",
+                                  Icons.email_outlined,
+                                  false,
+                                  _emailTextController,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'يرجى إدخال بريدك الإلكتروني';
+                                    } else if (!isValidEmail(value)) {
+                                      return 'البريد الإلكتروني غير صالح';
+                                    }
+
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+
+                                // Check if email exists
+                                firebaseUIButton(
+                                    context, "إعادة تعيين كلمة المرور",
+                                    () async {
+                                  // Validate the form
+                                  if (_formKey.currentState!.validate()) {
+                                    try {
+                                      var email =
+                                          _emailTextController.text.trim();
+
+                                      // Reset Password
+                                      await FirebaseAuth.instance
+                                          .sendPasswordResetEmail(email: email);
+
+                                      // Password reset email sent successfully
+                                      Navigator.of(context).pop();
+                                    } catch (e) {
+                                      print('Error resetting password: $e');
+                                      // Check the error code to determine the reason for failure
+                                      if (e is FirebaseAuthException) {
+                                        print(
+                                            'FirebaseAuthException code: ${e.code}'); // Add this line to print the error code
+                                        if (e.code == 'user-not-found') {
+                                          // Email not registered
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'البريد الإلكتروني غير مسجل. يرجى التحقق من البريد الإلكتروني.',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          );
+                                        } else if (e.code == 'invalid-email') {
+                                          // Invalid email format
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'صيغة البريد الإلكتروني غير صالحة. يرجى التحقق من البريد الإلكتروني.',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          // Handle other errors
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'حدث خطأ أثناء إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى.',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    }
+                                  }
+                                }),
+                              ],
+                            ),
+                          ))))),
+        ],
+      ),
     );
   }
 }

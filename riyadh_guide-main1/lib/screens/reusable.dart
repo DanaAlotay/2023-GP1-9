@@ -58,6 +58,7 @@ Widget reusableTextField(
   TextEditingController controller, {
   String? Function(String?)? validator,
   void Function(String)? onChanged,
+  FocusNode? focusNode,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,6 +80,7 @@ Widget reusableTextField(
         autocorrect: !isPasswordType,
         validator: validator,
         onChanged: onChanged,
+        focusNode: focusNode,
         cursorColor: Color.fromARGB(255, 77, 73, 73),
         style: TextStyle(color: Color.fromARGB(255, 6, 6, 6).withOpacity(0.9)),
         decoration: InputDecoration(

@@ -1,96 +1,8 @@
-/*import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:riyadh_guide/screens/welcome_screen.dart';
-import 'package:riyadh_guide/screens/reusable.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
-
-  @override
-  _SignUpScreenState createState() => _SignUpScreenState();
-}
-
-class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _userNameTextController = TextEditingController();
-  List<String> _items = ['Item 1', 'Item 2', 'Item 3'];
-  List<String> _selectedItems = [];
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          "حساب جديد",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-            hexStringToColor("CB2B93"),
-            hexStringToColor("9546C4"),
-            hexStringToColor("5E61F4")
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-          child: SingleChildScrollView(
-              child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 120, 20, 0),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("اسم المستخدم", Icons.person_outline, false,
-                    _userNameTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("البريد الالكتروني", Icons.email_outlined,
-                    false, _emailTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("كلمة المرور", Icons.lock_outlined, true,
-                    _passwordTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                /////
-                // Add the bank selection dropdown here
-                
-
-                /////
-                firebaseUIButton(context, "انشاء حساب جديد", () {
-                  FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) {
-                    print("انشاء حساب جديد");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WelcomeScreen()));
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });
-                })
-              ],
-            ),
-          ))),
-    );
-  }
-}*/
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:riyadh_guide/screens/reusable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -103,7 +15,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
+  FocusNode _passwordFocusNode = FocusNode();
   int _passwordStrength = 0;
+
   List<String> _banks = ['بنك الراجحي', 'بنك الاهلي', 'بنك ساب'];
   List<String> _selectedBanks = [];
   String? _selectedBank;
@@ -115,6 +29,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    // Dispose of the FocusNode when the widget is disposed
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -172,18 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     },
                   ),
-                  //   validator: (value) {
-                  //     if (value == null || value.isEmpty) {
-                  //       return 'يرجى إدخال اسم المستخدم';
-                  //     } else if (value.startsWith(RegExp(r'[0-9]'))) {
-                  //       return 'يجب أن لا يبدأ برقم';
-                  //     } else if (!RegExp(r'^[a-zA-Z][a-zA-Z0-9._]*$')
-                  //         .hasMatch(value)) {
-                  //       return 'يجب أن يحتوي على أحرف و أرقام ويمكن أن يتضمن "." أو "_"';
-                  //     }
-                  //     return null;
-                  //   },
-                  // ),
+
                   // Display the error message
                   Text(
                     _userNameErrorMessage ?? '',
@@ -204,14 +113,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         _emailErrorMessage = result;
                       });
                     },
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty) {
-                    //     return 'يرجى إدخال البريد الإلكتروني';
-                    //   } else if (!isValidEmail(value)) {
-                    //     return 'البريد الإلكتروني غير صالح';
-                    //   }
-                    //   return null;
-                    // },
                   ),
                   Text(
                     _emailErrorMessage ??
@@ -225,32 +126,63 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     true,
                     _passwordTextController,
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال كلمة المرور';
-                      } else if (value.length < 8) {
-                        return 'يجب أن تكون كلمة المرور على الأقل 8 خانات';
-                      } else if (!RegExp(
-                              r'(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}|:"<>?~,-.])')
-                          .hasMatch(value)) {
-                        return 'يجب أن تحتوي كلمة المرور على حرف كبير، رقم، وحرف خاص';
+                      if (_passwordFocusNode.hasFocus) {
+                        if (value == null || value.isEmpty) {
+                          return 'يرجى إدخال كلمة المرور';
+                        } else if (value.length < 8) {
+                          return 'يجب أن تكون كلمة المرور على الأقل 8 خانات';
+                        } else if (!RegExp(
+                                r'(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}|:"<>?~,-.])')
+                            .hasMatch(value)) {
+                          return 'يجب أن تحتوي كلمة المرور على حرف كبير، رقم، وحرف خاص';
+                        }
                       }
                       return null;
                     },
                     onChanged: (value) {
-                      // Update the password strength based on your criteria
-                      int strength = calculatePasswordStrength(value);
-                      setState(() {
-                        _passwordStrength = strength;
-                      });
+                      if (_passwordFocusNode.hasFocus) {
+                        // Update the password strength based on your criteria
+                        int strength = calculatePasswordStrength(value);
+                        setState(() {
+                          _passwordStrength = strength;
+                        });
+                      }
                     },
+                    focusNode: _passwordFocusNode,
                   ),
+                  // Password Strength Indicator
+                  if (_passwordFocusNode.hasFocus)
+                    Row(
+                      children: <Widget>[
+                        Icon(
+                          _passwordStrength >= 8
+                              ? Icons.check_circle
+                              : Icons.remove_circle,
+                          color: _passwordStrength >= 8
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          _passwordStrength >= 8
+                              ? 'كلمة المرور قوية'
+                              : 'كلمة المرور ضعيفة',
+                          style: TextStyle(
+                            color: _passwordStrength >= 8
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                   const SizedBox(height: 10),
+                  /*const SizedBox(height: 10),
                   // Password Strength Indicator
                   LinearProgressIndicator(
                     value: _passwordStrength / 100,
                     backgroundColor: Color.fromARGB(255, 227, 226, 226),
                     color: getPasswordStrengthColor(_passwordStrength),
-                  ),
+                  ),*/
                   const SizedBox(height: 20),
                   // Add the bank selection dropdown here
                   InkWell(
@@ -291,6 +223,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       )
                           .then((value) {
                         print("انشاء حساب جديد");
+                        // Save user information to Firestore
+                        saveUserData(
+                            value.user?.uid,
+                            _userNameTextController.text,
+                            _emailTextController.text);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -379,25 +316,14 @@ int calculatePasswordStrength(String password) {
   return strength.clamp(0, 100); // Ensure strength is between 0 and 100
 }
 
-// Function to get the color based on password strength
-Color getPasswordStrengthColor(int strength) {
-  if (strength < 40) {
-    return Colors.red;
-  } else if (strength < 70) {
-    return Colors.orange;
-  } else {
-    return Colors.green;
-  }
-}
-
-// //Function to get the color based on password strength
+// // Function to get the color based on password strength
 // Color getPasswordStrengthColor(int strength) {
-//   if (strength < 6) {
+//   if (strength < 40) {
 //     return Colors.red;
-//   } else if (strength > 8) {
-//     return Colors.green;
-//   } else {
+//   } else if (strength < 70) {
 //     return Colors.orange;
+//   } else {
+//     return Colors.green;
 //   }
 // }
 
@@ -425,5 +351,18 @@ Future<String?> validateEmail(String? email) async {
       // Handle other errors if needed
       return 'حدث خطأ أثناء التحقق من البريد الإلكتروني';
     }
+  }
+}
+
+// Function to save user data to Firestore
+Future<void> saveUserData(String? userId, String username, String email) async {
+  try {
+    await FirebaseFirestore.instance.collection('user').doc(userId).set({
+      'name': username,
+      'email': email,
+      // Add other fields as needed
+    });
+  } catch (e) {
+    print("Error saving user data: $e");
   }
 }

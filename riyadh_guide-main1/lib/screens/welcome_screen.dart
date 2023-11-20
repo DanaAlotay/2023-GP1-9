@@ -1,10 +1,51 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:riyadh_guide/screens/favourites.dart';
+import 'package:riyadh_guide/screens/news.dart';
+import 'package:riyadh_guide/screens/place_detail.dart';
+import 'package:riyadh_guide/screens/search.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+  
+ 
+  
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  //final TextEditingController searchController = TextEditingController();
+  int currentTab=0;
+
+  List<String> placeList=[];
+  @override
+void initState() {
+  super.initState();
+  fetchPlaceNames().then((names) {
+    setState(() {
+      placeList = names;
+    });
+  });
+}
+
+ Future<List<String>> fetchPlaceNames() async {
+  try {
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('place').get();
+    querySnapshot.docs.forEach((doc) {
+      final name = doc.get('name').toString();
+      placeList.add(name);
+    });
+  } catch (e) {
+    print('Error fetching place names: $e');
+  }
+
+  return placeList;
+}
+
   final List catNames = [
     "مقاهي",
     "مطاعم",
@@ -23,23 +64,6 @@ class WelcomeScreen extends StatelessWidget {
     "c6",
   ];
 */
-  /*
- List<String> catID =[];
-
-   Future<List<String>> fetchDataFromFirestore() async {
-    
-  
-      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('category').get();
-
-      for (QueryDocumentSnapshot document in snapshot.docs) {
-        catID.add(document.id);
-      }
-    
-      return catID;
-      
-   }
-   */
-
   final List<Color> catColors = [
     (Colors.white),
     (Color.fromARGB(255, 227, 208, 239)),
@@ -86,7 +110,6 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String categoryID = '';
     var str = <Widget>[
-      ////
       Text(
         "آخر الأخبار",
         style: TextStyle(
@@ -175,6 +198,144 @@ class WelcomeScreen extends StatelessWidget {
       ),
     ];
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          setState(() {
+                      currentTab = 0;
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WelcomeScreen(),
+                      ),
+                    );
+                    });
+        },
+        child: Image.asset(
+                        'lib/icons/Logo.png',
+                      ),
+        backgroundColor: Color.fromARGB(157, 165, 138, 182),
+        elevation: 20.0,
+        //mini: true,
+         ),
+      bottomNavigationBar: BottomAppBar(
+          notchMargin: 10,
+          shape: CircularNotchedRectangle(),
+          color:Color.fromARGB(157, 217, 197, 230),
+          child: Row(
+           mainAxisAlignment: MainAxisAlignment.spaceAround,
+           mainAxisSize: MainAxisSize.max, 
+           children: [
+            
+             Padding(
+            padding: EdgeInsets.only(right: 10.0, left: 10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.account_box), onPressed: (){setState(() {
+                      currentTab = 1;
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => account(),
+                      ),
+                    );
+                    });},
+                  color: currentTab == 1 ? Colors.white : Colors.black,
+                  
+                ),
+                Text(
+                  "حسابي",
+                  style: TextStyle(color:currentTab == 1 ? Colors.white : Colors.black),
+                )
+              ],
+            ),
+            ),
+
+             Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.search), onPressed: (){ 
+                    setState(() {
+                      currentTab = 2;
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => search(),
+                      ),
+                    );
+                    });
+                  },
+                  color: currentTab == 2 ? Colors.white : Colors.black,
+                  
+                ),
+                Text(
+                  "البحث",
+                  style: TextStyle(color:currentTab == 2 ? Colors.white : Colors.black),
+                )
+              ],
+            ),
+            ),
+
+  Padding(
+            padding: const EdgeInsets.only( right: 30.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.newspaper), onPressed: (){setState(() {
+                      currentTab = 3;
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => news(),
+                      ),
+                    );
+                    });},
+                  color: currentTab == 3 ? Colors.white : Colors.black,
+                  
+                ),
+                Text(
+                  "أحداث اليوم",
+                  style: TextStyle(color:currentTab == 3 ? Colors.white : Colors.black),
+                )
+              ],
+            ),
+            ),
+
+            Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.favorite), onPressed: (){
+                    setState(() {
+                      currentTab = 4;
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => favourites(),
+                      ),
+                    );
+                    });},
+                  color: currentTab == 4 ? Colors.white : Colors.black,
+                  
+                ),
+                Text(
+                  "المفضلة",
+                  style: TextStyle(color: currentTab == 4 ? Colors.white : Colors.black),
+                )
+              ],
+            ),
+            ),
+           ],
+          ),
+         ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
         child: Column(
@@ -214,27 +375,37 @@ class WelcomeScreen extends StatelessWidget {
                       height: 30,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      margin: EdgeInsets.symmetric(horizontal: 40),
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: TextField(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.grey,
-                              ),
-                              hintStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 15),
-                              hintText: "ابحث عن مكان..."),
-                        ),
-                      ),
-                    ),
+          padding: EdgeInsets.symmetric(vertical: 3),
+          margin: EdgeInsets.symmetric(horizontal: 40),
+          height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: Colors.white,
+          ),
+          child: Center(
+            child: TextField(
+              //controller: searchController,
+              readOnly: true,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.grey,
+                ),
+                hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+                hintText: "ابحث عن مكان...",
+              ),
+              
+              onTap: () {
+                
+                showSearch(
+                  context: context,
+                  delegate: CustomSearchDelegate(placeList), 
+                );
+              },
+            ),
+          ),
+        ),
                     SizedBox(
                       height: 30,
                     )
@@ -257,6 +428,8 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  
 
   makeItem({image, title, context, categoryID}) {
     int Index = 0;
