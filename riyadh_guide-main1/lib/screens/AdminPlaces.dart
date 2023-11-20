@@ -37,7 +37,7 @@ class _AdminPlaces extends State<AdminPlaces> {
     return Scaffold(
       appBar: AppBar(
         title: Text('اضافة- حذف - تعديل الاماكن'),
-        backgroundColor: Color.fromARGB(255, 66, 49, 76), 
+        backgroundColor: Color.fromARGB(255, 211, 198, 226), 
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

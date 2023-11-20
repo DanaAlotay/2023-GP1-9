@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riyadh_guide/screens/AdminPlaces.dart';
+import 'package:riyadh_guide/screens/account.dart';
 
 class MyAdminHomePage extends StatelessWidget {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('الصفحة الرئيسية'),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226),
         ),
         body: AdminPage(),
       ),
@@ -15,6 +20,7 @@ class MyAdminHomePage extends StatelessWidget {
 }
 
 class AdminPage extends StatelessWidget {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,18 +33,48 @@ class AdminPage extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('lib/icons/Bk.jpg'), fit: BoxFit.cover),
+                  image: AssetImage('lib/icons/Bk.jpg'),
+                  fit: BoxFit.cover,
+                ),
               ),
               child: Container(
                 decoration: BoxDecoration(
-                    gradient:
-                        LinearGradient(begin: Alignment.bottomRight, colors: [
-                  Colors.black.withOpacity(.8),
-                  Colors.black.withOpacity(.2),
-                ])),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomRight,
+                    colors: [
+                      Colors.black.withOpacity(.8),
+                      Colors.black.withOpacity(.2),
+                    ],
+                  ),
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(14.0),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.account_circle,
+                            size: 50,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            // Navigate to account() page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => account(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 100,
+                    ),
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
@@ -47,36 +83,15 @@ class AdminPage extends StatelessWidget {
                           " اهلاً",
                           textAlign: TextAlign.right,
                           style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 33,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 33,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(
                       height: 30,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      margin: EdgeInsets.symmetric(horizontal: 40),
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: TextField(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.grey,
-                              ),
-                              hintStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 15),
-                              hintText: "ابحث عن مكان..."),
-                        ),
-                      ),
                     ),
                     SizedBox(
                       height: 30,
@@ -86,22 +101,74 @@ class AdminPage extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 130,
+              height: 20,
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildSquare(
+                        text1: '30',
+                        text2: ' مستخدم',
+                        icon: Icons.person,
+                      ),
+                      SizedBox(width: 10),
+                      FutureBuilder<int>(
+                        future: _getPlacesCount(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // If still loading, return a placeholder or loading indicator
+                            return _buildSquare(
+                              text1: '0',
+                              text2: 'Places Count',
+                              icon: Icons.place,
+                            );
+                          } else {
+                            // Display the places count
+                            return _buildSquare(
+                              text1: '${snapshot.data}',
+                              text2: "مكان",
+                              icon: Icons.place,
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildSquare(
+                        text1: '21',
+                        text2: ' فعالية',
+                        icon: Icons.theater_comedy,
+                      ),
+                      SizedBox(width: 10),
+                      _buildSquare(
+                        text1: '6',
+                        text2: ' تصنيفات',
+                        icon: Icons.category,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
                         // Handle the News button click action here
                       },
-                      child: Text('اخر الاخبار'),
+                      child: Text('  عرض الفعاليات  '),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.pink,
-                        minimumSize: Size(200, 60), // Adjust the size here
+                        minimumSize: Size(
+                            MediaQuery.of(context).size.width - 40,
+                            60), // Adjust the size here
                       ),
                     ),
                   ),
@@ -110,11 +177,19 @@ class AdminPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Handle the Places button click action here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdminPlaces(),
+                          ),
+                        );
                       },
-                      child: Text('الاماكن'),
+                      child: Text(' عرض الاماكن '),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.pink,
-                        minimumSize: Size(200, 60), // Adjust the size here
+                        minimumSize: Size(
+                            MediaQuery.of(context).size.width - 40,
+                            60), // Adjust the size here
                       ),
                     ),
                   ),
@@ -126,4 +201,57 @@ class AdminPage extends StatelessWidget {
       ),
     );
   }
+
+  Future<int> _getPlacesCount() async {
+    try {
+      QuerySnapshot placesSnapshot =
+          await _firestore.collection('place').get();
+      return placesSnapshot.size;
+    } catch (e) {
+      print("Error getting places count: $e");
+      return 0;
+    }
+  }
+
+Widget _buildSquare({
+  required String text1,
+  required String text2,
+  required IconData icon,
+}) {
+  return Expanded(
+    child: Container(
+      height: 120,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 40,
+            color: Colors.blue,
+          ),
+          SizedBox(height: 8),
+          Text(
+            text1,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            text2,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 }
