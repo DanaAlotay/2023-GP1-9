@@ -36,11 +36,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       //try push
-<<<<<<< HEAD
       home: SignInScreen(),
-=======
-      home: account(),
->>>>>>> 3cbf6898fe970848b8d54a0f388d68f935d66209
     );
   }
 }
