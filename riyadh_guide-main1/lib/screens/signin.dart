@@ -176,8 +176,10 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }*/
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/resetPassword.dart';
 import 'package:riyadh_guide/screens/signUp.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
@@ -193,8 +195,9 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
-  //email or peassword incorrect
+  //email or password incorrect
   String? _errorMessage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,13 +208,10 @@ class _SignInScreenState extends State<SignInScreen> {
               height: MediaQuery.of(context).size.height * 0.30,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('lib/icons/roro.JPG'), // Path to your image
-                  fit:
-                      BoxFit.cover, // You can adjust the fit to your preference
+                  image: AssetImage('lib/icons/roro.JPG'),
+                  fit: BoxFit.cover,
                 ),
               ),
-
-              //start of single child
               child: Center(
                 child: Container(
                   width: 100,
@@ -267,6 +267,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       setState(() {
                         _errorMessage = null;
                       });
+
                       // Check if email and password are not null
                       if (_emailTextController.text == null ||
                           _emailTextController.text.trim().isEmpty ||
@@ -284,19 +285,41 @@ class _SignInScreenState extends State<SignInScreen> {
                       if (_errorMessage != null) {
                         return;
                       }
+
                       // Continue with the sign-in process
                       FirebaseAuth.instance
                           .signInWithEmailAndPassword(
                               email: _emailTextController.text,
                               password: _passwordTextController.text)
                           .then((value) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => WelcomeScreen()));
+                        // Get the currently signed-in user
+                        User? user = FirebaseAuth.instance.currentUser;
+
+                        // Assuming you have a Firestore collection named 'user'
+                        FirebaseFirestore.instance
+                            .collection('user')
+                            .doc(user?.uid)
+                            .get()
+                            .then((userData) {
+                          // Assuming 'type' is a field in your user data
+                          String userType = userData['type'];
+
+                          if (userType == 'admin') {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AdminPage()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => WelcomeScreen()));
+                          }
+                        }).catchError((error) {
+                          print("Error fetching user data: $error");
+                        });
                       }).catchError((error) {
-                        print(
-                            "An error occurred during sign in: ${error.toString()}");
+                        print("An error occurred during sign in: ${error.toString()}");
                         if (error is FirebaseAuthException) {
                           print("FirebaseAuthException code: ${error.code}");
                           setState(() {
@@ -309,14 +332,14 @@ class _SignInScreenState extends State<SignInScreen> {
                               _errorMessage =
                                   "البريد الإلكتروني أو كلمة المرور غير صحيحة";
                             } else {
-                              _errorMessage = "حدثت مشكلة أثناء تسجيل الدخول";
+                              _errorMessage =
+                                  "حدثت مشكلة أثناء تسجيل الدخول";
                             }
                           });
                         }
                       });
-                      //
                     }),
-                    signUpOption()
+                    signUpOption(),
                   ],
                 ),
               ),
@@ -326,6 +349,8 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+
 
   Row signUpOption() {
     return Row(
@@ -368,4 +393,5 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
 }
