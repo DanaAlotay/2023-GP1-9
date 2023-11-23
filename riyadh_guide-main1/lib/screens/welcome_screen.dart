@@ -10,41 +10,39 @@ import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/screens/search.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  
- 
-  
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   //final TextEditingController searchController = TextEditingController();
-  int currentTab=0;
+  int currentTab = 0;
 
-  List<String> placeList=[];
+  List<String> placeList = [];
   @override
-void initState() {
-  super.initState();
-  fetchPlaceNames().then((names) {
-    setState(() {
-      placeList = names;
+  void initState() {
+    super.initState();
+    fetchPlaceNames().then((names) {
+      setState(() {
+        placeList = names;
+      });
     });
-  });
-}
-
- Future<List<String>> fetchPlaceNames() async {
-  try {
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('place').get();
-    querySnapshot.docs.forEach((doc) {
-      final name = doc.get('name').toString();
-      placeList.add(name);
-    });
-  } catch (e) {
-    print('Error fetching place names: $e');
   }
 
-  return placeList;
-}
+  Future<List<String>> fetchPlaceNames() async {
+    try {
+      final QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('place').get();
+      querySnapshot.docs.forEach((doc) {
+        final name = doc.get('name').toString();
+        placeList.add(name);
+      });
+    } catch (e) {
+      print('Error fetching place names: $e');
+    }
+
+    return placeList;
+  }
 
   final List catNames = [
     "مقاهي",
@@ -126,18 +124,16 @@ void initState() {
           child: CarouselSlider(
         options: CarouselOptions(
           enlargeCenterPage: true,
-          enableInfiniteScroll:
-              true, 
+          enableInfiniteScroll: true,
           viewportFraction:
               0.65, // to control the visible portion of adjacent images
-          aspectRatio:
-              1.45, // to control the width-to-height ratio
+          aspectRatio: 1.45, // to control the width-to-height ratio
         ),
         items: <Widget>[
           makeItem2(image: 'lib/icons/news1.jpeg', title: 'عرض مسرحي'),
           makeItem2(image: 'lib/icons/news2.jpeg', title: 'جروفز'),
           makeItem2(image: 'lib/icons/news3.jpeg', title: 'واجهة روشن'),
-          // Add more items here 
+          // Add more items here
         ],
       )),
       // End News
@@ -200,142 +196,147 @@ void initState() {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           setState(() {
-                      currentTab = 0;
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WelcomeScreen(),
-                      ),
-                    );
-                    });
+            currentTab = 0;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WelcomeScreen(),
+              ),
+            );
+          });
         },
         child: Image.asset(
-                        'lib/icons/Logo.png',
-                      ),
+          'lib/icons/Logo.png',
+        ),
         backgroundColor: Color.fromARGB(157, 165, 138, 182),
         elevation: 20.0,
         //mini: true,
-         ),
+      ),
       bottomNavigationBar: BottomAppBar(
-          notchMargin: 10,
-          shape: CircularNotchedRectangle(),
-          color:Color.fromARGB(157, 217, 197, 230),
-          child: Row(
-           mainAxisAlignment: MainAxisAlignment.spaceAround,
-           mainAxisSize: MainAxisSize.max, 
-           children: [
-            
-             Padding(
-            padding: EdgeInsets.only(right: 10.0, left: 10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.account_box), onPressed: (){setState(() {
-                      currentTab = 1;
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => account(),
-                      ),
-                    );
-                    });},
-                  color: currentTab == 1 ? Colors.white : Colors.black,
-                  
-                ),
-                Text(
-                  "حسابي",
-                  style: TextStyle(color:currentTab == 1 ? Colors.white : Colors.black),
-                )
-              ],
-            ),
-            ),
-
-             Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.search), onPressed: (){ 
-                    setState(() {
-                      currentTab = 2;
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => search(),
-                      ),
-                    );
-                    });
-                  },
-                  color: currentTab == 2 ? Colors.white : Colors.black,
-                  
-                ),
-                Text(
-                  "البحث",
-                  style: TextStyle(color:currentTab == 2 ? Colors.white : Colors.black),
-                )
-              ],
-            ),
-            ),
-
-  Padding(
-            padding: const EdgeInsets.only( right: 30.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.newspaper), onPressed: (){setState(() {
-                      currentTab = 3;
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => news(),
-                      ),
-                    );
-                    });},
-                  color: currentTab == 3 ? Colors.white : Colors.black,
-                  
-                ),
-                Text(
-                  "أحداث اليوم",
-                  style: TextStyle(color:currentTab == 3 ? Colors.white : Colors.black),
-                )
-              ],
-            ),
-            ),
-
+        notchMargin: 10,
+        shape: CircularNotchedRectangle(),
+        color: Color.fromARGB(157, 217, 197, 230),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.max,
+          children: [
             Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.favorite), onPressed: (){
-                    setState(() {
-                      currentTab = 4;
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => favourites(),
-                      ),
-                    );
-                    });},
-                  color: currentTab == 4 ? Colors.white : Colors.black,
-                  
-                ),
-                Text(
-                  "المفضلة",
-                  style: TextStyle(color: currentTab == 4 ? Colors.white : Colors.black),
-                )
-              ],
+              padding: EdgeInsets.only(right: 10.0, left: 10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.account_box),
+                    onPressed: () {
+                      setState(() {
+                        currentTab = 1;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => account(),
+                          ),
+                        );
+                      });
+                    },
+                    color: currentTab == 1 ? Colors.white : Colors.black,
+                  ),
+                  Text(
+                    "حسابي",
+                    style: TextStyle(
+                        color: currentTab == 1 ? Colors.white : Colors.black),
+                  )
+                ],
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      setState(() {
+                        currentTab = 2;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => search(),
+                          ),
+                        );
+                      });
+                    },
+                    color: currentTab == 2 ? Colors.white : Colors.black,
+                  ),
+                  Text(
+                    "البحث",
+                    style: TextStyle(
+                        color: currentTab == 2 ? Colors.white : Colors.black),
+                  )
+                ],
+              ),
             ),
-           ],
-          ),
-         ),
+            Padding(
+              padding: const EdgeInsets.only(right: 30.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.newspaper),
+                    onPressed: () {
+                      setState(() {
+                        currentTab = 3;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => news(),
+                          ),
+                        );
+                      });
+                    },
+                    color: currentTab == 3 ? Colors.white : Colors.black,
+                  ),
+                  Text(
+                    "أحداث اليوم",
+                    style: TextStyle(
+                        color: currentTab == 3 ? Colors.white : Colors.black),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.favorite),
+                    onPressed: () {
+                      setState(() {
+                        currentTab = 4;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => favourites(),
+                          ),
+                        );
+                      });
+                    },
+                    color: currentTab == 4 ? Colors.white : Colors.black,
+                  ),
+                  Text(
+                    "المفضلة",
+                    style: TextStyle(
+                        color: currentTab == 4 ? Colors.white : Colors.black),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
         child: Column(
@@ -375,37 +376,37 @@ void initState() {
                       height: 30,
                     ),
                     Container(
-          padding: EdgeInsets.symmetric(vertical: 3),
-          margin: EdgeInsets.symmetric(horizontal: 40),
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: Colors.white,
-          ),
-          child: Center(
-            child: TextField(
-              //controller: searchController,
-              readOnly: true,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.grey,
-                ),
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-                hintText: "ابحث عن مكان...",
-              ),
-              
-              onTap: () {
-                
-                showSearch(
-                  context: context,
-                  delegate: CustomSearchDelegate(placeList), 
-                );
-              },
-            ),
-          ),
-        ),
+                      padding: EdgeInsets.symmetric(vertical: 3),
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: TextField(
+                          //controller: searchController,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                            ),
+                            hintStyle:
+                                TextStyle(color: Colors.grey, fontSize: 15),
+                            hintText: "ابحث عن مكان...",
+                          ),
+
+                          onTap: () {
+                            showSearch(
+                              context: context,
+                              delegate: CustomSearchDelegate(placeList),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 30,
                     )
@@ -428,8 +429,6 @@ void initState() {
       ),
     );
   }
-
-  
 
   makeItem({image, title, context, categoryID}) {
     int Index = 0;
