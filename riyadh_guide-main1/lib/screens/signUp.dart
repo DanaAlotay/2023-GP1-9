@@ -363,6 +363,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _showBankSelectionDialog(BuildContext context) {
+    var sba = _selectedBanks;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -375,16 +376,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
               itemCount: _banks.length,
               itemBuilder: (BuildContext context, int index) {
                 String bank = _banks[index];
-                bool isSelected = _selectedBanks.contains(bank);
+                bool isSelected = sba.contains(bank);
+                print(isSelected);
 
                 return ListTile(
                   title: Text(bank),
                   onTap: () {
                     setState(() {
                       if (isSelected) {
-                        _selectedBanks.remove(bank);
+                        sba.remove(bank);
                       } else {
-                        _selectedBanks.add(bank);
+                        sba.add(bank);
                       }
                     });
                   },
@@ -393,11 +395,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onChanged: (value) {
                       setState(() {
                         if (isSelected) {
-                          _selectedBanks.remove(bank);
+                          sba.remove(bank);
                         } else {
-                          _selectedBanks.add(bank);
+                          sba.add(bank);
                         }
                       });
+                      print(sba);
                     },
                   ),
                 );

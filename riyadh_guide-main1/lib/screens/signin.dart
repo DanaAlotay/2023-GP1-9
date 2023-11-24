@@ -162,7 +162,17 @@ class _SignInScreenState extends State<SignInScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SquareTile(
-                          onTap: () => AuthService().SignInWithGoogle(),
+                          onTap: () async {
+                            try {
+                              await AuthService().SignInWithGoogle();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WelcomeScreen(),
+                                ),
+                              );
+                            } catch (e) {}
+                          },
                           imagePath: 'lib/icons/Google.jpg',
                         ),
                       ],

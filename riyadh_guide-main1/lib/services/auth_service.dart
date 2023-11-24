@@ -33,4 +33,8 @@ class AuthService {
       // Handle the error (e.g., show a snackbar or display an error message)
     }
   }
+
+  bool signdIn() {
+    return FirebaseAuth.instance.currentUser == null ? false : true;
+  }
 }

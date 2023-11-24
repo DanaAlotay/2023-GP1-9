@@ -12,7 +12,20 @@
           "package_name": "com.example.riyadh_guide"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "725770823630-3afnmsrvppi9355sfr92v8bq91aprkjs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.riyadh_guide",
+            "certificate_hash": "3e55a621ea5569e4197ae8cb61d4a66b4c8156e6"
+          }
+        },
+        {
+          "client_id": "725770823630-djcpfv2b7pvq46vnf63cf272khl1lrnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCwBM7s3ZPW0o7C4YiTJ2T74xf_IWnPvEg"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "725770823630-djcpfv2b7pvq46vnf63cf272khl1lrnk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "725770823630-igqqscdr2irsd9dh47mog8ju24fevq4a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.riyadhGuide"
+              }
+            }
+          ]
         }
       }
     }

@@ -183,6 +183,8 @@ class _ResetPasswordState extends State<ResetPassword> {
     );
   }
 }*/
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -293,6 +295,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             // Check if email exists
                             firebaseUIButton(context, "إعادة تعيين كلمة المرور",
                                 () async {
+                              // if(FirebaseFirestore.instance.collection("user").where("email",isEqualTo: _emailTextController.text.trim()).get().then((value) => value.docs.isEmpty?))
                               // Validate the form
                               if (_formKey.currentState!.validate()) {
                                 try {
