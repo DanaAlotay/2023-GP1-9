@@ -32,7 +32,7 @@ class _SignInScreenState extends State<SignInScreen> {
             height: MediaQuery.of(context).size.height * 0.28,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('lib/icons/bgl.png.jpg'),
+                image: AssetImage('lib/icons/lroro.png'),
                 fit: BoxFit.cover,
               ),
             ),
