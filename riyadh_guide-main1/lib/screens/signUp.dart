@@ -28,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   //for immediately checking
   String? _userNameErrorMessage;
   String? _emailErrorMessage;
+  String? _ErrorMessage;
 
   final _formKey = GlobalKey<FormState>();
   //bool _buttonClicked = false;
@@ -256,8 +257,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-
+                      const SizedBox(height: 10),
+                      Text(
+                        _ErrorMessage ?? '',
+                        style: TextStyle(color: Colors.red),
+                      ),
                       firebaseUIButton(context, "انشاء حساب جديد", () {
                         setState(() {
                           _showImmediateErrors = false;
@@ -271,37 +275,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             _passwordTextController.text.isEmpty) {
                           setState(() {
                             // Set a general error message
-                            _userNameErrorMessage =
-                                'يجب تعبئة جميع الحقول المطلوبة';
+                            _ErrorMessage = 'يجب تعبئة جميع الحقول المطلوبة';
                           });
                           return; // Return without further processing
                         }
 
                         // Validate the form
-                        if (_formKey.currentState!.validate()) {
-                          // Include the selected banks in your authentication process
-                          FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                            email: _emailTextController.text,
-                            password: _passwordTextController.text,
-                          )
-                              .then((value) {
-                            print("انشاء حساب جديد");
-                            // Save user information to Firestore
-                            saveUserData(
-                                value.user?.uid,
-                                _userNameTextController.text,
-                                _emailTextController.text);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => WelcomeScreen(),
-                              ),
-                            );
-                          }).onError((error, stackTrace) {
-                            print("Error ${error.toString()}");
-                          });
+                        // Validate the form
+                        if (_userNameErrorMessage != null ||
+                            _emailErrorMessage != null ||
+                            _passwordTextController.text.length < 8) {
+                          return; // Return without further processing if there are errors
                         }
+                        // if (_formKey.currentState!.validate()) {
+                        // Include the selected banks in your authentication process
+                        FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text,
+                        )
+                            .then((value) {
+                          print("انشاء حساب جديد");
+                          // Save user information to Firestore
+                          saveUserData(
+                              value.user?.uid,
+                              _userNameTextController.text,
+                              _emailTextController.text);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WelcomeScreen(),
+                            ),
+                          );
+                        }).onError((error, stackTrace) {
+                          print("Error ${error.toString()}");
+                        });
+                        //}
                       }),
 
                       // Clickable text to navigate to the sign-in screen
