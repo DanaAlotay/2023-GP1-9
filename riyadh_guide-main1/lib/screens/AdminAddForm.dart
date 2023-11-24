@@ -77,7 +77,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
-// For secuirty Reasons
+// For secuirty Reasons chatgpt key stored in db
 
   Future<String?> getApiKey() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance

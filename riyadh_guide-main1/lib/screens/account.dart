@@ -28,7 +28,7 @@ class _accountState extends State<account> {
     super.initState();
     fetchUserData();
   }
-
+/*
   void fetchUserData() {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -46,12 +46,12 @@ class _accountState extends State<account> {
           List<dynamic> cards =
               documentSnapshot['cards']; // Retrieve the 'card' field as a list
 
-          if (cards.isEmpty) {
+          if (cards == null || cards.isEmpty) {
             cards = [
               'نافع',
               'الانماء',
               'قطاف'
-            ]; // Set a default value if the 'card' field is empty
+            ]; // Set a default value if the 'cards' field is empty or doesn't exist
           }
 
           setState(() {
@@ -59,6 +59,43 @@ class _accountState extends State<account> {
             _emailController.text = email;
             _cardsController.text = cards.join(
                 ", "); // Join the card values into a comma-separated string
+          });
+        }
+      }).catchError((error) {
+        // Handle error retrieving user data
+      });
+    }
+  }*/
+
+  void fetchUserData() {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String uid = user.uid;
+
+      FirebaseFirestore.instance
+          .collection('user')
+          .doc(uid)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          String username = documentSnapshot['name'];
+          String email = documentSnapshot['email'];
+          List<dynamic>? cards;
+
+          Map<String, dynamic>? data =
+              documentSnapshot.data() as Map<String, dynamic>?;
+          if (data != null && data.containsKey('cards')) {
+            cards = data['cards'];
+          } else {
+            cards = ['نافع', 'الانماء', 'قطاف'];
+          }
+
+          setState(() {
+            _usernameController.text = username;
+            _emailController.text = email;
+            _cardsController.text = cards?.join(", ") ??
+                ''; // Join the card values into a comma-separated string
           });
         }
       }).catchError((error) {
@@ -452,7 +489,7 @@ class _accountState extends State<account> {
                       controller: _usernameController,
                       decoration: InputDecoration(
                         labelText: 'اسم المستخدم',
-                        labelStyle: TextStyle(fontSize: 22.0),
+                        labelStyle: TextStyle(fontSize: 18.0),
                         border: InputBorder.none,
                       ),
                     ),
@@ -479,7 +516,7 @@ class _accountState extends State<account> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'البريد الالكتروني',
-                        labelStyle: TextStyle(fontSize: 22.0),
+                        labelStyle: TextStyle(fontSize: 18.0),
                         border: InputBorder.none,
                       ),
                     ),
@@ -546,12 +583,21 @@ class _accountState extends State<account> {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                FloatingActionButton(
-                  onPressed: () {
-                    signOut();
-                  },
-                  child: Icon(Icons.logout_rounded),
-                  backgroundColor: Color.fromARGB(255, 99, 62, 118),
+                Hero(
+                  tag: 'uniqueTagForFab', // Assign a unique tag
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromARGB(255, 99, 62, 118),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        signOut();
+                      },
+                      icon: Icon(Icons.logout_rounded),
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -559,3 +605,94 @@ class _accountState extends State<account> {
         ));
   }
 }
+/*
+
+
+body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50.0),
+                    border: Border.all(
+                      color:
+                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
+                      width: 1.0, // Set the outline width
+                    ),
+                  ),
+                  child: ListTile(
+                    leading: Icon(Icons.person,
+                        color: Color.fromARGB(255, 69, 51, 80)),
+                    title: TextFormField(
+                      readOnly: true,
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: 'اسم المستخدم',
+                        labelStyle: TextStyle(fontSize: 18.0),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(50.0),
+                    border: Border.all(
+                      color:
+                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
+                      width: 1.0, // Set the outline width
+                    ),
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.email,
+                      color: Color.fromARGB(255, 69, 51, 80),
+                    ),
+                    title: TextFormField(
+                      readOnly: true,
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'البريد الالكتروني',
+                        labelStyle: TextStyle(fontSize: 18.0),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(50.0),
+                    border: Border.all(
+                      color:
+                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
+                      width: 1.0, // Set the outline width
+                    ),
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.credit_card,
+                      color: Color.fromARGB(255, 69, 51, 80),
+                    ),
+                    title: TextField(
+                      readOnly: true,
+                      controller: _cardsController,
+                      decoration: InputDecoration(
+                        labelText: 'البطاقات التي لديك للحصول على افضل العروض:',
+                        labelStyle: TextStyle(fontSize: 10.0),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+
+
+
+*/
