@@ -261,12 +261,15 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 ],
                               ),
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
                             const Text(
                                 "أدخل بريدك الالكتروني لإعادة تعيين كلمة المرور",
                                 style: TextStyle(
                                     color: Color.fromARGB(255, 76, 53, 87))),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             reusableTextField(
                               "البريد الالكتروني",

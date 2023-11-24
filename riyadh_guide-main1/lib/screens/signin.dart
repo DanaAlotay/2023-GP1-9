@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/resetPassword.dart';
 import 'package:riyadh_guide/screens/signUp.dart';
+import 'package:riyadh_guide/screens/squareTile.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:riyadh_guide/screens/reusable.dart';
+import 'package:riyadh_guide/services/auth_service.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -57,18 +59,16 @@ class _SignInScreenState extends State<SignInScreen> {
                             color: Color.fromARGB(255, 99, 62, 118),
                             fontSize: 23,
                             fontWeight: FontWeight.bold)),
-                    const SizedBox(
-                      height: 30,
-                    ),
+
                     reusableTextField("الايميل الالكتروني",
                         Icons.email_outlined, false, _emailTextController),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     reusableTextField("كلمة المرور", Icons.lock_outline, true,
                         _passwordTextController),
                     const SizedBox(
-                      height: 5,
+                      height: 3,
                     ),
                     forgetPassword(context),
                     // Display the error message
@@ -152,6 +152,18 @@ class _SignInScreenState extends State<SignInScreen> {
                         }
                       });
                     }),
+                    const SizedBox(width: 20),
+                    //google sign in button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SquareTile(
+                          onTap: () => AuthService().SignInWithGoogle(),
+                          imagePath: 'lib/icons/Google.jpg',
+                        ),
+                      ],
+                    ),
+
                     signUpOption(),
                   ],
                 ),
