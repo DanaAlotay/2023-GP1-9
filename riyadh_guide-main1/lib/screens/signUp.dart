@@ -29,10 +29,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? _userNameErrorMessage;
   String? _emailErrorMessage;
   String? _ErrorMessage;
+  String? _passwordErrorMessage;
 
   final _formKey = GlobalKey<FormState>();
   //bool _buttonClicked = false;
-  bool _showImmediateErrors = true;
+  //bool _showImmediateErrors = true;
 
   @override
   void dispose() {
@@ -93,10 +94,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         false,
                         _userNameTextController,
                         validator: (value) {
-                          //return _userNameErrorMessage;
-                          return _showImmediateErrors
-                              ? _userNameErrorMessage
-                              : null;
+                          return _userNameErrorMessage;
+                          // return _showImmediateErrors
+                          //     ? _userNameErrorMessage
+                          //     : null;
                         },
                         onChanged: (value) {
                           setState(() {
@@ -104,8 +105,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             _userNameErrorMessage =
                                 null; // Clear previous error message
                             _emailErrorMessage = null;
-                            _showImmediateErrors =
-                                true; // Set the flag to true when user types
+                            // _showImmediateErrors =
+                            //     true; // Set the flag to true when user types
                           });
 
                           // Perform additional checks and update _userNameErrorMessage if needed
@@ -138,19 +139,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         false,
                         _emailTextController,
                         validator: (value) {
-                          // return _emailErrorMessage;
-                          return _showImmediateErrors
-                              ? _emailErrorMessage
-                              : null;
+                          return _emailErrorMessage;
+                          // return _showImmediateErrors
+                          //     ? _emailErrorMessage
+                          //     : null;
                         },
-                        onChanged: (value) async {
-                          final result = await validateEmail(value);
-                          setState(() {
-                            _emailErrorMessage = result;
-                            _showImmediateErrors =
-                                true; // Set the flag to true when user types
+                        onChanged: (value) {
+                          validateEmail(value).then((result) {
+                            setState(() {
+                              _emailErrorMessage = result;
+                            });
                           });
                         },
+                        // onChanged: (value) async {
+                        // _emailErrorMessage = await validateEmail(value);
+                        //setState(() {});
+
+                        //final result = await validateEmail(value);
+                        //setState(() {
+                        // _emailErrorMessage = result;
+                        // _showImmediateErrors =
+                        //     true; // Set the flag to true when user types
+                        //  });
+                        // },
                       ),
                       Text(
                         _emailErrorMessage ??
@@ -264,53 +275,61 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       firebaseUIButton(context, "انشاء حساب جديد", () {
                         setState(() {
-                          _showImmediateErrors = false;
+                          _userNameErrorMessage =
+                              _validateUserName(_userNameTextController.text);
+
+                          _passwordErrorMessage =
+                              _validatePassword(_passwordTextController.text);
                         });
-                        // Check if any of the fields is null or empty
-                        if (_userNameTextController.text == null ||
-                            _userNameTextController.text.isEmpty ||
-                            _emailTextController.text == null ||
+                        // Check for empty fields
+                        if (_userNameTextController.text.isEmpty ||
                             _emailTextController.text.isEmpty ||
-                            _passwordTextController.text == null ||
                             _passwordTextController.text.isEmpty) {
+                          // Display a general error message for empty fields
                           setState(() {
-                            // Set a general error message
                             _ErrorMessage = 'يجب تعبئة جميع الحقول المطلوبة';
                           });
-                          return; // Return without further processing
+                          return;
                         }
-
-                        // Validate the form
-                        // Validate the form
                         if (_userNameErrorMessage != null ||
                             _emailErrorMessage != null ||
                             _passwordTextController.text.length < 8) {
-                          return; // Return without further processing if there are errors
+                          setState(() {
+                            _ErrorMessage = 'يرجى تصحيح جميع الأخطاء في الحقول';
+                          });
+                          return;
                         }
-                        // if (_formKey.currentState!.validate()) {
-                        // Include the selected banks in your authentication process
-                        FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text,
-                        )
-                            .then((value) {
-                          print("انشاء حساب جديد");
-                          // Save user information to Firestore
-                          saveUserData(
-                              value.user?.uid,
-                              _userNameTextController.text,
-                              _emailTextController.text);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WelcomeScreen(),
-                            ),
-                          );
-                        }).onError((error, stackTrace) {
-                          print("Error ${error.toString()}");
-                        });
-                        //}
+
+                        if (_formKey.currentState!.validate()) {
+                          // Additional checks for other fields
+                          if (_userNameErrorMessage == null &&
+                              _passwordErrorMessage == null &&
+                              _emailErrorMessage == null) {
+                            // Proceed with authentication
+                            // Include the selected banks in your authentication process
+                            FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                              email: _emailTextController.text,
+                              password: _passwordTextController.text,
+                            )
+                                .then((value) {
+                              print("انشاء حساب جديد");
+                              // Save user information to Firestore
+                              saveUserData(
+                                  value.user?.uid,
+                                  _userNameTextController.text,
+                                  _emailTextController.text);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WelcomeScreen(),
+                                ),
+                              );
+                            }).onError((error, stackTrace) {
+                              print("Error ${error.toString()}");
+                            });
+                          }
+                        }
                       }),
 
                       // Clickable text to navigate to the sign-in screen
@@ -430,7 +449,7 @@ int calculatePasswordStrength(String password) {
 
 Future<String?> validateEmail(String? email) async {
   if (email == null || email.isEmpty) {
-    return 'يرجى إدخال البريد الإلكتروني';
+    return '';
   } else if (!isValidEmail(email)) {
     return 'البريد الإلكتروني غير صالح';
   } else {
@@ -453,6 +472,32 @@ Future<String?> validateEmail(String? email) async {
       return 'حدث خطأ أثناء التحقق من البريد الإلكتروني';
     }
   }
+}
+
+String? _validateUserName(String? value) {
+  if (value == null || value.isEmpty) {
+    return '';
+  } else if (value.startsWith(RegExp(r'[0-9]'))) {
+    return 'يجب أن لا يبدأ برقم';
+  } else if (!RegExp(r'^[a-zA-Z\u0600-\u06FF][a-zA-Z0-9._\u0600-\u06FF]*$')
+      .hasMatch(value)) {
+    return 'يجب أن يحتوي على أحرف و أرقام ويمكن أن يتضمن "." أو "_"';
+  }
+  return null;
+}
+
+String? _validatePassword(String? value) {
+  //if (_passwordFocusNode.hasFocus) {
+  if (value == null || value.isEmpty) {
+    return '';
+  } else if (value.length < 8) {
+    return 'يجب أن تكون كلمة المرور على الأقل 8 خانات';
+  } else if (!RegExp(r'(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}|:"<>?~,-.])')
+      .hasMatch(value)) {
+    return 'يجب أن تحتوي كلمة المرور على حرف كبير، رقم، وحرف خاص';
+  }
+  //}
+  return null;
 }
 
 // Function to save user data to Firestore

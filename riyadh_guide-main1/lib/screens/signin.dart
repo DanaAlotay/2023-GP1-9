@@ -152,7 +152,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         }
                       });
                     }),
-                    const SizedBox(width: 20),
+
+                    const Text("أو تسجيل الدخول من خلال",
+                        style: TextStyle(
+                            color: Color.fromARGB(200, 83, 56, 97),
+                            fontSize: 12)),
                     //google sign in button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

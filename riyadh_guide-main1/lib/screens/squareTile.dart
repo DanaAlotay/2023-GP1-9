@@ -14,11 +14,11 @@ class SquareTile extends StatelessWidget {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(6),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white),
             borderRadius: BorderRadius.circular(20),
-            color: Color.fromARGB(0, 255, 254, 254),
+            //color: Color.fromARGB(0, 255, 254, 254),
           ),
           child: Image.asset(
             imagePath,
