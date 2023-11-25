@@ -5,9 +5,14 @@ import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
 
 class adminViewEdits extends StatefulWidget {
-  final String placeID;
+  
+  final String name;
+  final String hours;
+  final String description;
+  final String categoryID;
+  final List<String> imageUrls;
 
-  const adminViewEdits({Key? key, required this.placeID}) : super(key: key);
+  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls}) : super(key: key);
 
   @override
   _adminViewEditsState createState() => _adminViewEditsState();
@@ -16,7 +21,6 @@ class adminViewEdits extends StatefulWidget {
 class _adminViewEditsState extends State<adminViewEdits> {
 
   late DocumentSnapshot? placeData;
-  List<String> imageUrls = [];
   String categoryName = '';
   String categoryNameInarabic = '';
 
@@ -28,19 +32,9 @@ class _adminViewEditsState extends State<adminViewEdits> {
   }
 
   Future<void> _fetchPlaceData() async {
-    // Fetch place data from Firebase Firestore based on the placeID
-    final placeDocument = await FirebaseFirestore.instance
-        .collection('place')
-        .doc(widget.placeID)
-        .get();
-
-    setState(() {
-      placeData = placeDocument;
-      imageUrls = List<String>.from(placeData?['images'] ?? []);
-    });
-
+ 
     // Fetch the category name based on categoryID
-    final categoryID = placeData?['categoryID'] ?? '';
+    final categoryID = widget.categoryID;
     final categoryDocument = await FirebaseFirestore.instance
         .collection('category')
         .doc(categoryID)
@@ -70,7 +64,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(placeData?['name'] ?? ''),
+          title: Text(widget.name),
           backgroundColor: Color.fromARGB(255, 66, 49, 76), ),
 
 
@@ -93,7 +87,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                  // aspectRatio: 1,
                   enableInfiniteScroll: true,
                 ),
-            items: imageUrls
+            items: widget.imageUrls
                   .map((url) => ClipRRect(
                         borderRadius: BorderRadius.circular(15), 
                         child: Image.network(
@@ -129,7 +123,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        placeData?['name'] ?? '',
+                        widget.name,
                         style: TextStyle(
                           fontSize: 24, 
                           fontWeight: FontWeight
@@ -167,7 +161,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                           ),
                           IconAndTextWidget(
                               icon: Icons.access_time_rounded,
-                              text: placeData?['opening_hours'] ?? '',
+                              text: widget.hours,
                               iconColor: Colors.pinkAccent),
                         ],
                       ),
@@ -177,7 +171,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                             fontWeight: FontWeight
                                 .bold, 
                           )),
-                      Text(placeData?['description'] ?? '')
+                      Text(widget.description)
                     ],
                   ),
                 )))

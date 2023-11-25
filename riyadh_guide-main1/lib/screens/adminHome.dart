@@ -4,26 +4,16 @@ import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/account.dart';
 
 class MyAdminHomePage extends StatelessWidget {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('الصفحة الرئيسية'),
-          backgroundColor: Color.fromARGB(255, 211, 198, 226),
-        ),
-        body: AdminPage(),
-      ),
-    );
-  }
-}
 
-class AdminPage extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: Text('الصفحة الرئيسية'),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226),
+          automaticallyImplyLeading: false,
+        ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
         child: Column(
@@ -193,6 +183,9 @@ class AdminPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(
+                      height: 30,
+                    ),
                 ],
               ),
             )

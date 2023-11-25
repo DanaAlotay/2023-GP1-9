@@ -20,7 +20,9 @@ class _newsState extends State<news> {
     return Scaffold(
       appBar: AppBar(
           title: Text('أحداث اليوم'),
-          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226),
+          automaticallyImplyLeading: false,
+          ),
 
           
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

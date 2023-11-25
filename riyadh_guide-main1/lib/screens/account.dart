@@ -106,7 +106,7 @@ class _accountState extends State<account> {
 
   bool hasSpecialCharacter(String value) {
     // Define a list of special characters
-    List<String> specialCharacters = ['!', '@', '#', '\$', '%', '^', '&', '*'];
+    List<String> specialCharacters = ['!', '@', '#', '\$', '%', '^', '&', '*' , '_' , '-' , '(', ')', '\\','?'];
 
     // Check if the value contains any special character
     for (var character in specialCharacters) {
@@ -321,7 +321,9 @@ class _accountState extends State<account> {
     return Scaffold(
         appBar: AppBar(
             title: Text('حسابي'),
-            backgroundColor: Color.fromARGB(255, 211, 198, 226)),
+            backgroundColor: Color.fromARGB(255, 211, 198, 226),
+            automaticallyImplyLeading: false,
+            ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
