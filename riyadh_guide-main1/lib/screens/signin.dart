@@ -123,11 +123,20 @@ class _SignInScreenState extends State<SignInScreen> {
                                 MaterialPageRoute(
                                     builder: (context) => AdminPage()));
                           } else {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => WelcomeScreen()));
                           }
+                          const snackBar = SnackBar(
+                            backgroundColor: Colors.white,
+                            content: Text(
+                              'تم تسجيل الدخول بنجاح',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }).catchError((error) {
                           print("Error fetching user data: $error");
                         });
@@ -171,6 +180,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                   builder: (context) => WelcomeScreen(),
                                 ),
                               );
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.white,
+                                content: Text(
+                                  'تم تسجيل الدخول بنجاح',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             } catch (e) {}
                           },
                           imagePath: 'lib/icons/Google.jpg',

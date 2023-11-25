@@ -34,6 +34,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   //bool _buttonClicked = false;
   //bool _showImmediateErrors = true;
+  void changeSelectedBanks(List<String> selectedBanks) {
+    setState(() {
+      _selectedBanks = selectedBanks;
+    });
+  }
 
   @override
   void dispose() {
@@ -319,12 +324,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   value.user?.uid,
                                   _userNameTextController.text,
                                   _emailTextController.text);
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => WelcomeScreen(),
                                 ),
                               );
+                              const snackBar = SnackBar(
+                                backgroundColor: Colors.white,
+                                content: Text(
+                                  'تم تسجيل الدخول بنجاح',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              );
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             }).onError((error, stackTrace) {
                               print("Error ${error.toString()}");
                             });
@@ -335,7 +350,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       // Clickable text to navigate to the sign-in screen
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => SignInScreen(),
@@ -362,7 +377,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _showBankSelectionDialog(BuildContext context) {
+  /*void _showBankSelectionDialog(BuildContext context) {
     var sba = _selectedBanks;
     showDialog(
       context: context,
@@ -420,6 +435,82 @@ class _SignUpScreenState extends State<SignUpScreen> {
               },
             ),
           ],
+        );
+      },
+    );
+  }*/
+  void _showBankSelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("البطاقات البنكية"),
+          content: Container(
+            width: double.minPositive,
+            child: BanksCheckList(
+              banks: _banks,
+              selectedBanks: _selectedBanks,
+              changeSelectedBanks: changeSelectedBanks,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("تم"),
+              onPressed: () {
+                /*setState(() {
+                  _selectedBank = _selectedBanks.isNotEmpty
+                      ? _selectedBanks.join(', ')
+                      : null;
+                });*/
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class BanksCheckList extends StatefulWidget {
+  const BanksCheckList({
+    super.key,
+    required this.banks,
+    required this.selectedBanks,
+    required this.changeSelectedBanks,
+  });
+
+  final List<String> banks;
+  final List<String> selectedBanks;
+  final Function changeSelectedBanks;
+  @override
+  State<BanksCheckList> createState() => _BanksCheckListState();
+}
+
+class _BanksCheckListState extends State<BanksCheckList> {
+  late var _selectedBanks = widget.selectedBanks;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: widget.banks.length,
+      itemBuilder: (BuildContext context, int index) {
+        String bank = widget.banks[index];
+        bool isSelected = _selectedBanks.contains(bank);
+        print(isSelected);
+        return CheckboxListTile(
+          title: Text(bank),
+          value: isSelected,
+          onChanged: (value) {
+            setState(() {
+              if (isSelected) {
+                _selectedBanks.remove(bank);
+              } else {
+                _selectedBanks.add(bank);
+              }
+            });
+            widget.changeSelectedBanks(_selectedBanks);
+          },
         );
       },
     );
@@ -509,6 +600,7 @@ Future<void> saveUserData(String? userId, String username, String email) async {
     await FirebaseFirestore.instance.collection('user').doc(userId).set({
       'name': username,
       'email': email,
+      'type': "user",
       // Add other fields as needed
     });
   } catch (e) {

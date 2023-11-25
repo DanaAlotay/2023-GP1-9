@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/screens/signin.dart';
+import 'package:riyadh_guide/services/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       //try push
       home: SignInScreen(),
+      // home: AuthService().signdIn() ? WelcomeScreen() : SignInScreen(),
     );
   }
 }

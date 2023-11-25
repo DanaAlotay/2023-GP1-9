@@ -296,6 +296,31 @@ class _ResetPasswordState extends State<ResetPassword> {
                             firebaseUIButton(context, "إعادة تعيين كلمة المرور",
                                 () async {
                               // if(FirebaseFirestore.instance.collection("user").where("email",isEqualTo: _emailTextController.text.trim()).get().then((value) => value.docs.isEmpty?))
+                              bool emailExists = await FirebaseFirestore
+                                  .instance
+                                  .collection('user')
+                                  .where('email',
+                                      isEqualTo:
+                                          _emailTextController.text.trim())
+                                  .get()
+                                  .then((value) =>
+                                      value.docs.isEmpty ? false : true);
+                              if (emailExists == false) {
+                                const snackBar = SnackBar(
+                                  backgroundColor: Colors.white,
+                                  content: Text(
+                                    'البريد الإلكتروني غير مسجل. يرجى التحقق من البريد الإلكتروني.',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                );
+
+// Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                return;
+                              }
+
                               // Validate the form
                               if (_formKey.currentState!.validate()) {
                                 try {
@@ -304,6 +329,18 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   // Reset Password
                                   await FirebaseAuth.instance
                                       .sendPasswordResetEmail(email: email);
+                                  const snackBar = SnackBar(
+                                    backgroundColor: Colors.white,
+                                    content: Text(
+                                      'تم الارسال لبريدك الالكتروني',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  );
+
+// Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
 
                                   // Password reset email sent successfully
                                   Navigator.of(context).pop();
@@ -313,18 +350,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   if (e is FirebaseAuthException) {
                                     print(
                                         'FirebaseAuthException code: ${e.code}'); // Add this line to print the error code
-                                    if (e.code == 'user-not-found') {
-                                      // Email not registered
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'البريد الإلكتروني غير مسجل. يرجى التحقق من البريد الإلكتروني.',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      );
-                                    } else if (e.code == 'invalid-email') {
+                                    if (e.code == 'invalid-email') {
                                       // Invalid email format
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
