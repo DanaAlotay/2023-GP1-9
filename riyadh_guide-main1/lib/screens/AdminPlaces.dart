@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/adminEditPlace.dart';
+import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/widgets/Allplaces.dart';
 import 'package:riyadh_guide/screens/AdminAddForm.dart';
@@ -38,6 +39,18 @@ class _AdminPlaces extends State<AdminPlaces> {
       appBar: AppBar(
         title: Text('اضافة- حذف - تعديل الاماكن'),
         backgroundColor: Color.fromARGB(255, 211, 198, 226), 
+        automaticallyImplyLeading: false, 
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyAdminHomePage(),
+                      ),
+                    );
+        },
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

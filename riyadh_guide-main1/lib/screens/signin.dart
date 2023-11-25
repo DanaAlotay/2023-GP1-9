@@ -121,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AdminPage()));
+                                    builder: (context) => MyAdminHomePage()));
                           } else {
                             Navigator.pushReplacement(
                                 context,

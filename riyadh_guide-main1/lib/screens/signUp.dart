@@ -126,7 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   .hasMatch(value)) {
                             setState(() {
                               _userNameErrorMessage =
-                                  'يجب أن يحتوي على أحرف و أرقام ويمكن أن يتضمن "." أو "_"';
+                                  'يجب أن يحتوي على أحرف ويمكن أن يتضمن "." أو "_"';
                             });
                           }
                         },

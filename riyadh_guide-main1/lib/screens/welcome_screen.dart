@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/category.dart';
@@ -6,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
 import 'package:riyadh_guide/screens/news.dart';
-import 'package:riyadh_guide/screens/place_detail.dart';
 import 'package:riyadh_guide/screens/search.dart';
 
 class WelcomeScreen extends StatefulWidget {

@@ -3,7 +3,6 @@ import 'package:riyadh_guide/firebase_options.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
-import 'package:riyadh_guide/screens/navigate.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
       //try push
       home: SignInScreen(),
-      // home: AuthService().signdIn() ? WelcomeScreen() : SignInScreen(),
+// home: AuthService().signdIn() ? WelcomeScreen() : SignInScreen(),
     );
   }
 }

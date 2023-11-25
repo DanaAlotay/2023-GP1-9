@@ -7,6 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:riyadh_guide/screens/AdminPlaces.dart';
+
 class AddPlaceForm extends StatefulWidget {
   @override
   _AddPlaceFormState createState() => _AddPlaceFormState();
@@ -200,7 +202,19 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text('اضافة مكان'),
-        backgroundColor: Color.fromARGB(255, 66, 49, 76), // Box color
+        backgroundColor: Color.fromARGB(255, 66, 49, 76),
+        automaticallyImplyLeading: false, 
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminPlaces(),
+                      ),
+                    );
+        },
+        ), // Box color
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),

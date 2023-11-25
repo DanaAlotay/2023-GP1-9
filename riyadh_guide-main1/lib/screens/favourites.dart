@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/news.dart';
@@ -21,7 +20,9 @@ class _favouritesState extends State<favourites> {
     return Scaffold(
       appBar: AppBar(
           title: Text('المفضلة'),
-          backgroundColor: Color.fromARGB(255, 211, 198, 226)),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226),
+          automaticallyImplyLeading: false,
+          ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {

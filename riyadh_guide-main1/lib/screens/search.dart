@@ -27,16 +27,16 @@ class _searchState extends State<search> {
       appBar: AppBar(
           title: Text('البحث'),
           backgroundColor: Color.fromARGB(255, 211, 198, 226),
-          actions: [
-            IconButton(
-              onPressed: (){
-                showSearch(
-                  context: context,
-                   delegate: CustomSearchDelegate(placeList),);
-              },
-               icon: const Icon(Icons.search),
-               ),
-            ],
+          automaticallyImplyLeading: false,
+           leading: IconButton(
+            onPressed: () {
+            showSearch(
+              context: context,
+              delegate: CustomSearchDelegate(placeList),
+              );
+            },
+           icon: const Icon(Icons.search),
+            ),
           ),
         
       body: FutureBuilder<QuerySnapshot>(

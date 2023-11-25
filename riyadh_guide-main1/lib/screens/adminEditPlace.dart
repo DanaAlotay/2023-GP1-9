@@ -1,16 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/adminViewEdits.dart';
-import 'package:riyadh_guide/widgets/app_icon.dart';
-import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
 class adminEditPlace extends StatefulWidget {
@@ -135,7 +130,19 @@ Future<List<String>> uploadImages(String placeId) async {
     return Scaffold(
       appBar: AppBar(
         title: Text('حذف - تعديل مكان'),
-        backgroundColor: Color.fromARGB(255, 66, 49, 76), // Box color
+        backgroundColor: Color.fromARGB(255, 66, 49, 76),
+        automaticallyImplyLeading: false, 
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdminPlaces(),
+                      ),
+                    );
+        },
+        ), // Box color
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -475,12 +482,15 @@ Future<List<String>> uploadImages(String placeId) async {
   ),
 ),
 SizedBox(height: 20),
+
 ElevatedButton(
-                onPressed: () {
+  
+                onPressed: () async {
+                   await imageTest();
                       Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => adminViewEdits(placeID: widget.placeID),
+                        builder: (context) => adminViewEdits(name: _nameController.text, hours: _workingHoursController.text, description: _descriptionController.text, categoryID: _selectedCategory, imageUrls: this.imageUrls),
                       ),
                     );
                 },
@@ -554,6 +564,12 @@ ElevatedButton(
    // print('Description updated in Firebase: $newText');
   }
 */
+ Future <List<String>> imageTest() async{
+  
+List<String> newImageUrls = await uploadImages(widget.placeID);
+return newImageUrls;
+}
+
    Future <void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -624,6 +640,7 @@ void deletePlaceWithConfirmation(BuildContext context, String placeID, String pl
     },
   );
 }
+
 
 Future<void> deletePlace(BuildContext context, String placeID) async {
   try {
