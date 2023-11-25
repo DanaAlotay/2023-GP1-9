@@ -361,7 +361,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.0),
                         child: Text(
-                          " أهلًا الجوهرة ",
+                          " أهلًا  ",
                           textAlign: TextAlign.right,
                           style: TextStyle(
                               color: Colors.white,
