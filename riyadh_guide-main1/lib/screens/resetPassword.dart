@@ -295,7 +295,22 @@ class _ResetPasswordState extends State<ResetPassword> {
                             // Check if email exists
                             firebaseUIButton(context, "إعادة تعيين كلمة المرور",
                                 () async {
-                              // if(FirebaseFirestore.instance.collection("user").where("email",isEqualTo: _emailTextController.text.trim()).get().then((value) => value.docs.isEmpty?))
+                              // Check if email field is empty or null
+                              if (_emailTextController.text.trim().isEmpty ||
+                                  _emailTextController.text.trim() == null) {
+                                const snackBar = SnackBar(
+                                  backgroundColor: Colors.white,
+                                  content: Text(
+                                    'يرجى إدخال عنوان بريد إلكتروني.',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                );
+
+                                // Show the SnackBar
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                return;
+                              }
                               bool emailExists = await FirebaseFirestore
                                   .instance
                                   .collection('user')
