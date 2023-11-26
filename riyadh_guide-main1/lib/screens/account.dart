@@ -310,6 +310,7 @@ class _accountState extends State<account> {
     // Show a snackbar indicating successful sign out
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        backgroundColor: Color.fromARGB(179, 170, 145, 182),
         content: Text('تم تسجيل الخروج بنجاح'),
         backgroundColor: Color.fromARGB(181, 203, 145, 210),
         duration: Duration(seconds: 2),
