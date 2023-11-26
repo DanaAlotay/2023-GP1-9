@@ -221,7 +221,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               child: Text(
                                   _passwordStrength >= 8
                                       ? 'كلمة المرور قوية'
-                                      : ' كلمة المرور ضعيفة يجب أن تكون ثمانية من الحروف الكبير وصغير وأرقام ورمز خاص واحد على الأقل  ',
+                                      : ' كلمة المرور ضعيفة يجب أن تكون ثمانية من الحروف الكبيرة والصغيرة وأرقام ورمز خاص واحد على الأقل  ',
                                   style: TextStyle(
                                     color: _passwordStrength >= 8
                                         ? Colors.green
