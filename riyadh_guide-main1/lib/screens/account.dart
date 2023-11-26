@@ -106,7 +106,22 @@ class _accountState extends State<account> {
 
   bool hasSpecialCharacter(String value) {
     // Define a list of special characters
-    List<String> specialCharacters = ['!', '@', '#', '\$', '%', '^', '&', '*' , '_' , '-' , '(', ')', '\\','?'];
+    List<String> specialCharacters = [
+      '!',
+      '@',
+      '#',
+      '\$',
+      '%',
+      '^',
+      '&',
+      '*',
+      '_',
+      '-',
+      '(',
+      ')',
+      '\\',
+      '?'
+    ];
 
     // Check if the value contains any special character
     for (var character in specialCharacters) {
@@ -303,6 +318,7 @@ class _accountState extends State<account> {
     // Show a snackbar indicating successful sign out
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        backgroundColor: Color.fromARGB(179, 170, 145, 182),
         content: Text('تم تسجيل الخروج بنجاح'),
         duration: Duration(seconds: 2),
       ),
@@ -320,10 +336,10 @@ class _accountState extends State<account> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text('حسابي'),
-            backgroundColor: Color.fromARGB(255, 211, 198, 226),
-            automaticallyImplyLeading: false,
-            ),
+          title: Text('حسابي'),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226),
+          automaticallyImplyLeading: false,
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
