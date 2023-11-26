@@ -19,18 +19,16 @@ class adminEditPlace extends StatefulWidget {
 
 class _adminEditPlaceState extends State<adminEditPlace> {
   late DocumentSnapshot? placeData;
-  String _selectedCategory='';
+  String _selectedCategory = '';
   List<String> imageUrls = [];
-  String name ='';
+  String name = '';
   String description = '';
   String hours = '';
   bool isLoading = true;
   bool check = false;
 
-
-
   @override
-    void initState() {
+  void initState() {
     super.initState();
     _fetchPlaceData();
     placeData = null;
@@ -46,38 +44,34 @@ class _adminEditPlaceState extends State<adminEditPlace> {
     setState(() {
       placeData = placeDocument;
       imageUrls = List<String>.from(placeData?['images'] ?? []);
-      _selectedCategory= placeData?['categoryID'] ?? '';
-      name= placeData?['name'] ?? '';
-      description= placeData?['description'] ?? '';
+      _selectedCategory = placeData?['categoryID'] ?? '';
+      name = placeData?['name'] ?? '';
+      description = placeData?['description'] ?? '';
       hours = placeData?['opening_hours'] ?? '';
-    _nameController.text = name;
-    _descriptionController.text = description;
-    _workingHoursController.text = hours;
-    isLoading = false;
-
-  
-      
+      _nameController.text = name;
+      _descriptionController.text = description;
+      _workingHoursController.text = hours;
+      isLoading = false;
     });
-
   }
-List<String> oldImageUrls =[];
+
+  List<String> oldImageUrls = [];
 
   final _formKey = GlobalKey<FormState>();
   final _categoryController = TextEditingController();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _workingHoursController = TextEditingController();
-  List<File> _images = []; 
+  List<File> _images = [];
 
-Future<List<String>> uploadImages(String placeId) async {
-
+  Future<List<String>> uploadImages(String placeId) async {
     for (var i = 0; i < _images.length; i++) {
       File image = _images[i];
 
       // Generate a unique filename for each image
 
       var uuid = Uuid();
-      String fileName = uuid.v4()+'.jpg';
+      String fileName = uuid.v4() + '.jpg';
 
       // Upload the image to Firestore
 
@@ -120,133 +114,130 @@ Future<List<String>> uploadImages(String placeId) async {
     }
   }
 
-
-   @override
+  @override
   Widget build(BuildContext context) {
- if (isLoading) {
+    if (isLoading) {
       return Center(child: CircularProgressIndicator());
-       // Show a loading indicator
-    } else{
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('حذف - تعديل مكان'),
-        backgroundColor: Color.fromARGB(255, 66, 49, 76),
-        automaticallyImplyLeading: false, 
-        leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdminPlaces(),
-                      ),
-                    );
-        },
-        ), // Box color
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        
-        child: Form(
-          key: _formKey,
-          
-          child: ListView(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  // Callback function when the button is pressed
+      // Show a loading indicator
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('حذف - تعديل مكان'),
+          backgroundColor: Color.fromARGB(255, 66, 49, 76),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminPlaces(),
+                ),
+              );
+            },
+          ), // Box color
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Callback function when the button is pressed
 
-                 deletePlaceWithConfirmation( context, widget.placeID, name);
-                },
-                child: Text(
-                  'حذف المكان',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    deletePlaceWithConfirmation(context, widget.placeID, name);
+                  },
+                  child: Text(
+                    'حذف المكان',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 121, 19, 3),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 121, 19, 3),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
-                ),
-              ),
-               SizedBox(height: 30.0),
-              DropdownButtonFormField<String>(
-                value: _selectedCategory,
-                decoration: InputDecoration(
-                  //labelText: 'التصنيف',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                SizedBox(height: 30.0),
+                DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  decoration: InputDecoration(
+                    //labelText: 'التصنيف',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: Icon(Icons.category),
+                    fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                   ),
-                  prefixIcon: Icon(Icons.category),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                ),
-                items: [
-                  DropdownMenuItem<String>(
-                    value: 'c1',
-                    child: Text('مطاعم'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c2',
-                    child: Text('مقاهي'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c6',
-                    child: Text('معالم سياحيه'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c5',
-                    child: Text('ترفيه'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c4',
-                    child: Text('مراكز تجميل'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c3',
-                    child: Text('تسوق'),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'اختر التصنيف';
-                  }
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: 'c1',
+                      child: Text('مطاعم'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c2',
+                      child: Text('مقاهي'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c6',
+                      child: Text('معالم سياحيه'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c5',
+                      child: Text('ترفيه'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c4',
+                      child: Text('مراكز تجميل'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c3',
+                      child: Text('تسوق'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'اختر التصنيف';
+                    }
 
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'اسم المكان',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  prefixIcon: Icon(Icons.place),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'ادخل اسم المكان';
-                  }
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'اسم المكان',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: Icon(Icons.place),
+                    fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    filled: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل اسم المكان';
+                    }
 
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.0),
-              /*
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                /*
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 3,
@@ -268,54 +259,53 @@ Future<List<String>> uploadImages(String placeId) async {
                 },
               ),*/
 
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: 'الوصف',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: 'الوصف',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: Icon(Icons.description),
+                    fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    filled: true,
                   ),
-                  prefixIcon: Icon(Icons.description),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'ادخل الوصف';
-                  }
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل الوصف';
+                    }
 
-                  return null;
-                },
-              ),
-              
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _workingHoursController,
-                decoration: InputDecoration(
-                  labelText: 'ساعات العمل',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _workingHoursController,
+                  decoration: InputDecoration(
+                    labelText: 'ساعات العمل',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: Icon(Icons.access_time),
+                    fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    filled: true,
                   ),
-                  prefixIcon: Icon(Icons.access_time),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'ادخل ساعات العمل';
-                  }
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل ساعات العمل';
+                    }
 
-                  return null;
-                },
-              ),
-              SizedBox(height: 10),
-              Text(
-                'الصور',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              /*
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'الصور',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                /*
               Row(
                 children: [
                   TextButton.icon(
@@ -332,220 +322,217 @@ Future<List<String>> uploadImages(String placeId) async {
                 ],
               ),*/
 
-              Row(
-                children: [
-                  TextButton.icon(
-                    icon: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
+                Row(
+                  children: [
+                    TextButton.icon(
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        'التقاط صورة',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () => pickImage(ImageSource.camera),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 66, 49, 76),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
                     ),
-                    label: Text(
-                      'التقاط صورة',
-                      style: TextStyle(color: Colors.white),
+                    SizedBox(width: 10),
+                    TextButton.icon(
+                      icon: Icon(
+                        Icons.image,
+                        color: Colors.white,
+                      ),
+                      label: Text(
+                        'اختيار صورة',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () => pickImage(ImageSource.gallery),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 66, 49, 76),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
                     ),
-                    onPressed: () => pickImage(ImageSource.camera),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 66, 49, 76),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Container(
+                  height: 120,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imageUrls.length,
+                    itemBuilder: (ctx, index) => GestureDetector(
+                      child: Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 8),
+                            width: 120,
+                            height: 150,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(255, 238, 227, 245),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(imageUrls[index]),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 1 / 2,
+                            right: 1 / 2,
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromARGB(255, 142, 27, 19),
+                              ),
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    imageUrls.removeAt(index);
+                                    //deleteImage(context,imageUrls, index); // Remove the image URL from the list
+                                  });
+                                },
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
-                  TextButton.icon(
-                    icon: Icon(
-                      Icons.image,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      'اختيار صورة',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () => pickImage(ImageSource.gallery),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 66, 49, 76),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  height: 120,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _images.length,
+                    itemBuilder: (ctx, index) => GestureDetector(
+                      child: Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 8),
+                            width: 120,
+                            height: 150,
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromARGB(255, 238, 227, 245),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: FileImage(_images[index]),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 1 / 2,
+                            right: 1 / 2,
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromARGB(255, 142, 27, 19),
+                              ),
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    _images.removeAt(index);
+                                    //deleteImage(context,_images, index); // Remove the image URL from the list
+                                  });
+                                },
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Container(
-  height: 120,
-  child: ListView.builder(
-    scrollDirection: Axis.horizontal,
-    itemCount: imageUrls.length,
-    itemBuilder: (ctx, index) => GestureDetector(
-      child: Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            width: 120,
-            height: 150,
-            padding: EdgeInsets.symmetric(
-              vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 238, 227, 245),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(imageUrls[index]),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 1/2,
-            right: 1/2,
-            child: Container(
-
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 142, 27, 19),     
-            ),
-              alignment: Alignment.center,
-              
-              child: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  setState(() {
-                    imageUrls.removeAt(index);
-                    //deleteImage(context,imageUrls, index); // Remove the image URL from the list
-                  });
-                },
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-              SizedBox(height: 20),
-                  Container(
-  height: 120,
-  child: ListView.builder(
-    scrollDirection: Axis.horizontal,
-    itemCount: _images.length,
-    itemBuilder: (ctx, index) => GestureDetector(
-      child: Stack(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            width: 120,
-            height: 150,
-            padding: EdgeInsets.symmetric(
-              vertical: 10, horizontal: 20),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 238, 227, 245),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: FileImage(_images[index]),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 1/2,
-            right: 1/2,
-            child: Container(
-
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromARGB(255, 142, 27, 19),     
-            ),
-              alignment: Alignment.center,
-              
-              child: IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  setState(() {
-                    _images.removeAt(index);
-                    //deleteImage(context,_images, index); // Remove the image URL from the list
-                  });
-                },
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-),
-SizedBox(height: 20),
-
-ElevatedButton(
-  
-                onPressed: () async {
-                   await imageTest();
-                      Navigator.push(
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    await imageTest();
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => adminViewEdits(name: _nameController.text, hours: _workingHoursController.text, description: _descriptionController.text, categoryID: _selectedCategory, imageUrls: this.imageUrls),
+                        builder: (context) => adminViewEdits(
+                            name: _nameController.text,
+                            hours: _workingHoursController.text,
+                            description: _descriptionController.text,
+                            categoryID: _selectedCategory,
+                            imageUrls: this.imageUrls),
                       ),
                     );
-                },
-                child: Text(
-                  'معاينة صفحة المكان ',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  },
+                  child: Text(
+                    'معاينة صفحة المكان ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 66, 49, 76),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 66, 49, 76),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
-                ),
-              ),
-
-
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () async{
-                  
-                  // Callback function when the button is pressed
-                  await _submitForm();
-                   if(check){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => adminEditPlace(placeID: widget.placeID,),
-                      ),
-                    );}
-                },
-                child: Text(
-                  'حفظ التعديلات ',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () async {
+                    // Callback function when the button is pressed
+                    await _submitForm();
+                    if (check) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => adminEditPlace(
+                            placeID: widget.placeID,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(
+                    'حفظ التعديلات ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 66, 49, 76),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 66, 49, 76),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
-                ),
-              ),
-
-
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
   }
 
   /* void updateFirebaseDescription(String newText) async {
@@ -564,53 +551,61 @@ ElevatedButton(
    // print('Description updated in Firebase: $newText');
   }
 */
- Future <List<String>> imageTest() async{
-  
-List<String> newImageUrls = await uploadImages(widget.placeID);
-return newImageUrls;
-}
+  Future<List<String>> imageTest() async {
+    List<String> newImageUrls = await uploadImages(widget.placeID);
+    return newImageUrls;
+  }
 
-   Future <void> _submitForm() async {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-    String collection = 'place';
-    String documentId = widget.placeID;
+      String collection = 'place';
+      String documentId = widget.placeID;
 
-    DocumentReference documentReference =
-        FirebaseFirestore.instance.collection(collection).doc(documentId);
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.collection(collection).doc(documentId);
 
-        String newCategoryID = _selectedCategory ;
-        String newName=_nameController.text;
-        String newDescription= _descriptionController.text;
-        String NewOpening_hours= _workingHoursController.text;
-        List<String> newImageUrls = await uploadImages(documentId);
+      String newCategoryID = _selectedCategory;
+      String newName = _nameController.text;
+      String newDescription = _descriptionController.text;
+      String NewOpening_hours = _workingHoursController.text;
+      List<String> newImageUrls = await uploadImages(documentId);
 
-          await documentReference.update({'description': newDescription,});
-          await documentReference.update({'name': newName,});
-          await documentReference.update({'opening_hours': NewOpening_hours,});
-          await documentReference.update({'categoryID': newCategoryID,});
-          await documentReference.update({'images': newImageUrls,});
+      await documentReference.update({
+        'description': newDescription,
+      });
+      await documentReference.update({
+        'name': newName,
+      });
+      await documentReference.update({
+        'opening_hours': NewOpening_hours,
+      });
+      await documentReference.update({
+        'categoryID': newCategoryID,
+      });
+      await documentReference.update({
+        'images': newImageUrls,
+      });
 
-          ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('تم التعديل بنجاح '),
         ),
       );
       check = true;
-      
-     
     }
   }
 }
 
-void deletePlaceWithConfirmation(BuildContext context, String placeID, String placeName) {
+void deletePlaceWithConfirmation(
+    BuildContext context, String placeID, String placeName) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('تأكيد'),
-        content: Text( ' هل أنت متأكد من حذف ' +placeName+'؟'),
+        content: Text(' هل أنت متأكد من حذف ' + placeName + '؟'),
         actions: <Widget>[
           TextButton(
             child: Text('إلغاء'),
@@ -623,16 +618,14 @@ void deletePlaceWithConfirmation(BuildContext context, String placeID, String pl
             onPressed: () async {
               // Delete the document
               Navigator.of(context).pop();
-              deletePlace(context,placeID);
+              deletePlace(context, placeID);
               showSnackBar(context, 'تم الحذف بنجاح');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdminPlaces(),
-                      ),
-                    );
-               
-             
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminPlaces(),
+                ),
+              );
             },
           ),
         ],
@@ -641,14 +634,11 @@ void deletePlaceWithConfirmation(BuildContext context, String placeID, String pl
   );
 }
 
-
 Future<void> deletePlace(BuildContext context, String placeID) async {
   try {
     DocumentReference placeRef =
         FirebaseFirestore.instance.collection('place').doc(placeID);
     await placeRef.delete();
-
-
   } catch (e) {
     print('حدث خطأ أثناء الحذف: $e');
   }
@@ -662,14 +652,13 @@ void showSnackBar(BuildContext context, String message) {
   );
 }
 
-
 void deleteImage(BuildContext context, List imgArray, int index) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('تأكيد'),
-        content: Text( ' هل أنت متأكد من حذف الصورة؟'),
+        content: Text(' هل أنت متأكد من حذف الصورة؟'),
         actions: <Widget>[
           TextButton(
             child: Text('إلغاء'),
@@ -679,10 +668,9 @@ void deleteImage(BuildContext context, List imgArray, int index) {
           ),
           TextButton(
             child: Text('حذف'),
-            onPressed: ()  {
+            onPressed: () {
               imgArray.removeAt(index);
               Navigator.of(context).pop(); // Close the dialog
-              
             },
           ),
         ],

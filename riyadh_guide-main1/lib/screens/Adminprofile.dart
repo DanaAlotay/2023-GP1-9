@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:riyadh_guide/screens/favourites.dart';
-import 'package:riyadh_guide/screens/news.dart';
-import 'package:riyadh_guide/screens/search.dart';
 import 'package:riyadh_guide/screens/signin.dart';
-import 'package:riyadh_guide/screens/welcome_screen.dart';
+import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
-class account extends StatefulWidget {
-  const account({super.key});
+class adminprofile extends StatefulWidget {
+  const adminprofile({super.key});
 
   @override
-  State<account> createState() => _accountState();
+  State<adminprofile> createState() => _adminprofile();
 }
 
-class _accountState extends State<account> {
-  int currentTab = 0;
+class _adminprofile extends State<adminprofile> {
   @override
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _cardsController = TextEditingController();
+  // TextEditingController _cardsController = TextEditingController();
   final FirebaseAuth auth = FirebaseAuth.instance;
-  String? _selectedcard;
+  //String? _selectedcard;
   @override
   void initState() {
     super.initState();
@@ -45,19 +41,9 @@ class _accountState extends State<account> {
           String email = documentSnapshot['email'];
           List<dynamic>? cards;
 
-          Map<String, dynamic>? data =
-              documentSnapshot.data() as Map<String, dynamic>?;
-          if (data != null && data.containsKey('cards')) {
-            cards = data['cards'];
-          } else {
-            cards = ['نافع', 'الانماء', 'قطاف'];
-          }
-
           setState(() {
             _usernameController.text = username;
             _emailController.text = email;
-            _cardsController.text = cards?.join(", ") ??
-                ''; // Join the card values into a comma-separated string
           });
         }
       }).catchError((error) {
@@ -108,53 +94,57 @@ class _accountState extends State<account> {
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
               title: Text('تغيير كلمة المرور'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'ادخل كلمة المرور القديمة',
+              content: Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'ادخل كلمة المرور القديمة',
+                        ),
+                        onChanged: (value) {
+                          oldPassword = value;
+                        },
+                        obscureText: true,
                       ),
-                      onChanged: (value) {
-                        oldPassword = value;
-                      },
-                      obscureText: true,
-                    ),
-                    if (authenticationErrorMessage.isNotEmpty)
-                      Visibility(
-                        visible: authenticationErrorMessage.isNotEmpty,
-                        maintainState: true,
-                        child: Text(
-                          authenticationErrorMessage,
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 16.0,
+                      if (authenticationErrorMessage.isNotEmpty)
+                        Visibility(
+                          visible: authenticationErrorMessage.isNotEmpty,
+                          maintainState: true,
+                          child: Text(
+                            authenticationErrorMessage,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16.0,
+                            ),
                           ),
                         ),
+                      SizedBox(height: 16.0),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'ادخل كلمة المرور الجديدة',
+                          errorText: newPasswordErrorMessage.isNotEmpty
+                              ? newPasswordErrorMessage
+                              : null,
+                        ),
+                        onChanged: (value) {
+                          newPassword = value;
+                        },
+                        obscureText: true,
                       ),
-                    SizedBox(height: 16.0),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'ادخل كلمة المرور الجديدة',
-                        errorText: newPasswordErrorMessage.isNotEmpty
-                            ? newPasswordErrorMessage
-                            : null,
-                      ),
-                      onChanged: (value) {
-                        newPassword = value;
-                      },
-                      obscureText: true,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('الغاء'),
+                Flexible(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('الغاء'),
+                  ),
                 ),
                 Flexible(
                   child: TextButton(
@@ -173,7 +163,7 @@ class _accountState extends State<account> {
                       } else if (!hasSpecialCharacter(newPassword)) {
                         setState(() {
                           newPasswordErrorMessage =
-                              ' يجب أن تحتوي على حرف خاص واحدعلى الأقل.';
+                              'يجب أن تحتوي على حرف خاص واحدعلى الأقل';
                         });
                       } else {
                         // Clear new password error message
@@ -324,155 +314,22 @@ class _accountState extends State<account> {
     super.dispose();
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('حسابي'),
           backgroundColor: Color.fromARGB(255, 211, 198, 226),
           automaticallyImplyLeading: false,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              currentTab = 0;
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WelcomeScreen(),
+                  builder: (context) => MyAdminHomePage(),
                 ),
               );
-            });
-          },
-          child: Image.asset(
-            'lib/icons/Logo.png',
-          ),
-          backgroundColor: Color.fromARGB(157, 165, 138, 182),
-          elevation: 20.0,
-//mini: true,
-        ),
-        bottomNavigationBar: BottomAppBar(
-          notchMargin: 10,
-          shape: CircularNotchedRectangle(),
-          color: Color.fromARGB(157, 217, 197, 230),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 10.0, left: 10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.account_box),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 1;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => account(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 1 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "حسابي",
-                      style: TextStyle(
-                          color: currentTab == 1 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 2;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => search(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 2 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "البحث",
-                      style: TextStyle(
-                          color: currentTab == 2 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 30.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.newspaper),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 3;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => news(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 3 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "أحداث اليوم",
-                      style: TextStyle(
-                          color: currentTab == 3 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.favorite),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 4;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => favourites(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 4 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "المفضلة",
-                      style: TextStyle(
-                          color: currentTab == 4 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-            ],
+            },
           ),
         ),
         body: SingleChildScrollView(
@@ -533,32 +390,6 @@ class _accountState extends State<account> {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    borderRadius: BorderRadius.circular(50.0),
-                    border: Border.all(
-                      color:
-                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
-                      width: 1.0, // Set the outline width
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.credit_card,
-                      color: Color.fromARGB(255, 69, 51, 80),
-                    ),
-                    title: TextField(
-                      readOnly: true,
-                      controller: _cardsController,
-                      decoration: InputDecoration(
-                        labelText: 'البطاقات التي لديك للحصول على افضل العروض:',
-                        labelStyle: TextStyle(fontSize: 18.0),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
                 SizedBox(height: 50.0),
                 ElevatedButton(
                   onPressed: resetPassword,

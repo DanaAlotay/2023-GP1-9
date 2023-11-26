@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
-import 'package:riyadh_guide/screens/account.dart';
+import 'package:riyadh_guide/screens/Adminprofile.dart';
 
 class MyAdminHomePage extends StatelessWidget {
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('الصفحة الرئيسية'),
-          backgroundColor: Color.fromARGB(255, 211, 198, 226),
-          automaticallyImplyLeading: false,
-        ),
+        title: Text('الصفحة الرئيسية'),
+        backgroundColor: Color.fromARGB(255, 211, 198, 226),
+        automaticallyImplyLeading: false,
+      ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
         child: Column(
@@ -55,7 +54,7 @@ class MyAdminHomePage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => account(),
+                                builder: (context) => adminprofile(),
                               ),
                             );
                           },
@@ -153,9 +152,9 @@ class MyAdminHomePage extends StatelessWidget {
                       onPressed: () {
                         // Handle the News button click action here
                       },
-                      child: Text('  عرض الفعاليات  '),
+                      child: Text('  إدارة الفعاليات و الأخبار '),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pink,
+                        backgroundColor: Color.fromARGB(255, 66, 49, 76),
                         minimumSize: Size(
                             MediaQuery.of(context).size.width - 40,
                             60), // Adjust the size here
@@ -174,9 +173,9 @@ class MyAdminHomePage extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Text(' عرض الاماكن '),
+                      child: Text(' إدارة الأماكن'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pink,
+                        backgroundColor: Color.fromARGB(255, 66, 49, 76),
                         minimumSize: Size(
                             MediaQuery.of(context).size.width - 40,
                             60), // Adjust the size here
@@ -184,8 +183,8 @@ class MyAdminHomePage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                      height: 30,
-                    ),
+                    height: 30,
+                  ),
                 ],
               ),
             )
@@ -197,8 +196,7 @@ class MyAdminHomePage extends StatelessWidget {
 
   Future<int> _getPlacesCount() async {
     try {
-      QuerySnapshot placesSnapshot =
-          await _firestore.collection('place').get();
+      QuerySnapshot placesSnapshot = await _firestore.collection('place').get();
       return placesSnapshot.size;
     } catch (e) {
       print("Error getting places count: $e");
@@ -206,45 +204,45 @@ class MyAdminHomePage extends StatelessWidget {
     }
   }
 
-Widget _buildSquare({
-  required String text1,
-  required String text2,
-  required IconData icon,
-}) {
-  return Expanded(
-    child: Container(
-      height: 120,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 40,
-            color: Colors.blue,
-          ),
-          SizedBox(height: 8),
-          Text(
-            text1,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+  Widget _buildSquare({
+    required String text1,
+    required String text2,
+    required IconData icon,
+  }) {
+    return Expanded(
+      child: Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+              color: Color.fromARGB(255, 8, 2, 69),
             ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            text2,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            SizedBox(height: 8),
+            Text(
+              text1,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 5),
+            Text(
+              text2,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

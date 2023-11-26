@@ -19,10 +19,10 @@ class _favouritesState extends State<favourites> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('المفضلة'),
-          backgroundColor: Color.fromARGB(255, 211, 198, 226),
-          automaticallyImplyLeading: false,
-          ),
+        title: Text('المفضلة'),
+        backgroundColor: Color.fromARGB(255, 211, 198, 226),
+        automaticallyImplyLeading: false,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -164,20 +164,6 @@ class _favouritesState extends State<favourites> {
               ),
             ),
           ],
-        ),
-      ),
-      body: Center(
-        child: IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () {
-            // Navigate to the new page
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyAdminHomePage(),
-              ),
-            );
-          },
         ),
       ),
     );
