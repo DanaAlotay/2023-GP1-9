@@ -129,10 +129,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                     builder: (context) => WelcomeScreen()));
                           }
                           const snackBar = SnackBar(
-                            backgroundColor: Colors.white,
+                            backgroundColor: Color.fromARGB(181, 203, 145, 210),
                             content: Text(
                               'تم تسجيل الدخول بنجاح',
-                              style: TextStyle(color: Colors.red),
+                              // style: TextStyle(color: Colors.red),
                             ),
                           );
 
@@ -181,10 +181,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               );
                               const snackBar = SnackBar(
-                                backgroundColor: Colors.white,
+                                backgroundColor:
+                                    Color.fromARGB(181, 203, 145, 210),
                                 content: Text(
                                   'تم تسجيل الدخول بنجاح',
-                                  style: TextStyle(color: Colors.red),
+                                  // style: TextStyle(color: Colors.red),
                                 ),
                               );
 
