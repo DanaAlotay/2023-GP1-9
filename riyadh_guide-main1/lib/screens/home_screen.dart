@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       "دليلك للمتعة",
                       style: TextStyle(
-                        color: Color.fromARGB(255, 122, 75, 144),
+                        color: Color.fromARGB(255, 138, 91, 160),
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                       ),
