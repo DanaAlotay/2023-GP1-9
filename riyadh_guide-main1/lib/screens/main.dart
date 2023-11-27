@@ -3,6 +3,7 @@ import 'package:riyadh_guide/firebase_options.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
+import 'package:riyadh_guide/screens/home_screen.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       //try push
-      home: SignInScreen(),
+      home: HomePage(),
 // home: AuthService().signdIn() ? WelcomeScreen() : SignInScreen(),
     );
   }
