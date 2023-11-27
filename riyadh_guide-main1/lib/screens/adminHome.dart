@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/Adminprofile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyAdminHomePage extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? currentUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,14 +70,37 @@ class MyAdminHomePage extends StatelessWidget {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.0),
-                        child: Text(
-                          " اهلاً",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 33,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('user')
+                              .doc(currentUser
+                                  ?.uid) // Use currentUser?.uid to get the current user's UID
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Text(
+                                "أهلًا",
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 33,
+                                    fontWeight: FontWeight.bold),
+                              );
+                            }
+                            var userData =
+                                snapshot.data!.data() as Map<String, dynamic>;
+                            //var userName = userData['name'];
+                            var userName = userData?['name'] ?? '';
+
+                            return Text(
+                              "أهلًا $userName",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 33,
+                                  fontWeight: FontWeight.bold),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -93,57 +118,58 @@ class MyAdminHomePage extends StatelessWidget {
               height: 20,
             ),
             Container(
-  padding: EdgeInsets.symmetric(horizontal: 20),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          FutureBuilder<int>(
-            future: _getUsersCount(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // If still loading, return a placeholder or loading indicator
-                return _buildSquare(
-                  text1: '0',
-                  text2: 'مستخدم',
-                  icon: Icons.person,
-                );
-              } else {
-                // Display the users count
-                return _buildSquare(
-                  text1: '${snapshot.data}',
-                  text2: 'مستخدم',
-                  icon: Icons.person,
-                );
-              }
-            },
-          ),
-          SizedBox(width: 10),
-          FutureBuilder<int>(
-            future: _getPlacesCount(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // If still loading, return a placeholder or loading indicator
-                return _buildSquare(
-                  text1: '0',
-                  text2: 'مكان',
-                  icon: Icons.place,
-                );
-              } else {
-                // Display the places count
-                return _buildSquare(
-                  text1: '${snapshot.data}',
-                  text2: 'مكان',
-                  icon: Icons.place,
-                );
-              }
-            },
-          ),
-        ],
-      ),
-   
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      FutureBuilder<int>(
+                        future: _getUsersCount(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // If still loading, return a placeholder or loading indicator
+                            return _buildSquare(
+                              text1: '0',
+                              text2: 'مستخدم',
+                              icon: Icons.person,
+                            );
+                          } else {
+                            // Display the users count
+                            return _buildSquare(
+                              text1: '${snapshot.data}',
+                              text2: 'مستخدم',
+                              icon: Icons.person,
+                            );
+                          }
+                        },
+                      ),
+                      SizedBox(width: 10),
+                      FutureBuilder<int>(
+                        future: _getPlacesCount(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // If still loading, return a placeholder or loading indicator
+                            return _buildSquare(
+                              text1: '0',
+                              text2: 'مكان',
+                              icon: Icons.place,
+                            );
+                          } else {
+                            // Display the places count
+                            return _buildSquare(
+                              text1: '${snapshot.data}',
+                              text2: 'مكان',
+                              icon: Icons.place,
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,15 +200,12 @@ class MyAdminHomePage extends StatelessWidget {
                             MediaQuery.of(context).size.width - 40,
                             60), // Adjust the size here
                       ),
-                       
                     ),
                   ),
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        
-                       
                         // Handle the Places button click action here
                         Navigator.push(
                           context,
@@ -191,8 +214,6 @@ class MyAdminHomePage extends StatelessWidget {
                           ),
                         );
                       },
-                     
-                      
                       child: Text(' إدارة الأماكن'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 66, 49, 76),
@@ -225,14 +246,14 @@ class MyAdminHomePage extends StatelessWidget {
   }
 
   Future<int> _getUsersCount() async {
-  try {
-    QuerySnapshot querySnapshot = await _firestore.collection('user').get();
-    return querySnapshot.size;
-  } catch (e) {
-    print('Error getting users count: $e');
-    return 0;
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection('user').get();
+      return querySnapshot.size;
+    } catch (e) {
+      print('Error getting users count: $e');
+      return 0;
+    }
   }
-}
 
   Widget _buildSquare({
     required String text1,
