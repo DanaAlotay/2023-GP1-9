@@ -559,19 +559,15 @@ class _adminEditPlaceState extends State<adminEditPlace> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
       String collection = 'place';
       String documentId = widget.placeID;
-
       DocumentReference documentReference =
           FirebaseFirestore.instance.collection(collection).doc(documentId);
-
       String newCategoryID = _selectedCategory;
       String newName = _nameController.text;
       String newDescription = _descriptionController.text;
       String NewOpening_hours = _workingHoursController.text;
       List<String> newImageUrls = await uploadImages(documentId);
-
       await documentReference.update({
         'description': newDescription,
       });
@@ -587,7 +583,6 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       await documentReference.update({
         'images': newImageUrls,
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('تم التعديل بنجاح '),

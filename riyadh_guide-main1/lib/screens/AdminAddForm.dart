@@ -29,6 +29,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
   List<File> _images = []; // List to store the selected images
 
+  bool _isLoading = false;
+
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -203,17 +205,17 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       appBar: AppBar(
         title: Text('اضافة مكان'),
         backgroundColor: Color.fromARGB(255, 66, 49, 76),
-        automaticallyImplyLeading: false, 
+        automaticallyImplyLeading: false,
         leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdminPlaces(),
-                      ),
-                    );
-        },
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AdminPlaces(),
+              ),
+            );
+          },
         ), // Box color
       ),
       body: Padding(
@@ -300,6 +302,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 maxLines: 3,
                 decoration: InputDecoration(
                   labelText: 'الوصف',
+                  hintText:
+                      '   للاستفادة من خدمة كتابة الوصف باستخدام الذكاء الاصطناعي ادخل مثلا : اكتب وصف لمعلم سياحي اسمه حي طريف التاريخي ',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -315,6 +319,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                   return null;
                 },
               ),
+              /*
               ElevatedButton(
                 onPressed: () async {
                   String response = await chatGPTAPI(_descriptionController);
@@ -327,6 +332,37 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                       Color.fromARGB(255, 143, 129, 152)),
                 ),
                 child: Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
+              ),*/
+
+              ElevatedButton(
+                onPressed: () async {
+                  setState(() {
+                    _isLoading =
+                        true; // Set loading state to true before making the API call
+                  });
+
+                  String response = await chatGPTAPI(_descriptionController);
+
+                  setState(() {
+                    _descriptionController.text = response;
+                    _isLoading =
+                        false; // Set loading state to false after receiving the response
+                  });
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 143, 129, 152)),
+                ),
+                child: _isLoading
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircularProgressIndicator(), // Display loading dots when _isLoading is true
+                          SizedBox(width: 8.0),
+                          Text('جاري الانشاء...'),
+                        ],
+                      )
+                    : Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
               ),
               SizedBox(height: 16.0),
               TextFormField(

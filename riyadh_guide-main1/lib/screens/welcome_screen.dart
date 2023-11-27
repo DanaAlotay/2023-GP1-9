@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
 import 'package:riyadh_guide/screens/news.dart';
 import 'package:riyadh_guide/screens/search.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -15,6 +16,8 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   //final TextEditingController searchController = TextEditingController();
   int currentTab = 0;
+  // Get the current user
+  User? currentUser = FirebaseAuth.instance.currentUser;
 
   List<String> placeList = [];
   @override
@@ -360,13 +363,37 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.0),
-                        child: Text(
-                          " أهلًا  ",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 33,
-                              fontWeight: FontWeight.bold),
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('user')
+                              .doc(currentUser
+                                  ?.uid) // Use currentUser?.uid to get the current user's UID
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return Text(
+                                "أهلًا",
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 33,
+                                    fontWeight: FontWeight.bold),
+                              );
+                            }
+                            var userData =
+                                snapshot.data!.data() as Map<String, dynamic>;
+                            //var userName = userData['name'];
+                            var userName = userData?['name'] ?? '';
+
+                            return Text(
+                              "أهلًا $userName",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 33,
+                                  fontWeight: FontWeight.bold),
+                            );
+                          },
                         ),
                       ),
                     ),
