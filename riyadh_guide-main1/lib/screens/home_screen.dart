@@ -9,6 +9,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Color buttonOColor = Color.fromARGB(255, 184, 139, 193);
+  Color buttonSColor = Color.fromARGB(255, 184, 139, 193);
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -71,6 +73,11 @@ class _HomePageState extends State<HomePage> {
                       duration: Duration(milliseconds: 1800),
                       child: MaterialButton(
                         onPressed: () {
+                          // Update button color
+                          setState(() {
+                            buttonOColor = Color.fromARGB(255, 135, 60,
+                                150); // Change to your desired color
+                          });
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -78,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
-                        color: Color.fromARGB(255, 184, 139, 193),
+                        color: buttonOColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
@@ -97,6 +104,11 @@ class _HomePageState extends State<HomePage> {
                       duration: Duration(milliseconds: 1800),
                       child: MaterialButton(
                         onPressed: () {
+                          // Update button color
+                          setState(() {
+                            buttonSColor = Color.fromARGB(255, 135, 60,
+                                150); // Change to your desired color
+                          });
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -104,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
-                        color: Color.fromARGB(255, 184, 139, 193),
+                        color: buttonSColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
