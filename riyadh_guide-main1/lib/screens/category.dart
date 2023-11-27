@@ -187,6 +187,7 @@ class _CategoryScreenState extends State<category> {
           ],
         ),
       ),
+      //coding
       body: FutureBuilder<QuerySnapshot>(
         future: placesCollection
             .where('categoryID', isEqualTo: widget.categoryID)
