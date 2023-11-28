@@ -305,6 +305,7 @@ class _CategoryScreenState extends State<category> {
                                 "للمزيد",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
+                              SizedBox(width: 15,),
                               Icon(
                                 Icons.star,
                                 color: Colors.amber,
@@ -314,6 +315,7 @@ class _CategoryScreenState extends State<category> {
                                 "ممتاز",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
+                              SizedBox(width: 15,),
                               Icon(
                                 Icons.schedule,
                                 color: Colors.blue,

@@ -16,7 +16,7 @@ class account extends StatefulWidget {
 }
 
 class _accountState extends State<account> {
-  int currentTab = 0;
+  int currentTab = 1;
   @override
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
