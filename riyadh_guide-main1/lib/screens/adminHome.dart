@@ -10,11 +10,22 @@ class MyAdminHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('الصفحة الرئيسية'),
-        backgroundColor: Color.fromARGB(255, 211, 198, 226),
-        automaticallyImplyLeading: false,
-      ),
+      // appBar: AppBar(
+      //   title: Text(''),
+      //   backgroundColor: Color.fromARGB(255, 211, 198, 226),
+      //   automaticallyImplyLeading: false,
+      // ),
+      // extendBodyBehindAppBar: true,
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   automaticallyImplyLeading: false,
+      //   elevation: 0,
+      //   title: const Text(
+      //     " ",
+      //     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      //     textAlign: TextAlign.right,
+      //   ),
+      // ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
         child: Column(
@@ -42,13 +53,13 @@ class MyAdminHomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(14.0),
+                      padding: EdgeInsets.fromLTRB(16, 20, 20, 0),
                       child: Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
                           icon: Icon(
                             Icons.account_circle,
-                            size: 50,
+                            size: 40,
                             color: Colors.white,
                           ),
                           onPressed: () {
@@ -187,7 +198,7 @@ class MyAdminHomePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 25),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -196,13 +207,16 @@ class MyAdminHomePage extends StatelessWidget {
                       child: Text('  إدارة الفعاليات و الأخبار '),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 66, 49, 76),
-                        minimumSize: Size(
-                            MediaQuery.of(context).size.width - 40,
-                            60), // Adjust the size here
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width - 40, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              30), // Adjust the radius here
+                        ), // Adjust the size here
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 11),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
@@ -217,9 +231,12 @@ class MyAdminHomePage extends StatelessWidget {
                       child: Text(' إدارة الأماكن'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 66, 49, 76),
-                        minimumSize: Size(
-                            MediaQuery.of(context).size.width - 40,
-                            60), // Adjust the size here
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width - 40, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              30), // Adjust the radius here
+                        ),
                       ),
                     ),
                   ),

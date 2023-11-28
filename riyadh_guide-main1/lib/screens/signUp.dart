@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:riyadh_guide/screens/signin.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:riyadh_guide/screens/reusable.dart';
@@ -325,25 +326,50 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   value.user?.uid,
                                   _userNameTextController.text,
                                   _emailTextController.text);
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WelcomeScreen(),
-                                ),
-                              );
-                              const snackBar = SnackBar(
-                                backgroundColor:
-                                    Color.fromARGB(181, 203, 145, 210),
-                                content: Text(
-                                  'تم تسجيل الدخول بنجاح',
-                                  // style: TextStyle(color: Colors.red),
-                                ),
-                              );
+                              // Navigator.pushReplacement(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => WelcomeScreen(),
+                              //   ),
+                              // );
 
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }).onError((error, stackTrace) {
-                              print("Error ${error.toString()}");
+                              // Assuming you have a Firestore collection named 'user'
+                              FirebaseFirestore.instance
+                                  .collection('user')
+                                  .doc(value.user?.uid)
+                                  .get()
+                                  .then((userData) {
+                                // Assuming 'type' is a field in your user data
+                                String userType = userData['type'];
+
+                                if (userType == 'admin') {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyAdminHomePage()));
+                                } else {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              WelcomeScreen()));
+                                }
+
+                                const snackBar = SnackBar(
+                                  backgroundColor:
+                                      Color.fromARGB(181, 203, 145, 210),
+                                  content: Text(
+                                    'تم تسجيل الدخول بنجاح',
+                                    // style: TextStyle(color: Colors.red),
+                                  ),
+                                );
+
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              }).onError((error, stackTrace) {
+                                print("Error ${error.toString()}");
+                              });
                             });
                           }
                         }
@@ -602,7 +628,7 @@ Future<void> saveUserData(String? userId, String username, String email) async {
     await FirebaseFirestore.instance.collection('user').doc(userId).set({
       'name': username,
       'email': email,
-      'type': "user",
+      'type': "admin",
       // Add other fields as needed
     });
   } catch (e) {
