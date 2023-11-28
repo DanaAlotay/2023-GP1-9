@@ -13,6 +13,7 @@ class AdminPlaces extends StatefulWidget {
 
 class _AdminPlaces extends State<AdminPlaces> {
   @override
+  Color color = Color.fromARGB(255, 59, 52, 63);
   void initState() {
     super.initState();
     _fetchPlaceData();
@@ -116,6 +117,7 @@ class _AdminPlaces extends State<AdminPlaces> {
               ),
             ],
           ),*/
+          /*
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -141,6 +143,43 @@ class _AdminPlaces extends State<AdminPlaces> {
                 ),
               ),
             ],
+          ),*/
+          Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: SizedBox.fromSize(
+                size: Size(56, 56),
+                child: ClipOval(
+                  child: Material(
+                    // color: Color.fromARGB(255, 211, 198, 226),
+                    color: Color.fromARGB(255, 249, 240, 203),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddPlaceForm(), // Handle "Add" action
+                          ),
+                        );
+                      },
+                      child: InkWell(
+                        splashColor: Color.fromARGB(255, 59, 52, 63),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.add, size: 40), // <-- Icon
+                            //Text(  "اضافة",  style: TextStyle(fontWeight: FontWeight.bold),
+                            // ), // <-- Text
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           Expanded(
             child: AllPlaces(), // Display places using the AllPlaces widget
