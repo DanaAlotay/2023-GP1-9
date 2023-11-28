@@ -13,7 +13,7 @@ class favourites extends StatefulWidget {
 }
 
 class _favouritesState extends State<favourites> {
-  int currentTab = 0;
+  int currentTab = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +166,7 @@ class _favouritesState extends State<favourites> {
           ],
         ),
       ),
+       body: Center(child: Text(' المفضلة')),
     );
   }
 }

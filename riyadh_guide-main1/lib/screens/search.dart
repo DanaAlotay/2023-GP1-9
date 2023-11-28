@@ -15,7 +15,7 @@ class search extends StatefulWidget {
 }
 
 class _searchState extends State<search> {
-  int currentTab=0;
+  int currentTab=2;
     final CollectionReference placesCollection =
       FirebaseFirestore.instance.collection('place');
       List<String> placeList = [];
@@ -158,15 +158,18 @@ class _searchState extends State<search> {
                                 "للمزيد",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
+                              SizedBox(width: 15,),
                               Icon(
                                 Icons.star,
                                 color: Colors.amber,
                                 size: 20,
                               ),
+                              
                               Text(
                                 "ممتاز",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
+                              SizedBox(width: 15,),
                               Icon(
                                 Icons.schedule,
                                 color: Colors.blue,

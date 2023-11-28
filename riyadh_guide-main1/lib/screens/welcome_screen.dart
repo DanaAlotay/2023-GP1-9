@@ -16,13 +16,33 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   //final TextEditingController searchController = TextEditingController();
   int currentTab = 0;
+  String username ='';
+
   // Get the current user
+  void fetchUserName(){
   User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+      String uid = currentUser.uid;
+
+      FirebaseFirestore.instance
+          .collection('user')
+          .doc(uid)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          username = documentSnapshot['name'];
+        }
+      }).catchError((error) {
+        // Handle error retrieving user data
+      });
+    }
+  }
 
   List<String> placeList = [];
   @override
   void initState() {
     super.initState();
+     fetchUserName();
     fetchPlaceNames().then((names) {
       setState(() {
         placeList = names;
@@ -363,39 +383,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.0),
-                        child: StreamBuilder<DocumentSnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('user')
-                              .doc(currentUser
-                                  ?.uid) // Use currentUser?.uid to get the current user's UID
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Text(
-                                "أهلًا",
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 33,
-                                    fontWeight: FontWeight.bold),
-                              );
-                            }
-                            var userData =
-                                snapshot.data!.data() as Map<String, dynamic>;
-                            //var userName = userData['name'];
-                            var userName = userData?['name'] ?? '';
-
-                            return Text(
-                              "أهلًا $userName",
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 33,
-                                  fontWeight: FontWeight.bold),
-                            );
-                          },
-                        ),
+                        child: Text(
+                        " أهلًا "+ username,
+                        textAlign: TextAlign.right,
+                         style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 33,
+                        fontWeight: FontWeight.bold,
                       ),
+                       ),
+                      ),
+                      
                     ),
                     SizedBox(
                       height: 30,

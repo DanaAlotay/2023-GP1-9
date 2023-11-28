@@ -56,24 +56,32 @@ class _AdminPlaces extends State<AdminPlaces> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
+                    height: 35,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.search),
-                        Expanded(
+                        SizedBox(width: 8),
+                        Icon(
+                          Icons.search,
+                          color: const Color.fromARGB(255, 91, 91, 91),
+                        ),
+                        Container(
+                          width: 210,
+                          // Expanded(
                           child: TextField(
                             readOnly: true,
                             decoration: InputDecoration(
                               hintText: 'ابحث عن مكان',
                               border: InputBorder.none,
+                              contentPadding: EdgeInsets.fromLTRB(0, 0, 8, 7),
                             ),
                             onTap: () {
                               showSearch(
@@ -121,6 +129,7 @@ class _AdminPlaces extends State<AdminPlaces> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(width: 10,),
               Container(
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 240, 227, 248), // Box color
@@ -142,6 +151,7 @@ class _AdminPlaces extends State<AdminPlaces> {
                       style: TextStyle(color: Color.fromARGB(255, 97, 92, 92))),
                 ),
               ),
+              SizedBox(height: 15,),
             ],
           ),*/
           Padding(

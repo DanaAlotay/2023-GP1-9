@@ -158,6 +158,7 @@ class _AllPlacesState extends State<AllPlaces> {
                             "للمزيد",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),*/
+                          SizedBox(width: 15,),
                           Icon(
                             Icons.star,
                             color: Colors.amber,
@@ -167,6 +168,7 @@ class _AllPlacesState extends State<AllPlaces> {
                             "ممتاز",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
+                          SizedBox(width: 40,),
                           Icon(
                             Icons.schedule,
                             color: Colors.blue,
@@ -176,6 +178,7 @@ class _AllPlacesState extends State<AllPlaces> {
                             openingHours,
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
+                          SizedBox(width: 15,),
                         ],
                       ),
                     ),

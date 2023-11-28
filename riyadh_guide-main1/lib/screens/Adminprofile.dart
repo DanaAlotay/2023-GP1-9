@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/adminWelcome.dart';
 import 'package:riyadh_guide/screens/signin.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -163,7 +164,7 @@ class _adminprofile extends State<adminprofile> {
                       } else if (!hasSpecialCharacter(newPassword)) {
                         setState(() {
                           newPasswordErrorMessage =
-                              'يجب أن تحتوي على حرف خاص واحدعلى الأقل';
+                              'يجب أن تحتوي على حرف خاص واحد على الأقل';
                         });
                       } else {
                         // Clear new password error message
@@ -295,7 +296,7 @@ class _adminprofile extends State<adminprofile> {
     await auth.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),
+      MaterialPageRoute(builder: (context) => AdminWelcome()),
     );
     // Show a snackbar indicating successful sign out
     ScaffoldMessenger.of(context).showSnackBar(
