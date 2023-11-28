@@ -247,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         // Update button color
                         setState(() {
-                          buttonOColor = Color.fromARGB(255, 135, 60, 150);
+                          buttonOColor = Color.fromARGB(255, 93, 77, 111);
                         });
                         Navigator.pushReplacement(
                           context,
@@ -278,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         // Update button color
                         setState(() {
-                          buttonSColor = Color.fromARGB(255, 135, 60, 150);
+                          buttonSColor = Color.fromARGB(255, 93, 77, 111);
                         });
                         Navigator.pushReplacement(
                           context,
