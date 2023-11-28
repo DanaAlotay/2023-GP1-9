@@ -12,7 +12,7 @@ class news extends StatefulWidget {
 }
 
 class _newsState extends State<news> {
-  int currentTab=0;
+  int currentTab=3;
 
 
   @override

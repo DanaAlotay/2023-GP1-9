@@ -127,6 +127,7 @@ class _AdminPlaces extends State<AdminPlaces> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(width: 10,),
               Container(
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 240, 227, 248), // Box color
@@ -148,6 +149,7 @@ class _AdminPlaces extends State<AdminPlaces> {
                       style: TextStyle(color: Color.fromARGB(255, 97, 92, 92))),
                 ),
               ),
+              SizedBox(height: 15,),
             ],
           ),
           Expanded(
