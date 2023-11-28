@@ -154,8 +154,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Color buttonOColor = Color.fromARGB(255, 184, 139, 193);
-  Color buttonSColor = Color.fromARGB(255, 184, 139, 193);
+  Color buttonOColor = Color.fromARGB(255, 176, 160, 193);
+  Color buttonSColor = Color.fromARGB(255, 176, 160, 193);
+  //Color.fromARGB(255, 184, 139, 193);
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('lib/icons/bkhp.png'),
+                            image: AssetImage('lib/icons/bkph.png'),
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -230,9 +231,9 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       "دليلك للمتعة",
                       style: TextStyle(
-                        color: Color.fromARGB(255, 138, 91, 160),
+                        color: Color.fromARGB(255, 105, 86, 124),
                         fontWeight: FontWeight.normal,
-                        fontStyle: FontStyle.italic,
+                        //fontStyle: FontStyle.italic,
                         fontSize: 25,
                       ),
                     ),
