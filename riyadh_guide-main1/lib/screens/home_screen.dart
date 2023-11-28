@@ -233,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         color: Color.fromARGB(255, 105, 86, 124),
                         fontWeight: FontWeight.normal,
-                        //fontStyle: FontStyle.italic,
+                        fontStyle: FontStyle.italic,
                         fontSize: 25,
                       ),
                     ),
