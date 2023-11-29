@@ -739,7 +739,8 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                               hours: _workingHoursController.text,
                               description: _descriptionController.text,
                               categoryID: _selectedCategory,
-                              imageUrls: this.imageUrls),
+                              imageUrls: this.imageUrls,
+                              website: this._websiteController.text),
                         ),
                       );
                     },
@@ -831,6 +832,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       String newName = _nameController.text;
       String newDescription = _descriptionController.text;
       String NewOpening_hours = _workingHoursController.text;
+      String newWebsite = _websiteController.text;
       List<String> newImageUrls = await uploadImages(documentId);
       await documentReference.update({
         'description': newDescription,
@@ -846,6 +848,9 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       });
       await documentReference.update({
         'images': newImageUrls,
+      });
+      await documentReference.update({
+        'website': newWebsite,
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

@@ -316,10 +316,13 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                       ),
                       Row(
                         children: [
-                          IconAndTextWidget(
-                              icon: Icons.circle_sharp,
-                              text: categoryNameInarabic,
-                              iconColor: Colors.purple),
+                          Image.asset(
+                            'lib/icons/c.jpeg',
+                            width: 25,
+                            height: 25,
+                          ),
+                          SizedBox(width: 4,),
+                          Text(categoryNameInarabic),
                           SizedBox(
                             width: 20,
                           ),
@@ -347,7 +350,7 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                     
                        const Text(" للتواصل ولمزيد من المعلومات يرجى زيارة",
                         style: TextStyle(
-                        color: Color.fromARGB(200, 83, 56, 97), fontSize: 16)),
+                        color: Color.fromARGB(200, 83, 56, 97), fontSize: 15)),
                         
                          GestureDetector(
                           onTap: 
@@ -358,7 +361,7 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                            style: TextStyle(
                           color: Color.fromARGB(255, 83, 56, 97),
                           fontWeight: FontWeight.bold,
-                          fontSize: 16),
+                          fontSize: 15),
                        ),
                        )
                      ],
