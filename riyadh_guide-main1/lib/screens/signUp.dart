@@ -54,17 +54,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(),
-                ),
-              );
-            },
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
@@ -641,7 +641,7 @@ Future<void> saveUserData(String? userId, String username, String email) async {
     await FirebaseFirestore.instance.collection('user').doc(userId).set({
       'name': username,
       'email': email,
-      'type': "admin",
+      'type': "user",
       // Add other fields as needed
     });
   } catch (e) {
