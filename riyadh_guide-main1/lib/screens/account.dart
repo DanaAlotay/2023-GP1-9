@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
+import 'package:riyadh_guide/screens/home_screen.dart';
 import 'package:riyadh_guide/screens/news.dart';
 import 'package:riyadh_guide/screens/search.dart';
 import 'package:riyadh_guide/screens/signin.dart';
@@ -28,12 +29,12 @@ class _accountState extends State<account> {
     super.initState();
     fetchUserData();
   }
-
+  String uid='';
   void fetchUserData() {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      String uid = user.uid;
+      uid = user.uid;
 
       FirebaseFirestore.instance
           .collection('user')
@@ -305,7 +306,7 @@ class _accountState extends State<account> {
     await auth.signOut();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),
+      MaterialPageRoute(builder: (context) => HomePage()),
     );
     // Show a snackbar indicating successful sign out
     ScaffoldMessenger.of(context).showSnackBar(
@@ -326,6 +327,217 @@ class _accountState extends State<account> {
 
   @override
   Widget build(BuildContext context) {
+    if (uid == ''){
+     return Scaffold(
+        appBar: AppBar(
+          title: Text('حسابي'),
+          backgroundColor: Color.fromARGB(255, 211, 198, 226),
+          automaticallyImplyLeading: false,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              currentTab = 0;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WelcomeScreen(),
+                ),
+              );
+            });
+          },
+          child: Image.asset(
+            'lib/icons/Logo.png',
+          ),
+          backgroundColor: Color.fromARGB(157, 165, 138, 182),
+          elevation: 20.0,
+//mini: true,
+        ),
+        bottomNavigationBar: BottomAppBar(
+          notchMargin: 10,
+          shape: CircularNotchedRectangle(),
+          color: Color.fromARGB(157, 217, 197, 230),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: 10.0, left: 10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.account_box),
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 1;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => account(),
+                            ),
+                          );
+                        });
+                      },
+                      color: currentTab == 1 ? Colors.white : Colors.black,
+                    ),
+                    Text(
+                      "حسابي",
+                      style: TextStyle(
+                          color: currentTab == 1 ? Colors.white : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 2;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => search(),
+                            ),
+                          );
+                        });
+                      },
+                      color: currentTab == 2 ? Colors.white : Colors.black,
+                    ),
+                    Text(
+                      "البحث",
+                      style: TextStyle(
+                          color: currentTab == 2 ? Colors.white : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 30.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.newspaper),
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 3;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => news(),
+                            ),
+                          );
+                        });
+                      },
+                      color: currentTab == 3 ? Colors.white : Colors.black,
+                    ),
+                    Text(
+                      "أحداث اليوم",
+                      style: TextStyle(
+                          color: currentTab == 3 ? Colors.white : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.favorite),
+                      onPressed: () {
+                        setState(() {
+                          currentTab = 4;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => favourites(),
+                            ),
+                          );
+                        });
+                      },
+                      color: currentTab == 4 ? Colors.white : Colors.black,
+                    ),
+                    Text(
+                      "المفضلة",
+                      style: TextStyle(
+                          color: currentTab == 4 ? Colors.white : Colors.black),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+         body: Center(
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Center(
+        child: Text(
+          'أنت لا تملك حساب في دليل الرياض بعد',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      Center(
+        child: Text(
+         'اكمل تسجيل الدخول ',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      SizedBox(height: 20),
+      Center(
+        child: SizedBox(
+          width: 250, 
+          height: 55,
+        child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage()
+                      ),
+                    );
+                  },
+                  child: Text(
+                    ' سجل دخول الأن ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color:  Color.fromARGB(255, 232, 231, 233),
+                      
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 99, 62, 118),
+                    shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+        ),
+      ),
+      ),
+    ],
+  ),
+),
+        );
+    }
+    else{
     return Scaffold(
         appBar: AppBar(
           title: Text('حسابي'),
@@ -612,6 +824,6 @@ class _accountState extends State<account> {
               ],
             ),
           ),
-        ));
+        ));}
   }
 }

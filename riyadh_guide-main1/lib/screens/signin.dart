@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
+import 'package:riyadh_guide/screens/home_screen.dart';
 import 'package:riyadh_guide/screens/resetPassword.dart';
 import 'package:riyadh_guide/screens/signUp.dart';
 import 'package:riyadh_guide/screens/squareTile.dart';
@@ -25,6 +26,27 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ),
+              );
+            },
+          ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "تسجيل دخول ",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Stack(
         children: [
           // White background

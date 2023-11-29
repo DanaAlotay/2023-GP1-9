@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/home_screen.dart';
 import 'package:riyadh_guide/screens/signin.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:riyadh_guide/screens/reusable.dart';
@@ -51,6 +52,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ),
+              );
+            },
+          ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
