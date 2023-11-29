@@ -641,7 +641,7 @@ Future<void> saveUserData(String? userId, String username, String email) async {
     await FirebaseFirestore.instance.collection('user').doc(userId).set({
       'name': username,
       'email': email,
-      'type': "admin",
+      'type': "user",
       // Add other fields as needed
     });
   } catch (e) {
