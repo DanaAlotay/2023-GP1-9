@@ -78,6 +78,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
           .showSnackBar(
             SnackBar(
               content: Text('تمت الاضافة بنجاح '),
+              backgroundColor: Color.fromARGB(181, 203, 145, 210),
             ),
           )
           .closed

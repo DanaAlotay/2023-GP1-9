@@ -449,8 +449,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                   maxLines: 3,
                   decoration: InputDecoration(
                     labelText: 'الوصف',
-                    hintText:
-                        'للاستفادة من خدمة كتابة الوصف باستخدام الذكاء الاصطناعي ادخل مثلا: اكتب وصف لمعلم سياحي اسمه حي طريف التاريخي',
+
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(45),
                     ),
@@ -855,6 +854,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('تم التعديل بنجاح '),
+          backgroundColor: Color.fromARGB(181, 203, 145, 210),
         ),
       );
       check = true;
@@ -912,6 +912,7 @@ void showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
+      backgroundColor: Color.fromARGB(181, 203, 145, 210),
     ),
   );
 }
