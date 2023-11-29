@@ -6,7 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:riyadh_guide/screens/adminViewEdits.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 
 class AddPlaceForm extends StatefulWidget {
@@ -30,6 +32,12 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
   List<File> _images = []; // List to store the selected images
 
   bool _isLoading = false;
+  bool isDefaultImageSelected = true;
+  @override
+  void initState() {
+    super.initState();
+    isDefaultImageSelected = true; // Initialize the variable
+  }
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -63,11 +71,27 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       });
 
       // Show a snackbar message indicating successful addition
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('تمت الاضافة بنجاح '),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
+              content: Text('تمت الاضافة بنجاح '),
+            ),
+          )
+          .closed
+          .then((_) {
+        // Navigate to the PageDetails screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => adminViewEdits(
+                name: _nameController.text,
+                hours: _workingHoursController.text,
+                description: _descriptionController.text,
+                categoryID: _selectedCategory ?? 'c1',
+                imageUrls: imageUrls),
+          ),
+        );
+      });
 
       // Reset the form After adding
       _formKey.currentState!.reset();
@@ -76,6 +100,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       _descriptionController.clear();
       _workingHoursController.clear();
       setState(() {
+        bool isDefaultImageSelected = true;
         _images.clear();
       });
     }
@@ -148,6 +173,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
+// old code
+/*
   Future<List<String>> uploadImages(String placeId) async {
     List<String> imageUrls = [];
 
@@ -175,8 +202,42 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
 
     return imageUrls;
+  }*/
+  Future<List<String>> uploadImages(String placeId) async {
+    List<String> imageUrls = [];
+
+    if (isDefaultImageSelected) {
+      // Upload the default image to Firestore
+      String defaultImageUrl =
+          'https://firebasestorage.googleapis.com/v0/b/riyadh-guide-database-9528e.appspot.com/o/defaultImg.jpeg?alt=media&token=5efaca11-cfa2-401d-98c0-e597a158a5ed';
+      imageUrls.add(defaultImageUrl);
+    }
+
+    for (var i = 0; i < _images.length; i++) {
+      File image = _images[i];
+
+      // Generate a unique filename for each image
+      String fileName = 'place_$placeId$i.jpg';
+
+      // Upload the image to Firestore
+      Reference storageRef =
+          FirebaseStorage.instance.ref().child('images').child(fileName);
+
+      UploadTask uploadTask = storageRef.putFile(image);
+
+      // Get the download URL of the uploaded image
+      TaskSnapshot storageSnapshot = await uploadTask.whenComplete(() {});
+
+      String downloadUrl = await storageSnapshot.ref.getDownloadURL();
+
+      imageUrls.add(downloadUrl);
+    }
+
+    return imageUrls;
   }
 
+// old code
+/*
   Future<void> pickImage(ImageSource source) async {
     final pickedImage = await ImagePicker().pickImage(source: source);
 
@@ -195,6 +256,32 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
       setState(() {
         _images.add(tempImage);
+      });
+    }
+  }
+*/
+
+// New code
+  void pickImage(ImageSource source) async {
+    if (isDefaultImageSelected) {
+      setState(() {
+        _images.removeWhere((image) =>
+            image.path ==
+            'lib/icons/defaultImg.jpeg'); // Remove the default image from the list
+        isDefaultImageSelected = false;
+      });
+    }
+
+    final pickedImage = await ImagePicker().pickImage(source: source);
+
+    if (pickedImage != null) {
+      final imageFile = File(pickedImage.path);
+      setState(() {
+        _images.add(imageFile);
+      });
+    } else if (_images.isEmpty) {
+      setState(() {
+        isDefaultImageSelected = true;
       });
     }
   }
@@ -430,6 +517,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ],
               ),
               SizedBox(height: 10),
+              /*
               Container(
                 height: 120,
                 child: ListView.builder(
@@ -480,6 +568,126 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                       ],
                     ),
                   ),
+                ),
+              ),*/
+              Container(
+                height: 120,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _images.length +
+                      (isDefaultImageSelected
+                          ? 1
+                          : 0), // Add 1 for the default image if it is selected
+                  itemBuilder: (ctx, index) {
+                    if (index == 0 && isDefaultImageSelected) {
+                      // Display the default image
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            // No action needed when tapping on the default image
+                          });
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 8),
+                              width: 120,
+                              height: 150,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromARGB(255, 238, 227, 245),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(
+                                      'lib/icons/defaultImg.jpeg'), // Add the default image path
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 1 / 2,
+                              right: 1 / 2,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color.fromARGB(255, 142, 27, 19),
+                                ),
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeWhere((image) =>
+                                          image.path ==
+                                          'lib/icons/defaultImg.jpeg');
+                                      isDefaultImageSelected = false;
+                                    });
+                                  },
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      // Display the selected images
+                      int imageIndex = isDefaultImageSelected
+                          ? index - 1
+                          : index; // Adjust the index to match the _images list
+                      return GestureDetector(
+                        onTap: () {
+                          // Add any onTap logic for the selected images
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 8),
+                              width: 120,
+                              height: 150,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromARGB(255, 238, 227, 245),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(_images[imageIndex]),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 1 / 2,
+                              right: 1 / 2,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color.fromARGB(255, 142, 27, 19),
+                                ),
+                                alignment: Alignment.center,
+                                child: IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeAt(imageIndex);
+                                    });
+                                  },
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
               SizedBox(height: 20),
