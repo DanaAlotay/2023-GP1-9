@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class adminViewEdits extends StatefulWidget {
   
@@ -11,8 +12,9 @@ class adminViewEdits extends StatefulWidget {
   final String description;
   final String categoryID;
   final List<String> imageUrls;
+  final String website;
 
-  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls}) : super(key: key);
+  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls, required this.website}) : super(key: key);
 
   @override
   _adminViewEditsState createState() => _adminViewEditsState();
@@ -59,6 +61,13 @@ class _adminViewEditsState extends State<adminViewEdits> {
       categoryNameInarabic = 'سياحة';
     }
   }
+
+   Future<void> _launchUrl() async {
+    final Uri _url = Uri.parse(widget.website);
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -149,10 +158,13 @@ class _adminViewEditsState extends State<adminViewEdits> {
                       ),
                       Row(
                         children: [
-                          IconAndTextWidget(
-                              icon: Icons.circle_sharp,
-                              text: categoryNameInarabic,
-                              iconColor: Colors.purple),
+                          Image.asset(
+                            'lib/icons/c.jpeg',
+                            width: 25,
+                            height: 25,
+                          ),
+                          SizedBox(width: 4,),
+                          Text(categoryNameInarabic),
                           SizedBox(
                             width: 20,
                           ),
@@ -171,7 +183,35 @@ class _adminViewEditsState extends State<adminViewEdits> {
                             fontWeight: FontWeight
                                 .bold, 
                           )),
-                      Text(widget.description)
+                      Text(widget.description),
+
+                       SizedBox(height: 20,),
+
+                   Row(
+                   
+                   children: [
+                    
+                       const Text(" للتواصل ولمزيد من المعلومات يرجى زيارة",
+                        style: TextStyle(
+                        color: Color.fromARGB(200, 83, 56, 97), fontSize: 16)),
+                        
+                         GestureDetector(
+                          onTap: 
+                          _launchUrl,
+                          
+                        child: const Text(
+                           " موقعهم من هنا ",
+                           style: TextStyle(
+                          color: Color.fromARGB(255, 83, 56, 97),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                       ),
+                       )
+                     ],
+                  ),
+                        
+                        SizedBox(height: 50,),
+
                     ],
                   ),
                 )))

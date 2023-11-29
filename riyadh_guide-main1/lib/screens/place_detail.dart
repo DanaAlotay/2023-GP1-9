@@ -8,6 +8,7 @@ import 'package:riyadh_guide/screens/search.dart';
 import 'package:riyadh_guide/screens/welcome_screen.dart';
 import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlaceDetails extends StatefulWidget {
   final String placeID;
@@ -23,6 +24,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
   late DocumentSnapshot? placeData;
   List<String> imageUrls = [];
+  
   String categoryName = '';
   String categoryNameInarabic = '';
 
@@ -32,6 +34,9 @@ class _PlaceDetailsState extends State<PlaceDetails> {
     _fetchPlaceData();
     placeData = null;
   }
+
+
+
 
   Future<void> _fetchPlaceData() async {
     // Fetch place data from Firebase Firestore based on the placeID
@@ -43,7 +48,9 @@ class _PlaceDetailsState extends State<PlaceDetails> {
     setState(() {
       placeData = placeDocument;
       imageUrls = List<String>.from(placeData?['images'] ?? []);
+      
     });
+
 
     // Fetch the category name based on categoryID
     final categoryID = placeData?['categoryID'] ?? '';
@@ -71,6 +78,14 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       categoryNameInarabic = 'سياحة';
     }
   }
+
+  
+    Future<void> _launchUrl() async {
+    final Uri _url = Uri.parse(placeData?['website']);
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -301,10 +316,13 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                       ),
                       Row(
                         children: [
-                          IconAndTextWidget(
-                              icon: Icons.circle_sharp,
-                              text: categoryNameInarabic,
-                              iconColor: Colors.purple),
+                          Image.asset(
+                            'lib/icons/c.jpeg',
+                            width: 25,
+                            height: 25,
+                          ),
+                          SizedBox(width: 4,),
+                          Text(categoryNameInarabic),
                           SizedBox(
                             width: 20,
                           ),
@@ -323,10 +341,40 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                             fontWeight: FontWeight
                                 .bold, 
                           )),
-                      Text(placeData?['description'] ?? '')
+                      Text(placeData?['description'] ?? ''),
+                      SizedBox(height: 20,),
+
+                   Row(
+                   
+                   children: [
+                    
+                       const Text(" للتواصل ولمزيد من المعلومات يرجى زيارة",
+                        style: TextStyle(
+                        color: Color.fromARGB(200, 83, 56, 97), fontSize: 15)),
+                        
+                         GestureDetector(
+                          onTap: 
+                          _launchUrl,
+                          
+                        child: const Text(
+                           " موقعهم من هنا ",
+                           style: TextStyle(
+                          color: Color.fromARGB(255, 83, 56, 97),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                       ),
+                       )
+                     ],
+                  ),
+                        
+                        SizedBox(height: 50,),
+
+
                     ],
                   ),
-                )))
+                )
+                )
+                )
       ],
     ));
   }

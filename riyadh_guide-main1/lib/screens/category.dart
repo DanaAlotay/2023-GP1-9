@@ -218,7 +218,6 @@ class _CategoryScreenState extends State<category> {
                 List<dynamic> imageArray = placeDocument.get('images') ?? [];
                 String placeImage =
                     (imageArray.isNotEmpty) ? imageArray[0].toString() : '';
-                // String placeImage = placeDocument.get('image').toString();
                 String openingHours =
                     placeDocument.get('opening_hours').toString();
                 return InkWell(
@@ -305,7 +304,9 @@ class _CategoryScreenState extends State<category> {
                                 "للمزيد",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
-                              SizedBox(width: 15,),
+                              SizedBox(
+                                width: 15,
+                              ),
                               Icon(
                                 Icons.star,
                                 color: Colors.amber,
@@ -315,7 +316,9 @@ class _CategoryScreenState extends State<category> {
                                 "ممتاز",
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
-                              SizedBox(width: 15,),
+                              SizedBox(
+                                width: 15,
+                              ),
                               Icon(
                                 Icons.schedule,
                                 color: Colors.blue,
