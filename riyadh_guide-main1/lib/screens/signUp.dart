@@ -262,33 +262,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _showBankSelectionDialog(context);
                             },
                             child: Container(
-                              padding: EdgeInsets.all(16.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color.fromARGB(255, 106, 57, 117)),
-                                borderRadius: BorderRadius.circular(40.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    _selectedBank ?? 'البطاقات البنكية',
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 106, 57, 117),
-                                        fontSize: 16),
-                                  ),
-                                  Icon(Icons.arrow_drop_down,
-                                      color: const Color.fromARGB(
-                                          255, 106, 57, 117)),
-                                ],
+                                padding: EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color.fromARGB(255, 106, 57, 117)),
+                                  borderRadius: BorderRadius.circular(40.0),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      _selectedBank ?? 'البطاقات البنكية',
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 106, 57, 117),
+                                          fontSize: 16),
+                                    ),
+                                    Icon(Icons.arrow_drop_down,
+                                        color: const Color.fromARGB(
+                                            255, 106, 57, 117)),
+                                  ],
+                                )),
+                          ),
+                          // Add a new Container to display selected banks below the dropdown
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            margin: EdgeInsets.only(top: 10.0),
+                            child: Text(
+                              'البطاقات المختارة: ${_selectedBanks.isNotEmpty ? _selectedBanks.join(', ') : 'لا توجد بطاقات مختارة'}',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 106, 57, 117),
+                                fontSize: 16,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+
                       Text(
                         _ErrorMessage ?? '',
                         style: TextStyle(color: Colors.red),
@@ -418,68 +429,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  /*void _showBankSelectionDialog(BuildContext context) {
-    var sba = _selectedBanks;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("البطاقات البنكية"),
-          content: Container(
-            width: double.minPositive,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _banks.length,
-              itemBuilder: (BuildContext context, int index) {
-                String bank = _banks[index];
-                bool isSelected = sba.contains(bank);
-                print(isSelected);
-
-                return ListTile(
-                  title: Text(bank),
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        sba.remove(bank);
-                      } else {
-                        sba.add(bank);
-                      }
-                    });
-                  },
-                  leading: Checkbox(
-                    value: isSelected,
-                    onChanged: (value) {
-                      setState(() {
-                        if (isSelected) {
-                          sba.remove(bank);
-                        } else {
-                          sba.add(bank);
-                        }
-                      });
-                      print(sba);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text("تم"),
-              onPressed: () {
-                /*setState(() {
-                  _selectedBank = _selectedBanks.isNotEmpty
-                      ? _selectedBanks.join(', ')
-                      : null;
-                });*/
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }*/
   void _showBankSelectionDialog(BuildContext context) {
     showDialog(
       context: context,
