@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:riyadh_guide/screens/adminViewEdits.dart';
+import 'package:riyadh_guide/screens/Adminaddview.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 
 class AddPlaceForm extends StatefulWidget {
@@ -26,6 +26,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
   final _descriptionController = TextEditingController();
 
   final _workingHoursController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
 
   String? _selectedCategory = 'c1'; // Set a default value
 
@@ -50,6 +51,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
         'name': _nameController.text,
         'description': _descriptionController.text,
         'opening_hours': _workingHoursController.text,
+        'website': _websiteController.text,
       };
 
       // Add the place data to Firestore and get the document ID
@@ -71,6 +73,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       });
 
       // Show a snackbar message indicating successful addition
+
       ScaffoldMessenger.of(context)
           .showSnackBar(
             SnackBar(
@@ -83,12 +86,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => adminViewEdits(
-                name: _nameController.text,
-                hours: _workingHoursController.text,
-                description: _descriptionController.text,
-                categoryID: _selectedCategory ?? 'c1',
-                imageUrls: imageUrls),
+            builder: (context) => Adminaddbview(placeID: placeId),
           ),
         );
       });
@@ -99,6 +97,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       _nameController.clear();
       _descriptionController.clear();
       _workingHoursController.clear();
+      _websiteController.clear();
       setState(() {
         bool isDefaultImageSelected = true;
         _images.clear();
@@ -311,65 +310,116 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
           key: _formKey,
           child: ListView(
             children: [
-              DropdownButtonFormField<String>(
-                value: _selectedCategory,
-                decoration: InputDecoration(
-                  //labelText: 'التصنيف',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  prefixIcon: Icon(Icons.category),
-                  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                  filled: true,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                ),
-                items: [
-                  DropdownMenuItem<String>(
-                    value: 'c1',
-                    child: Text('مطاعم'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c2',
-                    child: Text('مقاهي'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c6',
-                    child: Text('معالم سياحيه'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c5',
-                    child: Text('ترفيه'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c4',
-                    child: Text('مراكز تجميل'),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'c3',
-                    child: Text('تسوق'),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'اختر التصنيف';
-                  }
+              Container(
+                height: 80,
+                child: DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  //Edit image icon
+                  /*
+                  decoration: InputDecoration(
+                    //labelText: 'التصنيف',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    prefixIcon: Icon(Icons.category),
+                    fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
+                  ),*/ //End edit image icon old
 
-                  return null;
-                },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'lib/icons/c.jpeg',
+                            width: 30,
+                            height: 30,
+                          ),
+                          SizedBox(width: 8),
+                        ],
+                      ),
+                    ),
+                    // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    // filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
+                  ),
+
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: 'c1',
+                      child: Text(
+                        'مطاعم',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c2',
+                      child: Text(
+                        'مقاهي',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c6',
+                      child: Text(
+                        'معالم سياحيه',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c5',
+                      child: Text(
+                        'ترفيه',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c4',
+                      child: Text(
+                        'مراكز تجميل',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c3',
+                      child: Text(
+                        'تسوق',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'اختر التصنيف';
+                    }
+
+                    return null;
+                  },
+                ),
               ),
               SizedBox(height: 16.0),
+              //old
+              /*
               TextFormField(
                 controller: _nameController,
+              
                 decoration: InputDecoration(
                   labelText: 'اسم المكان',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(40),
                   ),
                   prefixIcon: Icon(Icons.place),
                   fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
@@ -382,8 +432,45 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
                   return null;
                 },
+              ),*/
+              // end old
+
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'اسم المكان',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+
+                  prefixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'lib/icons/p.jpeg',
+                          width: 30,
+                          height: 30,
+                          //color: Color.fromARGB(255, 8, 2, 69),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                    ],
+                  ),
+                  // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                  // filled: true,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ادخل اسم المكان';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 16.0),
+              //old
+/*
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 3,
@@ -392,7 +479,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                   hintText:
                       '   للاستفادة من خدمة كتابة الوصف باستخدام الذكاء الاصطناعي ادخل مثلا : اكتب وصف لمعلم سياحي اسمه حي طريف التاريخي ',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(45),
                   ),
                   prefixIcon: Icon(Icons.description),
                   fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
@@ -405,59 +492,149 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
                   return null;
                 },
+              ), // end old
+*/
+
+              TextFormField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'الوصف',
+                  hintText:
+                      'للاستفادة من خدمة كتابة الوصف باستخدام الذكاء الاصطناعي ادخل مثلا: اكتب وصف لمعلم سياحي اسمه حي طريف التاريخي',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(45),
+                  ),
+                  prefixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          'lib/icons/des.jpeg',
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                    ],
+                  ),
+                  //  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                  //filled: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ادخل الوصف';
+                  }
+                  return null;
+                },
               ),
+              SizedBox(
+                height: 30.0,
+                width: 150,
+              ),
+              //old
               /*
-              ElevatedButton(
-                onPressed: () async {
-                  String response = await chatGPTAPI(_descriptionController);
-                  setState(() {
-                    _descriptionController.text = response;
-                  });
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                      Color.fromARGB(255, 143, 129, 152)),
+              Container(
+                height: 80,
+
+                // Set the desired height here
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Callback function when the button is pressed
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    String response = await chatGPTAPI(_descriptionController);
+
+                    setState(() {
+                      _descriptionController.text = response;
+                      _isLoading = false;
+                    });
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 143, 129, 152),
+                    ),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(width: 8.0),
+                            Text('جاري الانشاء...'),
+                          ],
+                        )
+                      : Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
                 ),
-                child: Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
               ),*/
+              Container(
+                height: 80,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Callback function when the button is pressed
+                    setState(() {
+                      _isLoading = true;
+                    });
 
-              ElevatedButton(
-                onPressed: () async {
-                  setState(() {
-                    _isLoading =
-                        true; // Set loading state to true before making the API call
-                  });
+                    String response = await chatGPTAPI(_descriptionController);
 
-                  String response = await chatGPTAPI(_descriptionController);
-
-                  setState(() {
-                    _descriptionController.text = response;
-                    _isLoading =
-                        false; // Set loading state to false after receiving the response
-                  });
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                      Color.fromARGB(255, 143, 129, 152)),
+                    setState(() {
+                      _descriptionController.text = response;
+                      _isLoading = false;
+                    });
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 235, 216, 247),
+                    ),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(width: 8.0),
+                            Text('جاري الانشاء...'),
+                          ],
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              'lib/icons/ai.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
+                          ],
+                        ),
                 ),
-                child: _isLoading
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircularProgressIndicator(), // Display loading dots when _isLoading is true
-                          SizedBox(width: 8.0),
-                          Text('جاري الانشاء...'),
-                        ],
-                      )
-                    : Text('انشاء الوصف باستخدام الذكاء الاصطناعي'),
               ),
+
               SizedBox(height: 16.0),
+              /*
               TextFormField(
                 controller: _workingHoursController,
                 decoration: InputDecoration(
                   labelText: 'ساعات العمل',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(40),
                   ),
                   prefixIcon: Icon(Icons.access_time),
                   fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
@@ -470,7 +647,61 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
 
                   return null;
                 },
+              ),*/
+
+              TextFormField(
+                controller: _workingHoursController,
+                decoration: InputDecoration(
+                  labelText: 'ساعات العمل',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Image.asset(
+                      'lib/icons/cl.jpeg',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                  // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                  // filled: true,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ادخل ساعات العمل';
+                  }
+                  return null;
+                },
               ),
+// website
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _websiteController,
+                decoration: InputDecoration(
+                  labelText: ' الموقع الالكتروني ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  prefixIcon: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Image.asset(
+                      'lib/icons/web.jpeg',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                  // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                  // filled: true,
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '  ادخل الموقع الالكتروني ';
+                  }
+                  return null;
+                },
+              ),
+
               SizedBox(height: 10),
               Text(
                 'الصور',
@@ -492,7 +723,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                     style: TextButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 66, 49, 76),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(40),
                       ),
                     ),
                   ),
@@ -510,7 +741,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                     style: TextButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 66, 49, 76),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(40),
                       ),
                     ),
                   ),
@@ -691,24 +922,28 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Callback function when the button is pressed
 
-                  _submitForm();
-                },
-                child: Text(
-                  'اضافة مكان',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              Container(
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Callback function when the button is pressed
+
+                    _submitForm();
+                  },
+                  child: Text(
+                    'اضافة',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 66, 49, 76),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 66, 49, 76),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40)),
+                  ),
                 ),
               ),
             ],

@@ -143,17 +143,15 @@ class MyAdminHomePage extends StatelessWidget {
                               ConnectionState.waiting) {
                             // If still loading, return a placeholder or loading indicator
                             return _buildSquare(
-                              text1: '0',
-                              text2: 'مستخدم',
-                              icon: Icons.person,
-                            );
+                                text1: '0', text2: 'مستخدم', icon: Icons.group);
+                            //  imagePath: 'lib/icons/group.png');
                           } else {
                             // Display the users count
                             return _buildSquare(
-                              text1: '${snapshot.data}',
-                              text2: 'مستخدم',
-                              icon: Icons.person,
-                            );
+                                text1: '${snapshot.data}',
+                                text2: '  مستخدم',
+                                icon: Icons.group);
+                            //  imagePath: 'lib/icons/group.png');
                           }
                         },
                       ),
@@ -165,17 +163,15 @@ class MyAdminHomePage extends StatelessWidget {
                               ConnectionState.waiting) {
                             // If still loading, return a placeholder or loading indicator
                             return _buildSquare(
-                              text1: '0',
-                              text2: 'مكان',
-                              icon: Icons.place,
-                            );
+                                text1: '0', text2: 'مكان', icon: Icons.place);
+                            // imagePath: 'lib/icons/location-pin.png');
                           } else {
                             // Display the places count
                             return _buildSquare(
-                              text1: '${snapshot.data}',
-                              text2: 'مكان',
-                              icon: Icons.place,
-                            );
+                                text1: '${snapshot.data}',
+                                text2: 'مكان',
+                                icon: Icons.place);
+                            //imagePath: 'lib/icons/location-pin.png');
                           }
                         },
                       ),
@@ -188,14 +184,16 @@ class MyAdminHomePage extends StatelessWidget {
                       _buildSquare(
                         text1: '21',
                         text2: ' فعالية',
-                        icon: Icons.theater_comedy,
+                        icon: Icons.celebration,
                       ),
+                      //  imagePath: 'lib/icons/fireworks.png'),
                       SizedBox(width: 10),
                       _buildSquare(
                         text1: '6',
                         text2: ' تصنيفات',
                         icon: Icons.category,
                       ),
+                      // imagePath: 'lib/icons/choose.png'),
                     ],
                   ),
                   SizedBox(height: 25),
@@ -276,10 +274,11 @@ class MyAdminHomePage extends StatelessWidget {
     required String text1,
     required String text2,
     required IconData icon,
+    // required String imagePath,
   }) {
     return Expanded(
       child: Container(
-        height: 120,
+        height: 150,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
