@@ -24,6 +24,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
   String name = '';
   String description = '';
   String hours = '';
+  String website = '';
   bool isLoading = true;
   bool check = false;
 
@@ -48,9 +49,11 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       name = placeData?['name'] ?? '';
       description = placeData?['description'] ?? '';
       hours = placeData?['opening_hours'] ?? '';
+      website = placeData?['website'] ?? '';
       _nameController.text = name;
       _descriptionController.text = description;
       _workingHoursController.text = hours;
+      _websiteController.text = website;
       isLoading = false;
     });
   }
@@ -62,6 +65,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _workingHoursController = TextEditingController();
+  final TextEditingController _websiteController = TextEditingController();
   List<File> _images = [];
 
   Future<List<String>> uploadImages(String placeId) async {
@@ -143,64 +147,87 @@ class _adminEditPlaceState extends State<adminEditPlace> {
             key: _formKey,
             child: ListView(
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Callback function when the button is pressed
+                Container(
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Callback function when the button is pressed
 
-                    deletePlaceWithConfirmation(context, widget.placeID, name);
-                  },
-                  child: Text(
-                    'حذف المكان',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      deletePlaceWithConfirmation(
+                          context, widget.placeID, name);
+                    },
+                    child: Text(
+                      'حذف المكان',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 121, 19, 3),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 121, 19, 3),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40)),
+                    ),
                   ),
                 ),
                 SizedBox(height: 30.0),
+                /* //start old code
                 DropdownButtonFormField<String>(
                   value: _selectedCategory,
                   decoration: InputDecoration(
                     //labelText: 'التصنيف',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(40),
                     ),
                     prefixIcon: Icon(Icons.category),
                     fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
                     filled: true,
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                        EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
                   ),
                   items: [
                     DropdownMenuItem<String>(
                       value: 'c1',
-                      child: Text('مطاعم'),
+                      child: Text(
+                        'مطاعم',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                     DropdownMenuItem<String>(
                       value: 'c2',
-                      child: Text('مقاهي'),
+                      child: Text(
+                        'مقاهي',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                     DropdownMenuItem<String>(
                       value: 'c6',
-                      child: Text('معالم سياحيه'),
+                      child: Text(
+                        'معالم سياحيه',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                     DropdownMenuItem<String>(
                       value: 'c5',
-                      child: Text('ترفيه'),
+                      child: Text(
+                        'ترفيه',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                     DropdownMenuItem<String>(
                       value: 'c4',
-                      child: Text('مراكز تجميل'),
+                      child: Text(
+                        'مراكز تجميل',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                     DropdownMenuItem<String>(
                       value: 'c3',
-                      child: Text('تسوق'),
+                      child: Text(
+                        'تسوق',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
                   ],
                   onChanged: (value) {
@@ -215,14 +242,115 @@ class _adminEditPlaceState extends State<adminEditPlace> {
 
                     return null;
                   },
-                ),
-                SizedBox(height: 16.0),
+                ),*/ // end old
+
+                // start new
+                DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  //Edit image icon
+                  /*
+                  decoration: InputDecoration(
+                    //labelText: 'التصنيف',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    prefixIcon: Icon(Icons.category),
+                    fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
+                  ),*/ //End edit image icon old
+
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'lib/icons/c.jpeg',
+                            width: 30,
+                            height: 30,
+                          ),
+                          SizedBox(width: 8),
+                        ],
+                      ),
+                    ),
+                    // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    // filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 24.0, horizontal: 24.0),
+                  ),
+
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: 'c1',
+                      child: Text(
+                        'مطاعم',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c2',
+                      child: Text(
+                        'مقاهي',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c6',
+                      child: Text(
+                        'معالم سياحيه',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c5',
+                      child: Text(
+                        'ترفيه',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c4',
+                      child: Text(
+                        'مراكز تجميل',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'c3',
+                      child: Text(
+                        'تسوق',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'اختر التصنيف';
+                    }
+
+                    return null;
+                  },
+                ), // end new
+                SizedBox(height: 20.0),
+                //old
+                /*
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: 'اسم المكان',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(40),
                     ),
                     prefixIcon: Icon(Icons.place),
                     fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
@@ -235,7 +363,43 @@ class _adminEditPlaceState extends State<adminEditPlace> {
 
                     return null;
                   },
+                ),*/ // end old
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'اسم المكان',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+
+                    prefixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            'lib/icons/p.jpeg',
+                            width: 30,
+                            height: 30,
+                            //color: Color.fromARGB(255, 8, 2, 69),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                      ],
+                    ),
+                    // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    // filled: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل اسم المكان';
+                    }
+                    return null;
+                  },
                 ),
+
+// end new
+
                 SizedBox(height: 16.0),
                 /*
               TextFormField(
@@ -258,14 +422,14 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                   return null;
                 },
               ),*/
-
-                TextFormField(
+// old des
+                /*     TextFormField(
                   controller: _descriptionController,
                   maxLines: 3,
                   decoration: InputDecoration(
                     labelText: 'الوصف',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(40),
                     ),
                     prefixIcon: Icon(Icons.description),
                     fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
@@ -278,14 +442,52 @@ class _adminEditPlaceState extends State<adminEditPlace> {
 
                     return null;
                   },
+                ),*/
+                // start new des
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: 'الوصف',
+                    hintText:
+                        'للاستفادة من خدمة كتابة الوصف باستخدام الذكاء الاصطناعي ادخل مثلا: اكتب وصف لمعلم سياحي اسمه حي طريف التاريخي',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(45),
+                    ),
+                    prefixIcon: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            'lib/icons/des.jpeg',
+                            width: 30,
+                            height: 30,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                      ],
+                    ),
+                    //  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    //filled: true,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل الوصف';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 16.0),
+                /*
                 TextFormField(
                   controller: _workingHoursController,
                   decoration: InputDecoration(
                     labelText: 'ساعات العمل',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(40),
                     ),
                     prefixIcon: Icon(Icons.access_time),
                     fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
@@ -298,7 +500,63 @@ class _adminEditPlaceState extends State<adminEditPlace> {
 
                     return null;
                   },
+                ),*/
+
+                // new work hours
+                TextFormField(
+                  controller: _workingHoursController,
+                  decoration: InputDecoration(
+                    labelText: 'ساعات العمل',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Image.asset(
+                        'lib/icons/cl.jpeg',
+                        width: 30,
+                        height: 30,
+                      ),
+                    ),
+                    // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    // filled: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ادخل ساعات العمل';
+                    }
+                    return null;
+                  },
                 ),
+
+                // website
+                SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _websiteController,
+                  decoration: InputDecoration(
+                    labelText: ' الموقع الالكتروني ',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Image.asset(
+                        'lib/icons/web.jpeg',
+                        width: 30,
+                        height: 30,
+                      ),
+                    ),
+                    // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
+                    // filled: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '  ادخل الموقع الالكتروني ';
+                    }
+                    return null;
+                  },
+                ),
+
                 SizedBox(height: 10),
                 Text(
                   'الصور',
@@ -337,7 +595,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                       style: TextButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 66, 49, 76),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(40),
                         ),
                       ),
                     ),
@@ -355,7 +613,7 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                       style: TextButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 66, 49, 76),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(40),
                         ),
                       ),
                     ),
@@ -468,63 +726,69 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                   ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    await imageTest();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => adminViewEdits(
-                            name: _nameController.text,
-                            hours: _workingHoursController.text,
-                            description: _descriptionController.text,
-                            categoryID: _selectedCategory,
-                            imageUrls: this.imageUrls),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    'معاينة صفحة المكان ',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 66, 49, 76),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                  ),
-                ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () async {
-                    // Callback function when the button is pressed
-                    await _submitForm();
-                    if (check) {
+                Container(
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await imageTest();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => adminEditPlace(
-                            placeID: widget.placeID,
-                          ),
+                          builder: (context) => adminViewEdits(
+                              name: _nameController.text,
+                              hours: _workingHoursController.text,
+                              description: _descriptionController.text,
+                              categoryID: _selectedCategory,
+                              imageUrls: this.imageUrls),
                         ),
                       );
-                    }
-                  },
-                  child: Text(
-                    'حفظ التعديلات ',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    },
+                    child: Text(
+                      'معاينة صفحة المكان ',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 66, 49, 76),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40)),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 66, 49, 76),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
+                ),
+                SizedBox(height: 30),
+                Container(
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // Callback function when the button is pressed
+                      await _submitForm();
+                      if (check) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => adminEditPlace(
+                              placeID: widget.placeID,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'حفظ التعديلات ',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 66, 49, 76),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40)),
+                    ),
                   ),
                 ),
               ],
