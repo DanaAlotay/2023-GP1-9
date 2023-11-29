@@ -147,6 +147,7 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:riyadh_guide/screens/signUp.dart';
 import 'package:riyadh_guide/screens/signin.dart';
+import 'package:riyadh_guide/screens/welcome_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -264,13 +265,15 @@ class _HomePageState extends State<HomePage> {
                       child: Center(
                         child: Text(
                           "تسجيل الدخول",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16),
                         ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   FadeInUp(
                     duration: Duration(milliseconds: 1800),
@@ -295,7 +298,9 @@ class _HomePageState extends State<HomePage> {
                       child: Center(
                         child: Text(
                           "انشاء حساب",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16),
                         ),
                       ),
                     ),
@@ -303,6 +308,31 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 20,
                   ),
+                   FadeInUp(
+                    duration: Duration(milliseconds: 1800),
+                  child: Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [
+                       const Text(" أو أكمل الدخول ",
+                        style: TextStyle(
+                        color: Color.fromARGB(200, 83, 56, 97), fontSize: 16)),
+                        
+                         GestureDetector(
+                          onTap: () {
+                           Navigator.push(context,
+                           MaterialPageRoute(builder: (context) => WelcomeScreen()));
+                          },
+                        child: const Text(
+                           " كضيف ",
+                           style: TextStyle(
+                          color: Color.fromARGB(255, 83, 56, 97),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                       ),
+                       )
+                     ],
+                  ),
+                 ),
                 ],
               ),
             ),
