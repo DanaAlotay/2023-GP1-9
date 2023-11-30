@@ -883,7 +883,8 @@ void deletePlaceWithConfirmation(
               // Delete the document
               Navigator.of(context).pop();
               deletePlace(context, placeID);
-              showSnackBar(context, 'تم الحذف بنجاح');
+              showSnackBar(context, 'تم الحذف بنجاح',
+                  Color.fromARGB(181, 203, 145, 210));
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -907,12 +908,25 @@ Future<void> deletePlace(BuildContext context, String placeID) async {
     print('حدث خطأ أثناء الحذف: $e');
   }
 }
-
+/*
 void showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(message),
       backgroundColor: Color.fromARGB(181, 203, 145, 210),
+    ),
+  );
+}
+*/
+
+void showSnackBar(BuildContext context, String message, Color backgroundColor) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: backgroundColor,
     ),
   );
 }

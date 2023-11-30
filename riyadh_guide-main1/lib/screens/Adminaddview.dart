@@ -168,10 +168,15 @@ class _AdminaddbviewState extends State<Adminaddbview> {
                     ),
                     Row(
                       children: [
-                        IconAndTextWidget(
-                            icon: Icons.circle_sharp,
-                            text: categoryNameInarabic,
-                            iconColor: Colors.purple),
+                        Image.asset(
+                          'lib/icons/c.jpeg',
+                          width: 25,
+                          height: 25,
+                        ),
+                        SizedBox(
+                          width: 4,
+                        ),
+                        Text(categoryNameInarabic),
                         SizedBox(
                           width: 20,
                         ),
@@ -210,9 +215,6 @@ class _AdminaddbviewState extends State<Adminaddbview> {
                           ),
                         )
                       ],
-                    ),
-                    SizedBox(
-                      height: 50,
                     ),
                   ],
                 ),

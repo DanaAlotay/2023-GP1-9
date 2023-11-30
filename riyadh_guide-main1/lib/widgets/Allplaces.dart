@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
@@ -44,7 +43,7 @@ class _AllPlacesState extends State<AllPlaces> {
             String openingHours = placeDocument.get('opening_hours').toString();
 
             return InkWell(
-             /* onTap: () {
+              /* onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -107,27 +106,27 @@ class _AllPlacesState extends State<AllPlaces> {
                           child: Row(
                             children: [
                               IconButton(
-                                icon:AppIcon(icon:Icons.edit) ,
+                                icon: AppIcon(icon: Icons.edit),
                                 color: Colors.white,
                                 onPressed: () {
                                   Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                   builder: (context) => adminEditPlace(placeID: placeID),
-                                  ),
-                                 );
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          adminEditPlace(placeID: placeID),
+                                    ),
+                                  );
                                 },
                               ),
-                              
-                                 IconButton(
-                                  icon: AppIcon(icon:Icons.delete),
-                                  color: Color.fromARGB(255, 121, 19, 3),
-                                  onPressed: () {
-                                    // Handle delete action
-                                    deletePlaceWithConfirmation(context, placeID, placeName);
-                                  },
-                                ),
-                              
+                              IconButton(
+                                icon: AppIcon(icon: Icons.delete),
+                                color: Color.fromARGB(255, 121, 19, 3),
+                                onPressed: () {
+                                  // Handle delete action
+                                  deletePlaceWithConfirmation(
+                                      context, placeID, placeName);
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -158,7 +157,9 @@ class _AllPlacesState extends State<AllPlaces> {
                             "للمزيد",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),*/
-                          SizedBox(width: 15,),
+                          SizedBox(
+                            width: 15,
+                          ),
                           Icon(
                             Icons.star,
                             color: Colors.amber,
@@ -168,7 +169,9 @@ class _AllPlacesState extends State<AllPlaces> {
                             "ممتاز",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
-                          SizedBox(width: 40,),
+                          SizedBox(
+                            width: 40,
+                          ),
                           Icon(
                             Icons.schedule,
                             color: Colors.blue,
@@ -178,7 +181,9 @@ class _AllPlacesState extends State<AllPlaces> {
                             openingHours,
                             style: TextStyle(fontWeight: FontWeight.w500),
                           ),
-                          SizedBox(width: 15,),
+                          SizedBox(
+                            width: 15,
+                          ),
                         ],
                       ),
                     ),
@@ -193,13 +198,14 @@ class _AllPlacesState extends State<AllPlaces> {
   }
 }
 
-void deletePlaceWithConfirmation(BuildContext context, String placeID, String placeName) {
+void deletePlaceWithConfirmation(
+    BuildContext context, String placeID, String placeName) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('تأكيد'),
-        content: Text( ' هل أنت متأكد من حذف ' +placeName+'؟'),
+        content: Text(' هل أنت متأكد من حذف ' + placeName + '؟'),
         actions: <Widget>[
           TextButton(
             child: Text('إلغاء'),
@@ -212,15 +218,15 @@ void deletePlaceWithConfirmation(BuildContext context, String placeID, String pl
             onPressed: () async {
               // Delete the document
               Navigator.of(context).pop();
-              deletePlace(context,placeID);
-               showSnackBar(context, 'تم الحذف بنجاح');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdminPlaces(),
-                      ),
-                    );
-             
+              deletePlace(context, placeID);
+              showSnackBar(context, 'تم الحذف بنجاح',
+                  Color.fromARGB(181, 203, 145, 210));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminPlaces(),
+                ),
+              );
             },
           ),
         ],
@@ -234,17 +240,19 @@ Future<void> deletePlace(BuildContext context, String placeID) async {
     DocumentReference placeRef =
         FirebaseFirestore.instance.collection('place').doc(placeID);
     await placeRef.delete();
-
-
   } catch (e) {
     print('حدث خطأ أثناء الحذف: $e');
   }
 }
 
-void showSnackBar(BuildContext context, String message) {
+void showSnackBar(BuildContext context, String message, Color backgroundColor) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(message),
+      content: Text(
+        message,
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: backgroundColor,
     ),
   );
 }
