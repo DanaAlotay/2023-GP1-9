@@ -953,9 +953,3 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     );
   }
 }
-
-void main() {
-  runApp(MaterialApp(
-    home: AddPlaceForm(),
-  ));
-}
