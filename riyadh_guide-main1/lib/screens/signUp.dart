@@ -347,9 +347,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               print("انشاء حساب جديد");
                               // Save user information to Firestore
                               saveUserData(
-                                  value.user?.uid,
-                                  _userNameTextController.text,
-                                  _emailTextController.text);
+                                value.user?.uid,
+                                _userNameTextController.text,
+                                _emailTextController.text,
+                                _selectedBanks,
+                              );
                               // Navigator.pushReplacement(
                               //   context,
                               //   MaterialPageRoute(
@@ -357,7 +359,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               //   ),
                               // );
 
-                              // Assuming you have a Firestore collection named 'user'
                               FirebaseFirestore.instance
                                   .collection('user')
                                   .doc(value.user?.uid)
@@ -585,11 +586,13 @@ String? _validatePassword(String? value) {
 }
 
 // Function to save user data to Firestore
-Future<void> saveUserData(String? userId, String username, String email) async {
+Future<void> saveUserData(String? userId, String username, String email,
+    List<String> selectedBanks) async {
   try {
     await FirebaseFirestore.instance.collection('user').doc(userId).set({
       'name': username,
       'email': email,
+      'cards': selectedBanks,
       'type': "user",
       // Add other fields as needed
     });

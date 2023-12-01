@@ -29,17 +29,17 @@ class _SignInScreenState extends State<SignInScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(),
-                ),
-              );
-            },
-          ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
@@ -117,6 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           _errorMessage = "البريد الإلكتروني غير صالح";
                         });
                       }
+
                       if (_errorMessage != null) {
                         return;
                       }
@@ -167,13 +168,13 @@ class _SignInScreenState extends State<SignInScreen> {
                             "An error occurred during sign in: ${error.toString()}");
                         if (error is FirebaseAuthException) {
                           print("FirebaseAuthException code: ${error.code}");
+                          print("Actual error code: ${error.code}");
                           setState(() {
                             if (error.code == 'user-not-found' ||
                                 error.code == 'wrong-password') {
                               _errorMessage =
                                   "البريد الإلكتروني أو كلمة المرور غير صحيحة";
-                            } else if (error.code ==
-                                'INVALID_LOGIN_CREDENTIALS') {
+                            } else if (error.code == 'invalid-credential') {
                               _errorMessage =
                                   "البريد الإلكتروني أو كلمة المرور غير صحيحة";
                             } else {
@@ -182,6 +183,28 @@ class _SignInScreenState extends State<SignInScreen> {
                           });
                         }
                       });
+                      // }).catchError((error) {
+                      //   print("An error occurred during sign in: $error");
+
+                      //   if (error is FirebaseAuthException) {
+                      //     print("FirebaseAuthException code: ${error.code}");
+                      //     setState(() {
+                      //       if (error.code == 'user-not-found' ||
+                      //           error.code == 'wrong-password') {
+                      //         _errorMessage =
+                      //             "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+                      //         print("email error or pass");
+                      //       } else if (error.code ==
+                      //           'INVALID_LOGIN_CREDENTIALS') {
+                      //         _errorMessage =
+                      //             "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+                      //       } else {
+                      //         _errorMessage =
+                      //             "حدثت مشكلة أثناء تسجيل الدخول: ${error.message}";
+                      //       }
+                      //     });
+                      //   }
+                      // });
                     }),
 
                     const Text("أو تسجيل الدخول من خلال",
