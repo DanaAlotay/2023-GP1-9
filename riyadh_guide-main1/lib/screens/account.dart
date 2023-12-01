@@ -29,7 +29,8 @@ class _accountState extends State<account> {
     super.initState();
     fetchUserData();
   }
-  String uid='';
+
+  String uid = '';
   void fetchUserData() {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -174,7 +175,7 @@ class _accountState extends State<account> {
                       } else if (!hasSpecialCharacter(newPassword)) {
                         setState(() {
                           newPasswordErrorMessage =
-                              ' يجب أن تحتوي على حرف خاص واحدعلى الأقل.';
+                              ' يجب أن تحتوي على حرف خاص واحد.';
                         });
                       } else {
                         // Clear new password error message
@@ -327,8 +328,8 @@ class _accountState extends State<account> {
 
   @override
   Widget build(BuildContext context) {
-    if (uid == ''){
-     return Scaffold(
+    if (uid == '') {
+      return Scaffold(
         appBar: AppBar(
           title: Text('حسابي'),
           backgroundColor: Color.fromARGB(255, 211, 198, 226),
@@ -477,353 +478,356 @@ class _accountState extends State<account> {
             ],
           ),
         ),
-         body: Center(
-    child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Center(
-        child: Text(
-          'أنت لا تملك حساب في دليل الرياض بعد',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      SizedBox(height: 20),
-      Center(
-        child: Text(
-         'اكمل تسجيل الدخول ',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      SizedBox(height: 20),
-      Center(
-        child: SizedBox(
-          width: 250, 
-          height: 55,
-        child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage()
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text(
+                  'أنت لا تملك حساب في دليل الرياض بعد',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: Text(
+                  'اكمل تسجيل الدخول ',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: SizedBox(
+                  width: 250,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    },
+                    child: Text(
+                      ' سجل دخول الأن ',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 232, 231, 233),
                       ),
-                    );
-                  },
-                  child: Text(
-                    ' سجل دخول الأن ',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color:  Color.fromARGB(255, 232, 231, 233),
-                      
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 99, 62, 118),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 99, 62, 118),
-                    shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-        ),
-      ),
-      ),
-    ],
-  ),
-),
-        );
-    }
-    else{
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('حسابي'),
-          backgroundColor: Color.fromARGB(255, 211, 198, 226),
-          automaticallyImplyLeading: false,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              currentTab = 0;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WelcomeScreen(),
-                ),
-              );
-            });
-          },
-          child: Image.asset(
-            'lib/icons/Logo.png',
-          ),
-          backgroundColor: Color.fromARGB(157, 165, 138, 182),
-          elevation: 20.0,
-//mini: true,
-        ),
-        bottomNavigationBar: BottomAppBar(
-          notchMargin: 10,
-          shape: CircularNotchedRectangle(),
-          color: Color.fromARGB(157, 217, 197, 230),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 10.0, left: 10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.account_box),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 1;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => account(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 1 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "حسابي",
-                      style: TextStyle(
-                          color: currentTab == 1 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 2;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => search(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 2 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "البحث",
-                      style: TextStyle(
-                          color: currentTab == 2 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 30.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.newspaper),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 3;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => news(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 3 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "أحداث اليوم",
-                      style: TextStyle(
-                          color: currentTab == 3 ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.favorite),
-                      onPressed: () {
-                        setState(() {
-                          currentTab = 4;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => favourites(),
-                            ),
-                          );
-                        });
-                      },
-                      color: currentTab == 4 ? Colors.white : Colors.black,
-                    ),
-                    Text(
-                      "المفضلة",
-                      style: TextStyle(
-                          color: currentTab == 4 ? Colors.white : Colors.black),
-                    )
-                  ],
                 ),
               ),
             ],
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(40.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      );
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('حسابي'),
+            backgroundColor: Color.fromARGB(255, 211, 198, 226),
+            automaticallyImplyLeading: false,
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                currentTab = 0;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WelcomeScreen(),
+                  ),
+                );
+              });
+            },
+            child: Image.asset(
+              'lib/icons/Logo.png',
+            ),
+            backgroundColor: Color.fromARGB(157, 165, 138, 182),
+            elevation: 20.0,
+//mini: true,
+          ),
+          bottomNavigationBar: BottomAppBar(
+            notchMargin: 10,
+            shape: CircularNotchedRectangle(),
+            color: Color.fromARGB(157, 217, 197, 230),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(50.0),
-                    border: Border.all(
-                      color:
-                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
-                      width: 1.0, // Set the outline width
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: Icon(Icons.person,
-                        color: Color.fromARGB(255, 69, 51, 80)),
-                    title: TextFormField(
-                      readOnly: true,
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'اسم المستخدم',
-                        labelStyle: TextStyle(fontSize: 18.0),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    borderRadius: BorderRadius.circular(50.0),
-                    border: Border.all(
-                      color:
-                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
-                      width: 1.0, // Set the outline width
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.email,
-                      color: Color.fromARGB(255, 69, 51, 80),
-                    ),
-                    title: TextFormField(
-                      readOnly: true,
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'البريد الالكتروني',
-                        labelStyle: TextStyle(fontSize: 18.0),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    borderRadius: BorderRadius.circular(50.0),
-                    border: Border.all(
-                      color:
-                          Color.fromARGB(255, 8, 8, 8), // Set the outline color
-                      width: 1.0, // Set the outline width
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.credit_card,
-                      color: Color.fromARGB(255, 69, 51, 80),
-                    ),
-                    title: TextField(
-                      readOnly: true,
-                      controller: _cardsController,
-                      decoration: InputDecoration(
-                        labelText: 'البطاقات التي لديك للحصول على افضل العروض:',
-                        labelStyle: TextStyle(fontSize: 18.0),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 50.0),
-                ElevatedButton(
-                  onPressed: resetPassword,
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0),
-                      side: BorderSide(
-                        color: const Color.fromARGB(
-                            255, 12, 12, 12), // Set the outline color
-                        width: 1.0, // Set the outline width
-                      ),
-                    ),
-                    padding: EdgeInsets.all(10.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Padding(
+                  padding: EdgeInsets.only(right: 10.0, left: 10.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.lock_outline,
-                        color: Color.fromARGB(255, 69, 51, 80),
+                      IconButton(
+                        icon: Icon(Icons.account_box),
+                        onPressed: () {
+                          setState(() {
+                            currentTab = 1;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => account(),
+                              ),
+                            );
+                          });
+                        },
+                        color: currentTab == 1 ? Colors.white : Colors.black,
                       ),
-                      SizedBox(width: 8.0),
                       Text(
-                        'تغيير كلمة المرور',
+                        "حسابي",
                         style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.black,
-                        ),
-                      ),
+                            color:
+                                currentTab == 1 ? Colors.white : Colors.black),
+                      )
                     ],
                   ),
                 ),
-                SizedBox(height: 20.0),
-                Hero(
-                  tag: 'uniqueTagForFab', // Assign a unique tag
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromARGB(255, 99, 62, 118),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        showSignOutConfirmationDialog(context);
-                      },
-                      icon: Icon(Icons.logout_rounded),
-                      color: Colors.white,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            currentTab = 2;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => search(),
+                              ),
+                            );
+                          });
+                        },
+                        color: currentTab == 2 ? Colors.white : Colors.black,
+                      ),
+                      Text(
+                        "البحث",
+                        style: TextStyle(
+                            color:
+                                currentTab == 2 ? Colors.white : Colors.black),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 30.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.newspaper),
+                        onPressed: () {
+                          setState(() {
+                            currentTab = 3;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => news(),
+                              ),
+                            );
+                          });
+                        },
+                        color: currentTab == 3 ? Colors.white : Colors.black,
+                      ),
+                      Text(
+                        "أحداث اليوم",
+                        style: TextStyle(
+                            color:
+                                currentTab == 3 ? Colors.white : Colors.black),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.favorite),
+                        onPressed: () {
+                          setState(() {
+                            currentTab = 4;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => favourites(),
+                              ),
+                            );
+                          });
+                        },
+                        color: currentTab == 4 ? Colors.white : Colors.black,
+                      ),
+                      Text(
+                        "المفضلة",
+                        style: TextStyle(
+                            color:
+                                currentTab == 4 ? Colors.white : Colors.black),
+                      )
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ));}
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(40.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(50.0),
+                      border: Border.all(
+                        color: Color.fromARGB(
+                            255, 8, 8, 8), // Set the outline color
+                        width: 1.0, // Set the outline width
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Icon(Icons.person,
+                          color: Color.fromARGB(255, 69, 51, 80)),
+                      title: TextFormField(
+                        readOnly: true,
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          labelText: 'اسم المستخدم',
+                          labelStyle: TextStyle(fontSize: 18.0),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(50.0),
+                      border: Border.all(
+                        color: Color.fromARGB(
+                            255, 8, 8, 8), // Set the outline color
+                        width: 1.0, // Set the outline width
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.email,
+                        color: Color.fromARGB(255, 69, 51, 80),
+                      ),
+                      title: TextFormField(
+                        readOnly: true,
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'البريد الالكتروني',
+                          labelStyle: TextStyle(fontSize: 18.0),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(50.0),
+                      border: Border.all(
+                        color: Color.fromARGB(
+                            255, 8, 8, 8), // Set the outline color
+                        width: 1.0, // Set the outline width
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.credit_card,
+                        color: Color.fromARGB(255, 69, 51, 80),
+                      ),
+                      title: TextField(
+                        readOnly: true,
+                        controller: _cardsController,
+                        decoration: InputDecoration(
+                          labelText:
+                              'البطاقات التي لديك للحصول على افضل العروض:',
+                          labelStyle: TextStyle(fontSize: 18.0),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 50.0),
+                  ElevatedButton(
+                    onPressed: resetPassword,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50.0),
+                        side: BorderSide(
+                          color: const Color.fromARGB(
+                              255, 12, 12, 12), // Set the outline color
+                          width: 1.0, // Set the outline width
+                        ),
+                      ),
+                      padding: EdgeInsets.all(10.0),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.lock_outline,
+                          color: Color.fromARGB(255, 69, 51, 80),
+                        ),
+                        SizedBox(width: 8.0),
+                        Text(
+                          'تغيير كلمة المرور',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  Hero(
+                    tag: 'uniqueTagForFab', // Assign a unique tag
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 99, 62, 118),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          showSignOutConfirmationDialog(context);
+                        },
+                        icon: Icon(Icons.logout_rounded),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ));
+    }
   }
 }

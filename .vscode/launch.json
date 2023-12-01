@@ -5,25 +5,34 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Flutter",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "flutterMode": "release"
+        },
+        {
             "name": "riyadh_guide-main1",
             "cwd": "riyadh_guide-main1",
             "request": "launch",
             "type": "dart",
-            "program": "lib/screens/main.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "riyadh_guide-main1 (profile mode)",
             "cwd": "riyadh_guide-main1",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "program": "lib/main.dart"
         },
         {
             "name": "riyadh_guide-main1 (release mode)",
             "cwd": "riyadh_guide-main1",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "program": "lib/main.dart"
         }
     ]
 }

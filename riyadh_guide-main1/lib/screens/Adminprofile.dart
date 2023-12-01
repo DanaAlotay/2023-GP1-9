@@ -164,7 +164,7 @@ class _adminprofile extends State<adminprofile> {
                       } else if (!hasSpecialCharacter(newPassword)) {
                         setState(() {
                           newPasswordErrorMessage =
-                              'يجب أن تحتوي على حرف خاص واحد على الأقل';
+                              'يجب أن تحتوي على حرف خاص واحد ';
                         });
                       } else {
                         // Clear new password error message
