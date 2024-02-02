@@ -28,8 +28,11 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
   final _workingHoursController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
 
-  String? _selectedCategory = 'c1'; // Set a default value
+  final _percentageController = TextEditingController();
 
+  String? _selectedCategory = 'c1'; // Set a default value
+  String? _classificationController = "1";
+  int _percentageValue = 0;
   List<File> _images = []; // List to store the selected images
 
   bool _isLoading = false;
@@ -52,6 +55,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
         'description': _descriptionController.text,
         'opening_hours': _workingHoursController.text,
         'website': _websiteController.text,
+        'classification': _classificationController ?? '',
+        'percentage': _percentageValue,
       };
 
       // Add the place data to Firestore and get the document ID
@@ -99,6 +104,8 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       _descriptionController.clear();
       _workingHoursController.clear();
       _websiteController.clear();
+      _classificationController;
+      _percentageController.clear();
       setState(() {
         bool isDefaultImageSelected = true;
         _images.clear();
@@ -675,6 +682,97 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                   return null;
                 },
               ),
+              SizedBox(height: 18.0),
+// Classification and percentage
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      value: _classificationController,
+                      onChanged: (value) {
+                        setState(() {
+                          _classificationController = value;
+                        });
+                      },
+                      items: [
+                        DropdownMenuItem(
+                          value: "1",
+                          child: Text(
+                            "ممتاز",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "2",
+                          child: Text(
+                            "جيّد",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "3",
+                          child: Text(
+                            "سيء",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "4",
+                          child: Text(
+                            "لم يحدد بعد",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'التصنيف',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        // Add other styling properties as needed
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  /*// Add some spacing between the fields
+                  Expanded(
+                    child: TextFormField(
+                      controller: _percentageController,
+                      decoration: InputDecoration(
+                        labelText: ' نسبة الاعجاب',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.all(8),
+                        ),
+                        // Add other styling properties as needed
+                      ),
+                    ),
+                  ),*/
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          'نسبة الاعجاب بالمكان: ${_percentageValue.toStringAsFixed(0)}',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Slider(
+                          value: _percentageValue.toDouble(),
+                          min: 0,
+                          max: 100,
+                          onChanged: (value) {
+                            setState(() {
+                              _percentageValue = value.toInt();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
 // website
               SizedBox(height: 16.0),
               TextFormField(

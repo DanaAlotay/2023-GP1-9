@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +26,8 @@ class _adminEditPlaceState extends State<adminEditPlace> {
   String description = '';
   String hours = '';
   String website = '';
+  String classi = '';
+  int per = 0;
   bool isLoading = true;
   bool check = false;
 
@@ -50,10 +53,13 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       description = placeData?['description'] ?? '';
       hours = placeData?['opening_hours'] ?? '';
       website = placeData?['website'] ?? '';
+      classi = placeData?['classification'] ?? '';
+      per = placeData?['percentage'] ?? '';
       _nameController.text = name;
       _descriptionController.text = description;
       _workingHoursController.text = hours;
       _websiteController.text = website;
+
       isLoading = false;
     });
   }
@@ -527,7 +533,95 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                     return null;
                   },
                 ),
-
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: classi,
+                        onChanged: (value) {
+                          setState(() {
+                            classi = value!;
+                          });
+                        },
+                        items: [
+                          DropdownMenuItem(
+                            value: "1",
+                            child: Text(
+                              "ممتاز",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: "2",
+                            child: Text(
+                              "جيّد",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: "3",
+                            child: Text(
+                              "سيء",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: "4",
+                            child: Text(
+                              "لم يحدد بعد",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ),
+                        ],
+                        decoration: InputDecoration(
+                          labelText: 'التصنيف',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          // Add other styling properties as needed
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    /*// Add some spacing between the fields
+                  Expanded(
+                    child: TextFormField(
+                      controller: _percentageController,
+                      decoration: InputDecoration(
+                        labelText: ' نسبة الاعجاب',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.all(8),
+                        ),
+                        // Add other styling properties as needed
+                      ),
+                    ),
+                  ),*/
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            'نسبة الاعجاب بالمكان: ${per.toStringAsFixed(0)}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Slider(
+                            value: per.toDouble(),
+                            min: 0,
+                            max: 100,
+                            onChanged: (value) {
+                              setState(() {
+                                per = value.toInt();
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 // website
                 SizedBox(height: 16.0),
                 TextFormField(
@@ -832,6 +926,8 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       String newDescription = _descriptionController.text;
       String NewOpening_hours = _workingHoursController.text;
       String newWebsite = _websiteController.text;
+      String newClass = classi;
+      int newPer = per;
       List<String> newImageUrls = await uploadImages(documentId);
       await documentReference.update({
         'description': newDescription,
@@ -850,6 +946,12 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       });
       await documentReference.update({
         'website': newWebsite,
+      });
+      await documentReference.update({
+        'classification': newClass,
+      });
+      await documentReference.update({
+        'percentage': newPer,
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
