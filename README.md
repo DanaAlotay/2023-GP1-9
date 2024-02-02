@@ -3,21 +3,8 @@
 Riyadh Guide
 
 Introduction
-Vision 2030 aims to make the Saudi capital, Riyadh, a unique and attractive tourist
-destination, offering a rich array of cultural heritage, historical sites, natural wonders,
-and modern landmarks. “We also aim to have Riyadh become among the world’s most
-prominent cities in terms of quality of life, tourism, and services in one way or another,
-“the Crown Prince Mohammed bin Salman said This plan recognizes the great potential
-to attract international visitors and reflects its commitment to creating an enabling
-environment for the development of tourism”. We notice the effort exerted by the
-General Entertainment Authority in attracting tourists and citizens by holding
-entertainment seasons, and establishing places and international restaurants and coffee
-shops. With this development and a large number of places and tourist attractions, we
-notice that people suffer during the process of searching for an interesting place to spend
-time whether on social media or Google map and getting all the information about the
-place. Also, to avoid wasting time while seeking reviews about the place and obtaining an
-honest opinion. The technological solution will help save time and effort while searching for
-places in an efficient way. Moreover, obtaining all the information without contacting the
-authorities or going to them.
+Vision 2030 aims to make the Saudi capital Riyadh a unique and attractive tourist destination. Offering a rich array of cultural heritage, historical sites, natural wonders, and modern landmarks. Vision 2030 also aims to have Riyadh become among the world’s most prominent cities in terms of quality of life, tourism, and services in one way or another. The Kingdom has set an ambitious goal to attract 100 million visitors annually. Crown Prince Mohammed bin Salman said” This plan recognizes the great potential to attract international visitors and reflects its commitment to creating an enabling environment for the development of tourism”. The transformation of Riyadh tourism is not only about attracting visitors but also about ensuring a high quality of life for its residents. With Riyadh EXPO 2030, Riyadh City is inviting the world to share how we all imagine a different future, improving the tourism in Riyadh becomes now more important than ever.
+We noticed the effort exerted by the General Entertainment Authority in attracting tourists and citizens by holding entertainment seasons with a calendar of events and establishing places and international restaurants and coffee shops. With this development and a large number of places and tourist attractions, we notice that people suffer during the process of searching for an interesting place to spend time whether on social media or Google map and face a hard time getting all the information easily and efficiently about the place such as their services and people opinion about it, with the noticeable lack of city guide applications. To avoid wasting time while seeking reviews and information about the place and obtaining an honest opinion, our technological solution is a user-friendly application that helps to save time and effort while searching for places in an efficient way. Our application will help entertainment seekers obtain all the information on events and things to do in Riyadh easily. It will also play a role in promoting tourism and highlighting the events and places of attraction.
 
-Technology Used : Flutter, Python , X(Twitter) API
+
+Technology Used : Flutter, Python, ChatGPT API, Google map data scraper
