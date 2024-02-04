@@ -13,8 +13,10 @@ class adminViewEdits extends StatefulWidget {
   final String categoryID;
   final List<String> imageUrls;
   final String website;
+  final String classification;
+  final int percentage;
 
-  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls, required this.website}) : super(key: key);
+  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls, required this.website, required this.percentage, required this.classification }) : super(key: key);
 
   @override
   _adminViewEditsState createState() => _adminViewEditsState();
@@ -25,6 +27,9 @@ class _adminViewEditsState extends State<adminViewEdits> {
   late DocumentSnapshot? placeData;
   String categoryName = '';
   String categoryNameInarabic = '';
+  String classText ='';
+  String face ='';
+
 
   @override
   void initState() {
@@ -37,6 +42,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
  
     // Fetch the category name based on categoryID
     final categoryID = widget.categoryID;
+    
     final categoryDocument = await FirebaseFirestore.instance
         .collection('category')
         .doc(categoryID)
@@ -60,7 +66,22 @@ class _adminViewEditsState extends State<adminViewEdits> {
     } else {
       categoryNameInarabic = 'سياحة';
     }
+
+    if (widget.classification == "1") {
+      classText = 'ممتاز';
+      face = 'lib/icons/happiness.png';
+    } else if (widget.classification == "2") {
+      classText = 'جيد';
+      face = 'lib/icons/neutral.png';
+    } else if (widget.classification == "3") {
+      classText = 'سيء';
+      face = 'lib/icons/sad.png';
+    } else {
+      classText = '';
+      face = 'lib/icons/empty-set.png';
+       }
   }
+  
 
    Future<void> _launchUrl() async {
     final Uri _url = Uri.parse(widget.website);
@@ -147,10 +168,27 @@ class _adminViewEditsState extends State<adminViewEdits> {
                           SizedBox(
                             width: 10,
                           ),
-                          Text("4.5"),
-                          SizedBox(
+                            Text((classText == '' ? '' :'التقييم: $classText'), style: TextStyle(
+                          
+                          fontWeight: FontWeight
+                              .bold, 
+                        ),),
+                            SizedBox(
                             width: 10,
                           ),
+                             Image.asset(
+                            face,
+                            width: 20,
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text((widget.percentage == 0 ? '' :  widget.percentage.toString() + '%'+' اعجبهم هذا المكان'), style: TextStyle(
+                        
+                          fontWeight: FontWeight
+                              .bold, 
+                        ),)
                         ],
                       ),
                       SizedBox(
