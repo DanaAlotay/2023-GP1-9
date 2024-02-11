@@ -29,6 +29,10 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
   String categoryName = '';
   String categoryNameInarabic = '';
+  String classification = '';
+  String classText = '';
+  int percentageValue = 0;
+  String face = '';
 
   @override
   void initState() {
@@ -50,6 +54,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
     setState(() {
       placeData = placeDocument;
       imageUrls = List<String>.from(placeData?['images'] ?? []);
+      classification = placeData?['classification'] ?? '';
+      percentageValue = placeData?['percentage'] ?? 0;
     });
 
     // Fetch the category name based on categoryID
@@ -76,6 +82,20 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       categoryNameInarabic = 'ترفيه';
     } else {
       categoryNameInarabic = 'سياحة';
+    }
+
+    if (classification == "1") {
+      classText = 'ممتاز';
+      face = 'lib/icons/happiness.png';
+    } else if (classification == "2") {
+      classText = 'جيد';
+      face = 'lib/icons/neutral.png';
+    } else if (classification == "3") {
+      classText = 'سيء';
+      face = 'lib/icons/sad.png';
+    } else {
+      classText = '';
+      face = 'lib/icons/empty-set.png';
     }
   }
 
@@ -301,6 +321,34 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                           SizedBox(width: 10),
                           Text("4.5"),
                           SizedBox(width: 10),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            (classText == '' ? '' : 'التقييم: $classText'),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Image.asset(
+                            face,
+                            width: 20,
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            (percentageValue == 0
+                                ? ''
+                                : ' $percentageValue% اعجبهم هذا المكان'),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                         ],
                       ),
                       SizedBox(height: 20),

@@ -833,7 +833,9 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                               description: _descriptionController.text,
                               categoryID: _selectedCategory,
                               imageUrls: this.imageUrls,
-                              website: this._websiteController.text),
+                              website: this._websiteController.text,
+                              percentage: this.per,
+                              classification: this.classi,),
                         ),
                       );
                     },

@@ -214,6 +214,23 @@ class _CategoryScreenState extends State<category> {
               itemBuilder: (context, index) {
                 DocumentSnapshot placeDocument = snapshot.data!.docs[index];
                 String placeName = placeDocument.get('name').toString();
+                String classification = placeDocument.get('classification').toString();
+                String classText ='';
+                String face = '';
+                     if (classification == "1") {
+                      classText = 'ممتاز';
+                      face = 'lib/icons/happiness.png';
+                      } else if (classification == "2") {
+                      classText = 'جيد';
+                      face = 'lib/icons/neutral.png';
+                      } else if (classification == "3") {
+                      classText = 'سيء';
+                      face = 'lib/icons/sad.png';
+                      } else {
+                       classText = 'لم يحدد بعد';
+                       face = 'lib/icons/empty-set.png';
+                      }
+
                 String placeID = placeDocument.get('placeID').toString();
                 List<dynamic> imageArray = placeDocument.get('images') ?? [];
                 String placeImage =
@@ -229,6 +246,8 @@ class _CategoryScreenState extends State<category> {
                       ),
                     );
                   },
+                  
+                  
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
@@ -307,13 +326,13 @@ class _CategoryScreenState extends State<category> {
                               SizedBox(
                                 width: 15,
                               ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: 20,
-                              ),
+                               Image.asset(
+                            face,
+                            width: 20,
+                            height: 20,
+                          ),
                               Text(
-                                "ممتاز",
+                                classText,
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
                               SizedBox(
