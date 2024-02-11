@@ -319,8 +319,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                       Row(
                         children: [
                           SizedBox(width: 10),
-                          Text("4.5"),
-                          SizedBox(width: 10),
                           SizedBox(
                             width: 10,
                           ),
