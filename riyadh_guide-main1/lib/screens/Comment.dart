@@ -212,6 +212,7 @@ class _CommentPageState extends State<CommentPage> {
                     ),
                   ),
                 ),
+                /*
                 TextButton(
                   child: Text(
                     'ارسل',
@@ -221,6 +222,21 @@ class _CommentPageState extends State<CommentPage> {
                     ),
                   ),
                   onPressed: _addComment,
+                ),*/
+                Tooltip(
+                  message: 'ارسل',
+                  textStyle: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.send,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: _addComment,
+                  ),
                 ),
               ],
             ),
