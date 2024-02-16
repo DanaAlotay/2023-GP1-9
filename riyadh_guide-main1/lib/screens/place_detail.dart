@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
+import 'package:riyadh_guide/screens/home_screen.dart';
 import 'package:riyadh_guide/screens/news.dart';
 import 'package:riyadh_guide/screens/search.dart';
 import 'package:riyadh_guide/screens/Comment.dart';
@@ -257,7 +258,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       ),
       body: Align(
         alignment: Alignment.topCenter,
-        child: Stack(
+        child: SingleChildScrollView(
+          child:Column(
           children: [
             Positioned(
               left: 0,
@@ -399,21 +401,179 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         ],
                       ),
                       SizedBox(height: 50),
+                      OfferSection(),
                       CommentPage(
                         placeID: ' ${widget.placeID}',
                       ),
                     ],
                   ),
+                  
                 ),
+                
               ),
             ),
+            
+         
             //CommentPage(),
           ],
         ),
       ),
+      ),
     );
   }
 }
+
+
+//*********************Offer***************************************Offer****************************/
+
+class OfferSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Check if the user is authenticated
+    User? user = FirebaseAuth.instance.currentUser;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(0, 2), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'العروض',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          // Display offers if the user is authenticated
+          if (user != null)
+            Column(
+              children: [
+                OfferBox(
+                  company: ' بنك الراجحي',
+                  discount: 15,
+                  logoPath: 'lib/icons/ahlilogoR.png',
+                  isFirstBox: true,
+                ),
+                OfferBox(
+                  company: 'نافع',
+                  discount: 20,
+                  logoPath: 'lib/icons/sablogo.png',
+                ),
+                // Add more offers as needed
+              ],
+            ),
+          // Show a message or redirect to login if the user is not authenticated
+          if (user == null)
+          Center(
+            child:
+          ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    },
+                    child: Text(
+                    'سجل الدخول لعرض العروض الخاصة بك',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 232, 231, 233),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 99, 62, 118),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                  ),
+          ),
+          
+        ],
+      ),
+    );
+  }
+}
+
+
+class OfferBox extends StatelessWidget {
+  final String company;
+  final int discount;
+  final String logoPath;
+  final bool isFirstBox;
+
+  OfferBox({required this.company, required this.discount, required this.logoPath, this.isFirstBox = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          margin: EdgeInsets.only(bottom: 8),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: isFirstBox ? Color.fromARGB(255, 221, 52, 0) : Colors.grey,
+              width: isFirstBox ? 2.0 : 1.0,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    logoPath,
+                    height: 24,
+                    width: 24,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'عرض $company',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text('نسبة الخصم $discount%'),
+            ],
+          ),
+        ),
+        if (isFirstBox) // Display logo only for the first box
+          Positioned(
+            top: -6,
+            left: 8,
+            
+            child: Image.asset(
+              'lib/icons/BestOfferLogo3_1.png',
+              height: 80,
+              width: 80,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+
+
+
+
 
 //Final code
 /*
