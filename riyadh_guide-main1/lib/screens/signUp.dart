@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   'ولاء بلس', 
   'نافع',
   'يور باي',
-  'اس تي سي'];
+  'اس تي سي باي'];
   List<String> _selectedBanks = [];
   String? _selectedBank;
   //for email checking
@@ -51,7 +51,7 @@ Map<String, String> _bankImages = {
   'ولاء بلس': 'lib/icons/wallogo.png',
   'نافع': 'lib/icons/naflogo.png',
  'يور باي': 'lib/icons/urlogo.png',
-   'اس تي سي': 'lib/icons/paylogo.png',
+   'اس تي سي باي': 'lib/icons/stlogo.png',
   // Add more banks and their corresponding image paths as needed
 };
   final _formKey = GlobalKey<FormState>();
@@ -535,7 +535,7 @@ class _BanksCheckListState extends State<BanksCheckList> {
                     'بنك الراجحي',
                     style: TextStyle(
                       color: Color.fromARGB(255, 106, 57, 117),
-                      fontSize: 16,
+                      fontSize: 14.5,
                     ),
                   ),
                 ],
@@ -560,7 +560,7 @@ class _BanksCheckListState extends State<BanksCheckList> {
                         childBank,
                         style: TextStyle(
                           color: Color.fromARGB(255, 106, 57, 117),
-                          fontSize: 16,
+                          fontSize: 14.5,
                         ),
                       ),
                     ],
@@ -603,7 +603,7 @@ class _BanksCheckListState extends State<BanksCheckList> {
                                   bank,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 106, 57, 117),
-                                    fontSize: 16,
+                                    fontSize: 14.5,
                                   ),
                                 ),
                               ],
