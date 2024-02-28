@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riyadh_guide/screens/AdminOffers.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/Adminprofile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -227,6 +228,30 @@ class MyAdminHomePage extends StatelessWidget {
                         );
                       },
                       child: Text(' إدارة الأماكن'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 66, 49, 76),
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width - 40, 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              30), // Adjust the radius here
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 11),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Handle the Places button click action here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdminOffers(),
+                          ),
+                        );
+                      },
+                      child: Text(' إدارة العروض'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 66, 49, 76),
                         minimumSize:

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:riyadh_guide/main.dart ' as app;
 
 import 'package:riyadh_guide/firebase_options.dart';
+import 'package:riyadh_guide/screens/AdminAddOffer.dart';
+import 'package:riyadh_guide/screens/AdminOffers.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
