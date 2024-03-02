@@ -140,6 +140,7 @@ void _showDeleteCardDialog(BuildContext context) {
                                             .doc(uid)
                                             .update({'cards': userSelectedBanks});
 // Close the first dialogs
+Navigator.of(context).pop(); 
                                     Navigator.of(context).pop(); 
                                       // Close the first dialog
                                        //Navigator.of(context).pop();
