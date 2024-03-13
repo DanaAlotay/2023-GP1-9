@@ -499,11 +499,15 @@ class _OfferSectionState extends State<OfferSection> {
  
   // Map that associates each provider with its logo path
   Map<String, String> providerLogoPaths = {
-    'P': 'lib/icons/logo_provider1.png',
-    'Provider2': 'lib/icons/logo_provider2.png',
-    'Provider3': 'lib/icons/logo_provider3.png',
-    'Provider4': 'lib/icons/logo_provider4.png',
-    'Provider5': 'lib/icons/logo_provider5.png',
+     'بنك الراجحي': 'lib/icons/rajlogoR.png',
+    'بريميوم': 'lib/icons/rajlogoR.png',
+    'الائتمانية': 'lib/icons/rajlogoR.png',
+  'بنك الاهلي': 'lib/icons/ahlilogoR.png',
+  'بنك ساب': 'lib/icons/sablogo.png',
+  'ولاء بلس': 'lib/icons/wallogo.png',
+  'نافع': 'lib/icons/naflogo.png',
+ 'يور باي': 'lib/icons/urlogo.png',
+   'اس تي سي باي': 'lib/icons/stlogo.png',
   };
 
 
@@ -583,17 +587,20 @@ class _OfferSectionState extends State<OfferSection> {
       // Sort offers based on discount percentage in descending order
       validOffers.sort((a, b) => b['discount'].compareTo(a['discount']));
 
-      List<OfferBox> offerBoxes = validOffers.asMap().entries.map((entry) {
-        int index = entry.key;
-        DocumentSnapshot offerDoc = entry.value;
+   List<OfferBox> offerBoxes = validOffers.asMap().entries.map((entry) {
+  int index = entry.key;
+  DocumentSnapshot offerDoc = entry.value;
+  
+  // Use the provider name to get the corresponding logo path from the map
+  String logoPath = providerLogoPaths[offerDoc['provider']] ?? 'lib/icons/default_logo.png'; // Provide a default logo path
 
-        return OfferBox(
-          company: offerDoc['provider'],
-          discount: offerDoc['discount'],
-          logoPath: 'lib/icons/ahlilogoR.png', // Ensure you have the correct path for your assets
-          isFirstBox: index == 0, // Mark only the first box after sorting
-        );
-      }).toList();
+  return OfferBox(
+    company: offerDoc['provider'],
+    discount: offerDoc['discount'],
+    logoPath: logoPath, // Set the logo path based on the provider
+    isFirstBox: index == 0,
+  );
+}).toList();
 
       if (offerBoxes.isEmpty) {
         return Text('لا توجد عروض متاحة حالياً.');
