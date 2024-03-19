@@ -43,8 +43,15 @@ class _PlaceDetailsState extends State<PlaceDetails> {
     CommentPage(
       placeID: ' ${widget.placeID}',
     );
+    
     placeData = null;
+   
   }
+
+   
+  
+
+
 
   Future<void> _fetchPlaceData() async {
     // Fetch place data from Firebase Firestore based on the placeID
@@ -419,7 +426,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                         ],
                       ),
                       SizedBox(height: 50),*/
-                      OfferSection(),
+                      OfferSection(  placeID: '${widget.placeID}',),
 
                       ////////////////////////google map//////////////////////////////
                       if (location != null)
@@ -479,84 +486,202 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
 //*********************Offer***************************************Offer****************************/
 
-class OfferSection extends StatelessWidget {
+class OfferService {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
+
+  Future<User?> getCurrentUser() async {
+    return _auth.currentUser;
+  }
+
+  Future<List<String>> getUserCards() async {
+    
+    User? user = await getCurrentUser();
+    if (user != null) {
+      try {
+        DocumentSnapshot userSnapshot =
+            await _firestore.collection('user').doc(user.uid).get();
+        List<String> cards = List<String>.from(userSnapshot['cards']);
+        return cards;
+      } catch (e) {
+        print("Error fetching user data: $e");
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+ Future<List<DocumentSnapshot>> getOffersForCardsAndPlace(
+  List<String> userCards, String placeID) async {
+  try {
+    print(placeID);
+    QuerySnapshot offersSnapshot = await _firestore
+          .collection('offer')
+          .where('provider', whereIn: userCards)
+          .where('placeID', isEqualTo: placeID)
+          .get();
+
+    print('Offers filtered by placeID: ${offersSnapshot.docs.map((doc) => doc.data())}');
+
+    return offersSnapshot.docs;
+  } catch (e) {
+    print("Error fetching offers: $e");
+    return [];
+  }
+}
+
+}
+
+
+
+
+class OfferSection extends StatefulWidget {
+  final String placeID;
+
+  OfferSection({required this.placeID});
+
+  @override
+  _OfferSectionState createState() => _OfferSectionState();
+}
+
+class _OfferSectionState extends State<OfferSection> {
+  final OfferService offerService = OfferService();
+ late String currentPlaceID = ''; // Initialize with a default value
+
+ 
+  // Map that associates each provider with its logo path
+  Map<String, String> providerLogoPaths = {
+     'بنك الراجحي': 'lib/icons/rajlogoR.png',
+    'بريميوم': 'lib/icons/rajlogoR.png',
+    'الائتمانية': 'lib/icons/rajlogoR.png',
+  'بنك الاهلي': 'lib/icons/ahlilogoR.png',
+  'بنك ساب': 'lib/icons/sablogo.png',
+  'ولاء بلس': 'lib/icons/wallogo.png',
+  'نافع': 'lib/icons/naflogo.png',
+ 'يور باي': 'lib/icons/urlogo.png',
+   'اس تي سي باي': 'lib/icons/stlogo.png',
+  };
+
+
+  @override
+  void initState() {
+    super.initState();
+  currentPlaceID = widget.placeID;  // Update to use widget.placeID
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Check if the user is authenticated
-    User? user = FirebaseAuth.instance.currentUser;
+    return FutureBuilder(
+      future: offerService.getCurrentUser(),
+      builder: (context, AsyncSnapshot<User?> userSnapshot) {
+        
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // or a loading indicator
+        } else if (userSnapshot.hasError) {
+          return Text('Error: ${userSnapshot.error}');
+        } else if (userSnapshot.data == null) {
+          // User is not authenticated
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              },
+              child: Text(
+                'سجل الدخول لعرض العروض الخاصة بك',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromARGB(255, 232, 231, 233),
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Color.fromARGB(255, 99, 62, 118),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+            ),
+          );
+        } else {
+          // User is authenticated
+          return FutureBuilder(
+            future: offerService.getUserCards(),
+            builder: (context, AsyncSnapshot<List<String>> cardsSnapshot) {
+              if (cardsSnapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator(); // or a loading indicator
+              } else if (cardsSnapshot.hasError) {
+                return Text('Error: ${cardsSnapshot.error}');
+              } else {
+                // Fetch offers based on user's cards and current placeID
+                List<String> userCards = cardsSnapshot.data!;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: Offset(0, 2), // changes position of shadow
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+          return FutureBuilder(
+  future: offerService.getOffersForCardsAndPlace(userCards, currentPlaceID),
+  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> offersSnapshot) {
+    if (offersSnapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator(); // or a loading indicator
+    } else if (offersSnapshot.hasError) {
+      return Text('Error: ${offersSnapshot.error}');
+    } else {
+      // Get current date
+      DateTime now = DateTime.now();
+
+      // Filter offers that are within the start and end date
+      List<DocumentSnapshot> validOffers = offersSnapshot.data!.where((DocumentSnapshot document) {
+        DateTime startDate = (document['startDate'] as Timestamp).toDate();
+        DateTime endDate = (document['endDate'] as Timestamp).toDate();
+        return now.isAfter(startDate) && now.isBefore(endDate);
+      }).toList();
+
+      // Sort offers based on discount percentage in descending order
+      validOffers.sort((a, b) => b['discount'].compareTo(a['discount']));
+
+   List<OfferBox> offerBoxes = validOffers.asMap().entries.map((entry) {
+  int index = entry.key;
+  DocumentSnapshot offerDoc = entry.value;
+  
+  // Use the provider name to get the corresponding logo path from the map
+  String logoPath = providerLogoPaths[offerDoc['provider']] ?? 'lib/icons/default_logo.png'; // Provide a default logo path
+
+  return OfferBox(
+    company: offerDoc['provider'],
+    discount: offerDoc['discount'],
+    logoPath: logoPath, // Set the logo path based on the provider
+    isFirstBox: index == 0,
+  );
+}).toList();
+
+      if (offerBoxes.isEmpty) {
+        return Text('لا توجد عروض متاحة حالياً.');
+      }
+
+      return Column(
         children: [
           Text(
-            'العروض',
+            'العروض المتاحة',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
-          // Display offers if the user is authenticated
-          if (user != null)
-            Column(
-              children: [
-                OfferBox(
-                  company: ' بنك الراجحي',
-                  discount: 15,
-                  logoPath: 'lib/icons/ahlilogoR.png',
-                  isFirstBox: true,
-                ),
-                OfferBox(
-                  company: 'نافع',
-                  discount: 20,
-                  logoPath: 'lib/icons/sablogo.png',
-                ),
-                // Add more offers as needed
-              ],
-            ),
-          // Show a message or redirect to login if the user is not authenticated
-          if (user == null)
-          Center(
-            child:
-          ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                          SizedBox(height: 10),
+                          Column(
+                            children: offerBoxes,
+                          ),
+                        ],
                       );
-                    },
-                    child: Text(
-                    'سجل الدخول لعرض العروض الخاصة بك',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 232, 231, 233),
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 99, 62, 118),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                  ),
-          ),
-          
-        ],
-      ),
+                    }
+                  },
+                );
+              }
+            },
+          );
+        }
+      },
     );
   }
 }
