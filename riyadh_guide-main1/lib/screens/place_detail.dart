@@ -430,6 +430,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
                       ////////////////////////google map//////////////////////////////
                       if (location != null)
+                      SizedBox(height: 16),
                       Visibility(
                        visible: location != null,
                         child:Container(
