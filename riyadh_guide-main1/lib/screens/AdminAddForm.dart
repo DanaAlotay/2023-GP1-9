@@ -26,14 +26,19 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
   final _descriptionController = TextEditingController();
 
   final _workingHoursController = TextEditingController();
-  final TextEditingController _websiteController = TextEditingController();
 
   final _percentageController = TextEditingController();
+
+  final _latitudeController = TextEditingController();
+  final _longitudeController = TextEditingController();
+
+  //final _googleMapsLinkController = TextEditingController();
 
   String? _selectedCategory = 'c1'; // Set a default value
   String? _classificationController = "1";
   int _percentageValue = 0;
   List<File> _images = []; // List to store the selected images
+  GeoPoint? _location;
 
   bool _isLoading = false;
   bool isDefaultImageSelected = true;
@@ -43,10 +48,18 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     isDefaultImageSelected = true; // Initialize the variable
   }
 
+  
+
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      //_parseGoogleMapsLink();
+      double latitude = double.parse(_latitudeController.text);
+      double longitude = double.parse(_longitudeController.text);
+      setState(() {
+        _location = GeoPoint(latitude, longitude);
+      });
       _formKey.currentState!.save();
-
+      
       // Save the form data to the database
 
       final placeData = {
@@ -54,9 +67,9 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
         'name': _nameController.text,
         'description': _descriptionController.text,
         'opening_hours': _workingHoursController.text,
-        'website': _websiteController.text,
         'classification': _classificationController ?? '',
         'percentage': _percentageValue,
+        'location': _location,
       };
 
       // Add the place data to Firestore and get the document ID
@@ -103,9 +116,10 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
       _nameController.clear();
       _descriptionController.clear();
       _workingHoursController.clear();
-      _websiteController.clear();
       _classificationController;
       _percentageController.clear();
+      _latitudeController.clear();
+      _longitudeController.clear();
       setState(() {
         bool isDefaultImageSelected = true;
         _images.clear();
@@ -113,8 +127,34 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
     }
   }
 
-// For secuirty Reasons chatgpt key stored in db
+ // Function to parse Google Maps link and extract latitude and longitude
+ /* void _parseGoogleMapsLink() async {
+    String? googleMapsLink = _googleMapsLinkController.text;
 
+    if (googleMapsLink != null && googleMapsLink.isNotEmpty) {
+      // Check if the link starts with 'https://www.google.com/maps/'
+      if (googleMapsLink.startsWith('https://www.google.com/maps/')) {
+        // Extract latitude and longitude from the link
+        List<String> parts = googleMapsLink.split('/@')[1].split(',');
+        double latitude = double.parse(parts[0]);
+        double longitude = double.parse(parts[1]);
+        
+        setState(() {
+          _location = GeoPoint(latitude, longitude);
+        });
+        
+        // Update latitude and longitude text fields if needed
+        // _latitudeController.text = latitude.toString();
+        // _longitudeController.text = longitude.toString();
+      } else {
+        // Invalid Google Maps link
+        // Show an error message or handle accordingly
+      }
+    }
+  }*/
+
+
+// For secuirty Reasons chatgpt key stored in db
   Future<String?> getApiKey() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection('api_keys')
@@ -773,12 +813,74 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ],
               ),
 
-// website
+
               SizedBox(height: 16.0),
-              TextFormField(
-                controller: _websiteController,
+
+              Row(
+                children: [
+                  Image.asset(
+                    'lib/icons/pin.png',
+                      width: 30,
+                      height: 30,),
+                  Text(
+                    'معلومات الموقع الجغرافي:',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _latitudeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Latitude',
+                            contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+                            border: OutlineInputBorder(
+                             borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'أدخل latitude';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 16.0), // Adjust the spacing between fields
+                      Expanded(
+                        child: TextFormField(
+                          controller: _longitudeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Longitude',
+                            contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+                            border: OutlineInputBorder(
+                             borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'أدخل longitude';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+
+             /* TextFormField(
+                controller: _googleMapsLinkController,
                 decoration: InputDecoration(
-                  labelText: ' الموقع الالكتروني ',
+                  labelText: 'رابط الموقع',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(40),
                   ),
@@ -795,11 +897,11 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '  ادخل الموقع الالكتروني ';
+                    return 'ادخل رابط الموقع';
                   }
                   return null;
                 },
-              ),
+              ),*/
 
               SizedBox(height: 10),
               Text(

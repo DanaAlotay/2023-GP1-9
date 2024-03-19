@@ -12,6 +12,7 @@ import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PlaceDetails extends StatefulWidget {
   final String placeID;
@@ -27,7 +28,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
   late DocumentSnapshot? placeData;
   List<String> imageUrls = [];
-
+  LatLng? location;
   String categoryName = '';
   String categoryNameInarabic = '';
   String classification = '';
@@ -57,6 +58,13 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       imageUrls = List<String>.from(placeData?['images'] ?? []);
       classification = placeData?['classification'] ?? '';
       percentageValue = placeData?['percentage'] ?? 0;
+      final geoPoint = placeData?['location'];
+      if (geoPoint != null){
+      final latitude = geoPoint.latitude;
+      final longitude = geoPoint.longitude;
+      location = LatLng(latitude, longitude);
+      }
+      else{ location = null;}
     });
 
     // Fetch the category name based on categoryID
@@ -96,8 +104,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       face = 'lib/icons/sad.png';
     } else {
       classText = '';
-      face = 'lib/icons/empty-set.png';
-    }
+      face = '';
+       }
   }
 
   Future<void> _launchUrl() async {
@@ -256,7 +264,16 @@ class _PlaceDetailsState extends State<PlaceDetails> {
           ],
         ),
       ),
-      body: Align(
+      body: FutureBuilder(
+      future: Future.delayed(Duration(seconds: 2)), // Wait for 3 seconds
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a circular loading indicator while waiting
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+      return Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           child:Column(
@@ -333,6 +350,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                           SizedBox(
                             width: 10,
                           ),
+                          if(face != '')
                           Image.asset(
                             face,
                             width: 20,
@@ -378,7 +396,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                       ),
                       Text(placeData?['description'] ?? ''),
                       SizedBox(height: 20),
-                      Row(
+                     /* Row(
                         children: [
                           const Text(
                             " للتواصل ولمزيد من المعلومات يرجى زيارة",
@@ -400,8 +418,40 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 50),
+                      SizedBox(height: 50),*/
                       OfferSection(),
+
+                      ////////////////////////google map//////////////////////////////
+                      if (location != null)
+                      Visibility(
+                       visible: location != null,
+                        child:Container(
+                          height: 200,
+                          child: GestureDetector(
+                           onTap: () {
+                        final url = 'https://www.google.com/maps/search/?api=1&query=${location!.latitude},${location!.longitude}';
+                         launch(url);
+                         },
+                         child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                             target: location!,
+                              zoom: 13.0,
+                             ),
+                             markers: {
+                              Marker(
+                              markerId: MarkerId('placeLocation'),
+                              position: location!,
+                            icon: BitmapDescriptor.defaultMarker,
+                            ),
+                          },
+                         ),
+                        ),
+                      ), 
+                      ),
+
+                      SizedBox(height: 20,),
+                      /////////////////////////////////////////////////////////////////////
+
                       CommentPage(
                         placeID: ' ${widget.placeID}',
                       ),
@@ -418,7 +468,10 @@ class _PlaceDetailsState extends State<PlaceDetails> {
           ],
         ),
       ),
-      ),
+      );
+    }
+      },
+    ),
     );
   }
 }
@@ -568,6 +621,7 @@ class OfferBox extends StatelessWidget {
       ],
     );
   }
+  
 }
 
 
