@@ -3,6 +3,10 @@
         android:label="riyadh_guide"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyAJaYpwa5z9P61L9h0_JR-d3yoqMfDNhHY"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -31,3 +35,4 @@
             android:value="2" />
     </application>
 </manifest>
+<!--API key: AIzaSyAJaYpwa5z9P61L9h0_JR-d3yoqMfDNhHY -->

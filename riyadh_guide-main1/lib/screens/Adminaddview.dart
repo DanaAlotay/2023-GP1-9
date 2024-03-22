@@ -83,7 +83,7 @@ class _AdminaddbviewState extends State<Adminaddbview> {
       face = 'lib/icons/sad.png';
     } else {
       classText = '';
-      face = 'lib/icons/empty-set.png';
+      face = '';
        }
   }
 
@@ -185,6 +185,7 @@ class _AdminaddbviewState extends State<Adminaddbview> {
                             SizedBox(
                             width: 10,
                           ),
+                            if(face != '')
                              Image.asset(
                             face,
                             width: 20,
@@ -235,7 +236,7 @@ class _AdminaddbviewState extends State<Adminaddbview> {
                     SizedBox(
                       height: 20,
                     ),
-                    Row(
+                   /* Row(
                       children: [
                         const Text(" للتواصل ولمزيد من المعلومات يرجى زيارة",
                             style: TextStyle(
@@ -252,7 +253,7 @@ class _AdminaddbviewState extends State<Adminaddbview> {
                           ),
                         )
                       ],
-                    ),
+                    ),*/
                   ],
                 ),
               ),

@@ -12,11 +12,10 @@ class adminViewEdits extends StatefulWidget {
   final String description;
   final String categoryID;
   final List<String> imageUrls;
-  final String website;
   final String classification;
   final int percentage;
 
-  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls, required this.website, required this.percentage, required this.classification }) : super(key: key);
+  const adminViewEdits({Key? key, required this.name, required this.hours, required this.description, required this.categoryID, required this.imageUrls,  required this.percentage, required this.classification }) : super(key: key);
 
   @override
   _adminViewEditsState createState() => _adminViewEditsState();
@@ -78,17 +77,17 @@ class _adminViewEditsState extends State<adminViewEdits> {
       face = 'lib/icons/sad.png';
     } else {
       classText = '';
-      face = 'lib/icons/empty-set.png';
+      face = '';
        }
   }
   
 
-   Future<void> _launchUrl() async {
+   /*Future<void> _launchUrl() async {
     final Uri _url = Uri.parse(widget.website);
   if (!await launchUrl(_url)) {
     throw Exception('Could not launch $_url');
   }
-}
+}*/
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +97,16 @@ class _adminViewEditsState extends State<adminViewEdits> {
           backgroundColor: Color.fromARGB(255, 66, 49, 76), ),
 
 
-      body: 
+      body: FutureBuilder(
+      future: Future.delayed(Duration(seconds: 2)), // Wait for 3 seconds
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a circular loading indicator while waiting
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+      return 
       Stack(
         children: [
           Positioned(
@@ -176,6 +184,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                             SizedBox(
                             width: 10,
                           ),
+                          if(face != '')
                              Image.asset(
                             face,
                             width: 20,
@@ -223,7 +232,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                           )),
                       Text(widget.description),
 
-                       SizedBox(height: 20,),
+                      /* SizedBox(height: 20,),
 
                    Row(
                    
@@ -246,7 +255,7 @@ class _adminViewEditsState extends State<adminViewEdits> {
                        ),
                        )
                      ],
-                  ),
+                  ),*/
                         
                         SizedBox(height: 50,),
 
@@ -254,6 +263,10 @@ class _adminViewEditsState extends State<adminViewEdits> {
                   ),
                 )))
       ],
-    ));
+      );
+        }
+      },
+    )
+    );
   }
 }
