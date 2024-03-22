@@ -31,7 +31,7 @@ class _CommentPageState extends State<CommentPage> {
     fetchComments();
   }
 
-  /*void fetchComments() { old
+  /*void fetchComments() { old h
     String placeId = widget.placeID; // Replace with the actual place ID
 
     if (placeId.isNotEmpty) {
