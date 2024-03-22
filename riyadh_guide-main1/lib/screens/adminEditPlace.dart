@@ -25,8 +25,11 @@ class _adminEditPlaceState extends State<adminEditPlace> {
   String name = '';
   String description = '';
   String hours = '';
-  String website = '';
+  //String website = '';
   String classi = '';
+  GeoPoint?location;
+  String latitude ='';
+  String longitude = '';
   int per = 0;
   bool isLoading = true;
   bool check = false;
@@ -52,13 +55,18 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       name = placeData?['name'] ?? '';
       description = placeData?['description'] ?? '';
       hours = placeData?['opening_hours'] ?? '';
-      website = placeData?['website'] ?? '';
+      //website = placeData?['website'] ?? '';
       classi = placeData?['classification'] ?? '';
       per = placeData?['percentage'] ?? '';
+      location = placeData?['location'];
+      latitude = (location?.latitude).toString();
+      longitude = (location?.longitude).toString();
       _nameController.text = name;
       _descriptionController.text = description;
       _workingHoursController.text = hours;
-      _websiteController.text = website;
+      //_websiteController.text = website;
+      _latitudeController.text = latitude;
+      _longitudeController.text = longitude;
 
       isLoading = false;
     });
@@ -72,6 +80,8 @@ class _adminEditPlaceState extends State<adminEditPlace> {
   final _descriptionController = TextEditingController();
   final _workingHoursController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
+  final _latitudeController = TextEditingController();
+  final _longitudeController = TextEditingController();
   List<File> _images = [];
 
   Future<List<String>> uploadImages(String placeId) async {
@@ -624,31 +634,65 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                 ),
                 // website
                 SizedBox(height: 16.0),
-                TextFormField(
-                  controller: _websiteController,
-                  decoration: InputDecoration(
-                    labelText: ' الموقع الالكتروني ',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(40),
+              Row(
+                children: [
+                  Image.asset(
+                    'lib/icons/pin.png',
+                      width: 30,
+                      height: 30,),
+                  Text(
+                    'معلومات الموقع الجغرافي:',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Image.asset(
-                        'lib/icons/web.jpeg',
-                        width: 30,
-                        height: 30,
-                      ),
-                    ),
-                    // fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
-                    // filled: true,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '  ادخل الموقع الالكتروني ';
-                    }
-                    return null;
-                  },
-                ),
+                ],
+              ),
+              SizedBox(height: 8.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _latitudeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Latitude',
+                            contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+                            border: OutlineInputBorder(
+                             borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'أدخل latitude';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 16.0), // Adjust the spacing between fields
+                      Expanded(
+                        child: TextFormField(
+                          controller: _longitudeController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Longitude',
+                            contentPadding: EdgeInsets.symmetric(horizontal: 30.0),
+                            border: OutlineInputBorder(
+                             borderRadius: BorderRadius.circular(40),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'أدخل longitude';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
 
                 SizedBox(height: 10),
                 Text(
@@ -833,7 +877,6 @@ class _adminEditPlaceState extends State<adminEditPlace> {
                               description: _descriptionController.text,
                               categoryID: _selectedCategory,
                               imageUrls: this.imageUrls,
-                              website: this._websiteController.text,
                               percentage: this.per,
                               classification: this.classi,),
                         ),
@@ -930,31 +973,21 @@ class _adminEditPlaceState extends State<adminEditPlace> {
       String newWebsite = _websiteController.text;
       String newClass = classi;
       int newPer = per;
+      double newLat = double.parse(_latitudeController.text);
+      double newLong = double.parse(_longitudeController.text);
+      GeoPoint newLocation = GeoPoint(newLat, newLong);
       List<String> newImageUrls = await uploadImages(documentId);
       await documentReference.update({
         'description': newDescription,
-      });
-      await documentReference.update({
         'name': newName,
-      });
-      await documentReference.update({
         'opening_hours': NewOpening_hours,
-      });
-      await documentReference.update({
         'categoryID': newCategoryID,
-      });
-      await documentReference.update({
         'images': newImageUrls,
-      });
-      await documentReference.update({
-        'website': newWebsite,
-      });
-      await documentReference.update({
         'classification': newClass,
-      });
-      await documentReference.update({
         'percentage': newPer,
+        'location' : newLocation,
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('تم التعديل بنجاح '),
