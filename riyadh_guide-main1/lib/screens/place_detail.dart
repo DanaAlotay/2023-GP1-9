@@ -12,6 +12,8 @@ import 'package:riyadh_guide/widgets/app_icon.dart';
 import 'package:riyadh_guide/widgets/icon_and_text_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 class PlaceDetails extends StatefulWidget {
   final String placeID;
@@ -27,7 +29,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
   late DocumentSnapshot? placeData;
   List<String> imageUrls = [];
-
+  LatLng? location;
   String categoryName = '';
   String categoryNameInarabic = '';
   String classification = '';
@@ -42,9 +44,15 @@ class _PlaceDetailsState extends State<PlaceDetails> {
     CommentPage(
       placeID: ' ${widget.placeID}',
     );
-
+    
     placeData = null;
+   
   }
+
+   
+  
+
+
 
   Future<void> _fetchPlaceData() async {
     // Fetch place data from Firebase Firestore based on the placeID
@@ -58,6 +66,13 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       imageUrls = List<String>.from(placeData?['images'] ?? []);
       classification = placeData?['classification'] ?? '';
       percentageValue = placeData?['percentage'] ?? 0;
+      final geoPoint = placeData?['location'];
+      if (geoPoint != null){
+      final latitude = geoPoint.latitude;
+      final longitude = geoPoint.longitude;
+      location = LatLng(latitude, longitude);
+      }
+      else{ location = null;}
     });
 
     // Fetch the category name based on categoryID
@@ -97,8 +112,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       face = 'lib/icons/sad.png';
     } else {
       classText = '';
-      face = 'lib/icons/empty-set.png';
-    }
+      face = '';
+       }
   }
 
   Future<void> _launchUrl() async {
@@ -257,183 +272,233 @@ class _PlaceDetailsState extends State<PlaceDetails> {
           ],
         ),
       ),
-      body: Align(
+      body: FutureBuilder(
+      future: Future.delayed(Duration(seconds: 2)), // Wait for 3 seconds
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a circular loading indicator while waiting
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+      return Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Positioned(
-                left: 0,
-                right: 0,
-                child: Container(
-                  width: double.maxFinite,
-                  height: 350,
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      height: 250,
-                      enlargeCenterPage: true,
-                      autoPlay: true,
-                      enableInfiniteScroll: true,
-                    ),
-                    items: imageUrls
-                        .map((url) => ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.network(
-                                url,
-                                fit: BoxFit.cover,
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ))
-                        .toList(),
+          child:Column(
+          children: [
+            Positioned(
+              left: 0,
+              right: 0,
+              child: Container(
+                width: double.maxFinite,
+                height: 350,
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 250,
+                    enlargeCenterPage: true,
+                    autoPlay: true,
+                    enableInfiniteScroll: true,
                   ),
+                  items: imageUrls
+                      .map((url) => ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              url,
+                              fit: BoxFit.cover,
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                          ))
+                      .toList(),
                 ),
               ),
-              Positioned(
-                top: 45,
-                left: 20,
-                child: AppIcon(icon: Icons.favorite),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                top: 330, // Image dimension
-                child: Container(
-                  padding: const EdgeInsets.only(left: 9, right: 9, top: 9),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      topLeft: Radius.circular(20),
-                    ),
-                    color: Colors.white,
+            ),
+            Positioned(
+              top: 45,
+              left: 20,
+              child: AppIcon(icon: Icons.favorite),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              top: 330, // Image dimension
+              child: Container(
+                padding: const EdgeInsets.only(left: 9, right: 9, top: 9),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20),
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          placeData?['name'] ?? '',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        placeData?['name'] ?? '',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          SizedBox(width: 10),
+                          SizedBox(
+                            width: 10,
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            SizedBox(width: 10),
-                            SizedBox(
-                              width: 10,
+                          Text(
+                            (classText == '' ? '' : 'التقييم: $classText'),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                            Text(
-                              (classText == '' ? '' : 'التقييم: $classText'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Image.asset(
-                              face,
-                              width: 20,
-                              height: 20,
-                            ),
-                            SizedBox(
-                              width: 40,
-                            ),
-                            Text(
-                              (percentageValue == 0
-                                  ? ''
-                                  : ' $percentageValue% اعجبهم هذا المكان'),
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Image.asset(
-                              'lib/icons/c.jpeg',
-                              width: 25,
-                              height: 25,
-                            ),
-                            SizedBox(width: 4),
-                            Text(categoryNameInarabic),
-                            SizedBox(width: 20),
-                            IconAndTextWidget(
-                              icon: Icons.access_time_rounded,
-                              text: placeData?['opening_hours'] ?? '',
-                              iconColor: Colors.pinkAccent,
-                            ),
-                          ],
-                        ),
-                        Text(
-                          "الوصف",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
                           ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          if(face != '')
+                          Image.asset(
+                            face,
+                            width: 20,
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Text(
+                            (percentageValue == 0
+                                ? ''
+                                : ' $percentageValue% اعجبهم هذا المكان'),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Image.asset(
+                            'lib/icons/c.jpeg',
+                            width: 25,
+                            height: 25,
+                          ),
+                          SizedBox(width: 4),
+                          Text(categoryNameInarabic),
+                          SizedBox(width: 20),
+                          IconAndTextWidget(
+                            icon: Icons.access_time_rounded,
+                            text: placeData?['opening_hours'] ?? '',
+                            iconColor: Colors.pinkAccent,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        "الوصف",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(placeData?['description'] ?? ''),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            const Text(
-                              " للتواصل ولمزيد من المعلومات يرجى زيارة",
+                      ),
+                      Text(placeData?['description'] ?? ''),
+                      SizedBox(height: 20),
+                     /* Row(
+                        children: [
+                          const Text(
+                            " للتواصل ولمزيد من المعلومات يرجى زيارة",
+                            style: TextStyle(
+                              color: Color.fromARGB(200, 83, 56, 97),
+                              fontSize: 15,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: _launchUrl,
+                            child: const Text(
+                              " موقعهم من هنا ",
                               style: TextStyle(
-                                color: Color.fromARGB(200, 83, 56, 97),
+                                color: Color.fromARGB(255, 83, 56, 97),
+                                fontWeight: FontWeight.bold,
                                 fontSize: 15,
                               ),
                             ),
-                            GestureDetector(
-                              onTap: _launchUrl,
-                              child: const Text(
-                                " موقعهم من هنا ",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 83, 56, 97),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 50),
-                        CommentPage(
-                          placeID: '${widget.placeID}',
-                        ),
-                        OfferSection(
-                          placeID: '${widget.placeID}',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 50),*/
+                      OfferSection(  placeID: '${widget.placeID}',),
 
-              //CommentPage(),
-            ],
-          ),
+                      ////////////////////////google map//////////////////////////////
+                      if (location != null)
+                      SizedBox(height: 16),
+                      Visibility(
+                       visible: location != null,
+                        child:Container(
+                          height: 200,
+                          child: GestureDetector(
+                           onTap: () {
+                        final url = 'https://www.google.com/maps/search/?api=1&query=${location!.latitude},${location!.longitude}';
+                         launch(url);
+                         },
+                         child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                             target: location!,
+                              zoom: 13.0,
+                             ),
+                             markers: {
+                              Marker(
+                              markerId: MarkerId('placeLocation'),
+                              position: location!,
+                            icon: BitmapDescriptor.defaultMarker,
+                            ),
+                          },
+                         ),
+                        ),
+                      ), 
+                      ),
+
+                      SizedBox(height: 20,),
+                      /////////////////////////////////////////////////////////////////////
+
+                      CommentPage(
+                        placeID: ' ${widget.placeID}',
+                      ),
+                    ],
+                  ),
+                  
+                ),
+                
+              ),
+            ),
+            
+         
+            //CommentPage(),
+          ],
         ),
       ),
+      );
+    }
+      },
+    ),
     );
   }
 }
+
 
 //*********************Offer***************************************Offer****************************/
 
 class OfferService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
 
   Future<User?> getCurrentUser() async {
     return _auth.currentUser;
   }
 
   Future<List<String>> getUserCards() async {
+    
     User? user = await getCurrentUser();
     if (user != null) {
       try {
@@ -449,27 +514,29 @@ class OfferService {
       return [];
     }
   }
-
-  Future<List<DocumentSnapshot>> getOffersForCardsAndPlace(
-      List<String> userCards, String placeID) async {
-    try {
-      print(placeID);
-      QuerySnapshot offersSnapshot = await _firestore
+ Future<List<DocumentSnapshot>> getOffersForCardsAndPlace(
+  List<String> userCards, String placeID) async {
+  try {
+    print(placeID);
+    QuerySnapshot offersSnapshot = await _firestore
           .collection('offer')
           .where('provider', whereIn: userCards)
           .where('placeID', isEqualTo: placeID)
           .get();
 
-      print(
-          'Offers filtered by placeID: ${offersSnapshot.docs.map((doc) => doc.data())}');
+    print('Offers filtered by placeID: ${offersSnapshot.docs.map((doc) => doc.data())}');
 
-      return offersSnapshot.docs;
-    } catch (e) {
-      print("Error fetching offers: $e");
-      return [];
-    }
+    return offersSnapshot.docs;
+  } catch (e) {
+    print("Error fetching offers: $e");
+    return [];
   }
 }
+
+}
+
+
+
 
 class OfferSection extends StatefulWidget {
   final String placeID;
@@ -482,25 +549,27 @@ class OfferSection extends StatefulWidget {
 
 class _OfferSectionState extends State<OfferSection> {
   final OfferService offerService = OfferService();
-  late String currentPlaceID = ''; // Initialize with a default value
+ late String currentPlaceID = ''; // Initialize with a default value
 
+ 
   // Map that associates each provider with its logo path
   Map<String, String> providerLogoPaths = {
-    'بنك الراجحي': 'lib/icons/rajlogoR.png',
+     'بنك الراجحي': 'lib/icons/rajlogoR.png',
     'بريميوم': 'lib/icons/rajlogoR.png',
     'الائتمانية': 'lib/icons/rajlogoR.png',
-    'بنك الاهلي': 'lib/icons/ahlilogoR.png',
-    'بنك ساب': 'lib/icons/sablogo.png',
-    'ولاء بلس': 'lib/icons/wallogo.png',
-    'نافع': 'lib/icons/naflogo.png',
-    'يور باي': 'lib/icons/urlogo.png',
-    'اس تي سي باي': 'lib/icons/stlogo.png',
+  'بنك الاهلي': 'lib/icons/ahlilogoR.png',
+  'بنك ساب': 'lib/icons/sablogo.png',
+  'ولاء بلس': 'lib/icons/wallogo.png',
+  'نافع': 'lib/icons/naflogo.png',
+ 'يور باي': 'lib/icons/urlogo.png',
+   'اس تي سي باي': 'lib/icons/stlogo.png',
   };
+
 
   @override
   void initState() {
     super.initState();
-    currentPlaceID = widget.placeID; // Update to use widget.placeID
+  currentPlaceID = widget.placeID;  // Update to use widget.placeID
   }
 
   @override
@@ -508,6 +577,7 @@ class _OfferSectionState extends State<OfferSection> {
     return FutureBuilder(
       future: offerService.getCurrentUser(),
       builder: (context, AsyncSnapshot<User?> userSnapshot) {
+        
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // or a loading indicator
         } else if (userSnapshot.hasError) {
@@ -551,66 +621,55 @@ class _OfferSectionState extends State<OfferSection> {
                 // Fetch offers based on user's cards and current placeID
                 List<String> userCards = cardsSnapshot.data!;
 
-                return FutureBuilder(
-                  future: offerService.getOffersForCardsAndPlace(
-                      userCards, currentPlaceID),
-                  builder: (context,
-                      AsyncSnapshot<List<DocumentSnapshot>> offersSnapshot) {
-                    if (offersSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return CircularProgressIndicator(); // or a loading indicator
-                    } else if (offersSnapshot.hasError) {
-                      return Text('Error: ${offersSnapshot.error}');
-                    } else {
-                      // Get current date
-                      DateTime now = DateTime.now();
+          return FutureBuilder(
+  future: offerService.getOffersForCardsAndPlace(userCards, currentPlaceID),
+  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> offersSnapshot) {
+    if (offersSnapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator(); // or a loading indicator
+    } else if (offersSnapshot.hasError) {
+      return Text('Error: ${offersSnapshot.error}');
+    } else {
+      // Get current date
+      DateTime now = DateTime.now();
 
-                      // Filter offers that are within the start and end date
-                      List<DocumentSnapshot> validOffers = offersSnapshot.data!
-                          .where((DocumentSnapshot document) {
-                        DateTime startDate =
-                            (document['startDate'] as Timestamp).toDate();
-                        DateTime endDate =
-                            (document['endDate'] as Timestamp).toDate();
-                        return now.isAfter(startDate) && now.isBefore(endDate);
-                      }).toList();
+      // Filter offers that are within the start and end date
+      List<DocumentSnapshot> validOffers = offersSnapshot.data!.where((DocumentSnapshot document) {
+        DateTime startDate = (document['startDate'] as Timestamp).toDate();
+        DateTime endDate = (document['endDate'] as Timestamp).toDate();
+        return now.isAfter(startDate) && now.isBefore(endDate);
+      }).toList();
 
-                      // Sort offers based on discount percentage in descending order
-                      validOffers.sort(
-                          (a, b) => b['discount'].compareTo(a['discount']));
+      // Sort offers based on discount percentage in descending order
+      validOffers.sort((a, b) => b['discount'].compareTo(a['discount']));
 
-                      List<OfferBox> offerBoxes =
-                          validOffers.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        DocumentSnapshot offerDoc = entry.value;
+   List<OfferBox> offerBoxes = validOffers.asMap().entries.map((entry) {
+  int index = entry.key;
+  DocumentSnapshot offerDoc = entry.value;
+  
+  // Use the provider name to get the corresponding logo path from the map
+  String logoPath = providerLogoPaths[offerDoc['provider']] ?? 'lib/icons/default_logo.png'; // Provide a default logo path
 
-                        // Use the provider name to get the corresponding logo path from the map
-                        String logoPath = providerLogoPaths[
-                                offerDoc['provider']] ??
-                            'lib/icons/default_logo.png'; // Provide a default logo path
+  return OfferBox(
+    company: offerDoc['provider'],
+    discount: offerDoc['discount'],
+    logoPath: logoPath, // Set the logo path based on the provider
+    isFirstBox: index == 0,
+  );
+}).toList();
 
-                        return OfferBox(
-                          company: offerDoc['provider'],
-                          discount: offerDoc['discount'],
-                          logoPath:
-                              logoPath, // Set the logo path based on the provider
-                          isFirstBox: index == 0,
-                        );
-                      }).toList();
+      if (offerBoxes.isEmpty) {
+        return Text('لا توجد عروض متاحة حالياً.');
+      }
 
-                      if (offerBoxes.isEmpty) {
-                        return Text('لا توجد عروض متاحة حالياً.');
-                      }
-
-                      return Column(
-                        children: [
-                          Text(
-                            'العروض المتاحة',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+      return Column(
+        children: [
+          Text(
+            'العروض المتاحة',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
                           SizedBox(height: 10),
                           Column(
                             children: offerBoxes,
@@ -629,17 +688,14 @@ class _OfferSectionState extends State<OfferSection> {
   }
 }
 
+
 class OfferBox extends StatelessWidget {
   final String company;
   final int discount;
   final String logoPath;
   final bool isFirstBox;
 
-  OfferBox(
-      {required this.company,
-      required this.discount,
-      required this.logoPath,
-      this.isFirstBox = false});
+  OfferBox({required this.company, required this.discount, required this.logoPath, this.isFirstBox = false});
 
   @override
   Widget build(BuildContext context) {
@@ -682,6 +738,7 @@ class OfferBox extends StatelessWidget {
           Positioned(
             top: -6,
             left: 8,
+            
             child: Image.asset(
               'lib/icons/BestOfferLogo3_1.png',
               height: 80,
@@ -691,6 +748,7 @@ class OfferBox extends StatelessWidget {
       ],
     );
   }
+  
 }
 
 
