@@ -31,7 +31,7 @@ class _CommentPageState extends State<CommentPage> {
     fetchComments();
   }
 
-  void fetchComments() {
+  /*void fetchComments() { old
     String placeId = widget.placeID; // Replace with the actual place ID
 
     if (placeId.isNotEmpty) {
@@ -69,6 +69,46 @@ class _CommentPageState extends State<CommentPage> {
       });
     }
   }
+*/
+  void fetchComments() async {
+    String placeId = widget.placeID; // Replace with the actual place ID
+
+    if (placeId.isNotEmpty) {
+      // Get a reference to the Firestore collection
+      CollectionReference commentsCollection =
+          FirebaseFirestore.instance.collection('comments');
+
+      try {
+        QuerySnapshot snapshot =
+            await commentsCollection.where('placeId', isEqualTo: placeId).get();
+
+        List<Map<String, dynamic>> comments = [];
+
+        for (QueryDocumentSnapshot doc in snapshot.docs) {
+          String commentId = doc.id;
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          String userId = data['userId'] as String;
+          String comment = data['comment'] as String;
+
+          // Fetch the username from the user collection based on userId
+          String username = await fetchUsername(userId);
+
+          comments.add({
+            'id': commentId, // Added commentId to the comment data
+            'username': username,
+            'comment': comment,
+            'userid': userId,
+          });
+        }
+
+        setState(() {
+          _comments = comments;
+        });
+      } catch (error) {
+        print('Failed to fetch comments: $error');
+      }
+    }
+  }
 
   Future<String> fetchUsername(String userId) async {
     // Get a reference to the Firestore collection
@@ -81,7 +121,20 @@ class _CommentPageState extends State<CommentPage> {
     String username = userData['name'] as String;
 
     return username;
+  } /* old
+  Future<String> fetchUsername(String userId) async {
+    // Get a reference to the Firestore collection
+    CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('user');
+
+    // Fetch the username from the user collection based on userId
+    DocumentSnapshot userSnapshot = await usersCollection.doc(userId).get();
+    Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>;
+    String username = userData['name'] as String;
+
+    return username;
   }
+*/
 
   String getCurrentUserId() {
     String currentUserId = '';

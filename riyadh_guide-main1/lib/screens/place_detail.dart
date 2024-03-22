@@ -42,15 +42,9 @@ class _PlaceDetailsState extends State<PlaceDetails> {
     CommentPage(
       placeID: ' ${widget.placeID}',
     );
-    
+
     placeData = null;
-   
   }
-
-   
-  
-
-
 
   Future<void> _fetchPlaceData() async {
     // Fetch place data from Firebase Firestore based on the placeID
@@ -266,184 +260,180 @@ class _PlaceDetailsState extends State<PlaceDetails> {
       body: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child:Column(
-          children: [
-            Positioned(
-              left: 0,
-              right: 0,
-              child: Container(
-                width: double.maxFinite,
-                height: 350,
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: 250,
-                    enlargeCenterPage: true,
-                    autoPlay: true,
-                    enableInfiniteScroll: true,
+          child: Column(
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                child: Container(
+                  width: double.maxFinite,
+                  height: 350,
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      height: 250,
+                      enlargeCenterPage: true,
+                      autoPlay: true,
+                      enableInfiniteScroll: true,
+                    ),
+                    items: imageUrls
+                        .map((url) => ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                url,
+                                fit: BoxFit.cover,
+                                width: MediaQuery.of(context).size.width,
+                              ),
+                            ))
+                        .toList(),
                   ),
-                  items: imageUrls
-                      .map((url) => ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.network(
-                              url,
-                              fit: BoxFit.cover,
-                              width: MediaQuery.of(context).size.width,
-                            ),
-                          ))
-                      .toList(),
                 ),
               ),
-            ),
-            Positioned(
-              top: 45,
-              left: 20,
-              child: AppIcon(icon: Icons.favorite),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              top: 330, // Image dimension
-              child: Container(
-                padding: const EdgeInsets.only(left: 9, right: 9, top: 9),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20),
+              Positioned(
+                top: 45,
+                left: 20,
+                child: AppIcon(icon: Icons.favorite),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 330, // Image dimension
+                child: Container(
+                  padding: const EdgeInsets.only(left: 9, right: 9, top: 9),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20),
+                    ),
+                    color: Colors.white,
                   ),
-                  color: Colors.white,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        placeData?['name'] ?? '',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          placeData?['name'] ?? '',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          SizedBox(width: 10),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            (classText == '' ? '' : 'التقييم: $classText'),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            SizedBox(width: 10),
+                            SizedBox(
+                              width: 10,
                             ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Image.asset(
-                            face,
-                            width: 20,
-                            height: 20,
-                          ),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Text(
-                            (percentageValue == 0
-                                ? ''
-                                : ' $percentageValue% اعجبهم هذا المكان'),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Image.asset(
-                            'lib/icons/c.jpeg',
-                            width: 25,
-                            height: 25,
-                          ),
-                          SizedBox(width: 4),
-                          Text(categoryNameInarabic),
-                          SizedBox(width: 20),
-                          IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: placeData?['opening_hours'] ?? '',
-                            iconColor: Colors.pinkAccent,
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "الوصف",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(placeData?['description'] ?? ''),
-                      SizedBox(height: 20),
-                      Row(
-                        children: [
-                          const Text(
-                            " للتواصل ولمزيد من المعلومات يرجى زيارة",
-                            style: TextStyle(
-                              color: Color.fromARGB(200, 83, 56, 97),
-                              fontSize: 15,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: _launchUrl,
-                            child: const Text(
-                              " موقعهم من هنا ",
+                            Text(
+                              (classText == '' ? '' : 'التقييم: $classText'),
                               style: TextStyle(
-                                color: Color.fromARGB(255, 83, 56, 97),
                                 fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Image.asset(
+                              face,
+                              width: 20,
+                              height: 20,
+                            ),
+                            SizedBox(
+                              width: 40,
+                            ),
+                            Text(
+                              (percentageValue == 0
+                                  ? ''
+                                  : ' $percentageValue% اعجبهم هذا المكان'),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Image.asset(
+                              'lib/icons/c.jpeg',
+                              width: 25,
+                              height: 25,
+                            ),
+                            SizedBox(width: 4),
+                            Text(categoryNameInarabic),
+                            SizedBox(width: 20),
+                            IconAndTextWidget(
+                              icon: Icons.access_time_rounded,
+                              text: placeData?['opening_hours'] ?? '',
+                              iconColor: Colors.pinkAccent,
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "الوصف",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(placeData?['description'] ?? ''),
+                        SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Text(
+                              " للتواصل ولمزيد من المعلومات يرجى زيارة",
+                              style: TextStyle(
+                                color: Color.fromARGB(200, 83, 56, 97),
                                 fontSize: 15,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 50),
-                      OfferSection(  placeID: '${widget.placeID}',),
-                      CommentPage(
-                        placeID: ' ${widget.placeID}',
-                      ),
-                    ],
+                            GestureDetector(
+                              onTap: _launchUrl,
+                              child: const Text(
+                                " موقعهم من هنا ",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 83, 56, 97),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 50),
+                        CommentPage(
+                          placeID: '${widget.placeID}',
+                        ),
+                        OfferSection(
+                          placeID: '${widget.placeID}',
+                        ),
+                      ],
+                    ),
                   ),
-                  
                 ),
-                
               ),
-            ),
-            
-         
-            //CommentPage(),
-          ],
+
+              //CommentPage(),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
 }
-
 
 //*********************Offer***************************************Offer****************************/
 
 class OfferService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
 
   Future<User?> getCurrentUser() async {
     return _auth.currentUser;
   }
 
   Future<List<String>> getUserCards() async {
-    
     User? user = await getCurrentUser();
     if (user != null) {
       try {
@@ -459,29 +449,27 @@ class OfferService {
       return [];
     }
   }
- Future<List<DocumentSnapshot>> getOffersForCardsAndPlace(
-  List<String> userCards, String placeID) async {
-  try {
-    print(placeID);
-    QuerySnapshot offersSnapshot = await _firestore
+
+  Future<List<DocumentSnapshot>> getOffersForCardsAndPlace(
+      List<String> userCards, String placeID) async {
+    try {
+      print(placeID);
+      QuerySnapshot offersSnapshot = await _firestore
           .collection('offer')
           .where('provider', whereIn: userCards)
           .where('placeID', isEqualTo: placeID)
           .get();
 
-    print('Offers filtered by placeID: ${offersSnapshot.docs.map((doc) => doc.data())}');
+      print(
+          'Offers filtered by placeID: ${offersSnapshot.docs.map((doc) => doc.data())}');
 
-    return offersSnapshot.docs;
-  } catch (e) {
-    print("Error fetching offers: $e");
-    return [];
+      return offersSnapshot.docs;
+    } catch (e) {
+      print("Error fetching offers: $e");
+      return [];
+    }
   }
 }
-
-}
-
-
-
 
 class OfferSection extends StatefulWidget {
   final String placeID;
@@ -494,27 +482,25 @@ class OfferSection extends StatefulWidget {
 
 class _OfferSectionState extends State<OfferSection> {
   final OfferService offerService = OfferService();
- late String currentPlaceID = ''; // Initialize with a default value
+  late String currentPlaceID = ''; // Initialize with a default value
 
- 
   // Map that associates each provider with its logo path
   Map<String, String> providerLogoPaths = {
-     'بنك الراجحي': 'lib/icons/rajlogoR.png',
+    'بنك الراجحي': 'lib/icons/rajlogoR.png',
     'بريميوم': 'lib/icons/rajlogoR.png',
     'الائتمانية': 'lib/icons/rajlogoR.png',
-  'بنك الاهلي': 'lib/icons/ahlilogoR.png',
-  'بنك ساب': 'lib/icons/sablogo.png',
-  'ولاء بلس': 'lib/icons/wallogo.png',
-  'نافع': 'lib/icons/naflogo.png',
- 'يور باي': 'lib/icons/urlogo.png',
-   'اس تي سي باي': 'lib/icons/stlogo.png',
+    'بنك الاهلي': 'lib/icons/ahlilogoR.png',
+    'بنك ساب': 'lib/icons/sablogo.png',
+    'ولاء بلس': 'lib/icons/wallogo.png',
+    'نافع': 'lib/icons/naflogo.png',
+    'يور باي': 'lib/icons/urlogo.png',
+    'اس تي سي باي': 'lib/icons/stlogo.png',
   };
-
 
   @override
   void initState() {
     super.initState();
-  currentPlaceID = widget.placeID;  // Update to use widget.placeID
+    currentPlaceID = widget.placeID; // Update to use widget.placeID
   }
 
   @override
@@ -522,7 +508,6 @@ class _OfferSectionState extends State<OfferSection> {
     return FutureBuilder(
       future: offerService.getCurrentUser(),
       builder: (context, AsyncSnapshot<User?> userSnapshot) {
-        
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // or a loading indicator
         } else if (userSnapshot.hasError) {
@@ -566,55 +551,66 @@ class _OfferSectionState extends State<OfferSection> {
                 // Fetch offers based on user's cards and current placeID
                 List<String> userCards = cardsSnapshot.data!;
 
-          return FutureBuilder(
-  future: offerService.getOffersForCardsAndPlace(userCards, currentPlaceID),
-  builder: (context, AsyncSnapshot<List<DocumentSnapshot>> offersSnapshot) {
-    if (offersSnapshot.connectionState == ConnectionState.waiting) {
-      return CircularProgressIndicator(); // or a loading indicator
-    } else if (offersSnapshot.hasError) {
-      return Text('Error: ${offersSnapshot.error}');
-    } else {
-      // Get current date
-      DateTime now = DateTime.now();
+                return FutureBuilder(
+                  future: offerService.getOffersForCardsAndPlace(
+                      userCards, currentPlaceID),
+                  builder: (context,
+                      AsyncSnapshot<List<DocumentSnapshot>> offersSnapshot) {
+                    if (offersSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return CircularProgressIndicator(); // or a loading indicator
+                    } else if (offersSnapshot.hasError) {
+                      return Text('Error: ${offersSnapshot.error}');
+                    } else {
+                      // Get current date
+                      DateTime now = DateTime.now();
 
-      // Filter offers that are within the start and end date
-      List<DocumentSnapshot> validOffers = offersSnapshot.data!.where((DocumentSnapshot document) {
-        DateTime startDate = (document['startDate'] as Timestamp).toDate();
-        DateTime endDate = (document['endDate'] as Timestamp).toDate();
-        return now.isAfter(startDate) && now.isBefore(endDate);
-      }).toList();
+                      // Filter offers that are within the start and end date
+                      List<DocumentSnapshot> validOffers = offersSnapshot.data!
+                          .where((DocumentSnapshot document) {
+                        DateTime startDate =
+                            (document['startDate'] as Timestamp).toDate();
+                        DateTime endDate =
+                            (document['endDate'] as Timestamp).toDate();
+                        return now.isAfter(startDate) && now.isBefore(endDate);
+                      }).toList();
 
-      // Sort offers based on discount percentage in descending order
-      validOffers.sort((a, b) => b['discount'].compareTo(a['discount']));
+                      // Sort offers based on discount percentage in descending order
+                      validOffers.sort(
+                          (a, b) => b['discount'].compareTo(a['discount']));
 
-   List<OfferBox> offerBoxes = validOffers.asMap().entries.map((entry) {
-  int index = entry.key;
-  DocumentSnapshot offerDoc = entry.value;
-  
-  // Use the provider name to get the corresponding logo path from the map
-  String logoPath = providerLogoPaths[offerDoc['provider']] ?? 'lib/icons/default_logo.png'; // Provide a default logo path
+                      List<OfferBox> offerBoxes =
+                          validOffers.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        DocumentSnapshot offerDoc = entry.value;
 
-  return OfferBox(
-    company: offerDoc['provider'],
-    discount: offerDoc['discount'],
-    logoPath: logoPath, // Set the logo path based on the provider
-    isFirstBox: index == 0,
-  );
-}).toList();
+                        // Use the provider name to get the corresponding logo path from the map
+                        String logoPath = providerLogoPaths[
+                                offerDoc['provider']] ??
+                            'lib/icons/default_logo.png'; // Provide a default logo path
 
-      if (offerBoxes.isEmpty) {
-        return Text('لا توجد عروض متاحة حالياً.');
-      }
+                        return OfferBox(
+                          company: offerDoc['provider'],
+                          discount: offerDoc['discount'],
+                          logoPath:
+                              logoPath, // Set the logo path based on the provider
+                          isFirstBox: index == 0,
+                        );
+                      }).toList();
 
-      return Column(
-        children: [
-          Text(
-            'العروض المتاحة',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+                      if (offerBoxes.isEmpty) {
+                        return Text('لا توجد عروض متاحة حالياً.');
+                      }
+
+                      return Column(
+                        children: [
+                          Text(
+                            'العروض المتاحة',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           SizedBox(height: 10),
                           Column(
                             children: offerBoxes,
@@ -633,14 +629,17 @@ class _OfferSectionState extends State<OfferSection> {
   }
 }
 
-
 class OfferBox extends StatelessWidget {
   final String company;
   final int discount;
   final String logoPath;
   final bool isFirstBox;
 
-  OfferBox({required this.company, required this.discount, required this.logoPath, this.isFirstBox = false});
+  OfferBox(
+      {required this.company,
+      required this.discount,
+      required this.logoPath,
+      this.isFirstBox = false});
 
   @override
   Widget build(BuildContext context) {
@@ -683,7 +682,6 @@ class OfferBox extends StatelessWidget {
           Positioned(
             top: -6,
             left: 8,
-            
             child: Image.asset(
               'lib/icons/BestOfferLogo3_1.png',
               height: 80,
