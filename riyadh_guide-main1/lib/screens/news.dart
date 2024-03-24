@@ -446,6 +446,19 @@ class _NewsState extends State<news> {
                 fontWeight: FontWeight.bold, // Optionally set font weight
               ),
             ),
+             SizedBox(height: 25), // Add some space between the calendar and the text
+            Center(
+  child: Text(
+    'لا توجد فعاليات لهذا اليوم',
+    textAlign: TextAlign.center, // Center text horizontally
+    style: TextStyle(
+      fontSize: 20,
+      color: Color.fromARGB(218, 111, 106, 112),
+      // Optionally set font weight
+    ),
+  ),
+)
+
           ],
         ),
       ),
