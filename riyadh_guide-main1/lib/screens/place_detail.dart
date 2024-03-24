@@ -735,11 +735,11 @@ class OfferBox extends StatelessWidget {
         ),
         if (isFirstBox) // Display logo only for the first box
           Positioned(
-            top: -6,
+            top: -10,
             left: 8,
             
             child: Image.asset(
-              'lib/icons/BestOfferLogo3_1.png',
+              'lib/icons/Best_Offer_5.png',
               height: 80,
               width: 80,
             ),
