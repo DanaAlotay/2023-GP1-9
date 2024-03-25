@@ -358,8 +358,8 @@ class _NewsState extends State<news> {
               ),
               daysOfWeekStyle: DaysOfWeekStyle(
                 // Customize days of week style if needed
-                weekdayStyle: TextStyle(color: Colors.black),
-                weekendStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
+                weekendStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 10.5),
               ),
               calendarBuilders: CalendarBuilders(
                 // Customize day builder to use Arabic numerals with a little space
