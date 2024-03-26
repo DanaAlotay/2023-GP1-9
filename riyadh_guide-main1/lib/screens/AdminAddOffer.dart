@@ -226,9 +226,9 @@ class _AdminAddOffer extends State<AdminAddOffer> {
                       ),
                     ),
                     DropdownMenuItem<String>(
-                      value: 'بنك الأهلي',
+                      value: 'بنك الاهلي',
                       child: Text(
-                        'بنك الأهلي',
+                        'بنك الاهلي',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),

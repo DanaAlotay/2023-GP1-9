@@ -298,9 +298,9 @@ bool isLoading = true;
                       ),
                     ),
                     DropdownMenuItem<String>(
-                      value: 'بنك الأهلي',
+                      value: 'بنك الاهلي',
                       child: Text(
-                        'بنك الأهلي',
+                        'بنك الاهلي',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
