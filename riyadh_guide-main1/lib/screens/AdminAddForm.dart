@@ -570,7 +570,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                   //  fillColor: Color.fromARGB(255, 238, 227, 245), // Box color
                   //filled: true,
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 6),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -580,7 +580,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 },
               ),
               SizedBox(
-                height: 30.0,
+                height: 10.0,
                 width: 150,
               ),
               //old
@@ -626,7 +626,7 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ),
               ),*/
               Container(
-                height: 80,
+                height: 60,
                 child: ElevatedButton(
                   onPressed: () async {
                     // Callback function when the button is pressed
@@ -1123,7 +1123,6 @@ class _AddPlaceFormState extends State<AddPlaceForm> {
                 ),
               ),
               SizedBox(height: 20),
-
               Container(
                 height: 60,
                 child: ElevatedButton(
