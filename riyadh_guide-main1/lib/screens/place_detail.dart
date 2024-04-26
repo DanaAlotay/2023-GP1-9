@@ -313,11 +313,6 @@ class _PlaceDetailsState extends State<PlaceDetails> {
               ),
             ),
             Positioned(
-              top: 45,
-              left: 20,
-              child: AppIcon(icon: Icons.favorite),
-            ),
-            Positioned(
               left: 0,
               right: 0,
               bottom: 0,
