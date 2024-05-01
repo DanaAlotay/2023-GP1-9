@@ -72,7 +72,7 @@ class _AdminAddEventState extends State {
     List<String> imageUrls = await uploadImages();
 // Add event details along with image URLs to Firestore
     FirebaseFirestore.instance.collection('event').add({
-      'time': _startdateController.text,
+      'time': _timeController.text,
       'start_date': startTimestamp,
       'description': _descriptionController.text,
       'end_date': endTimestamp,
