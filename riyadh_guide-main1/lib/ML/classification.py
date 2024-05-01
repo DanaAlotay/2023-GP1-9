@@ -278,16 +278,6 @@ final_classification = max(range(len(label_counts)), key=lambda x: label_counts[
 print("Final Classification:", final_classification)
 
 
-# Specify the directory where you want to save the file
-directory = '/content/drive/My Drive/All Reviews'
-
-# Create the directory if it doesn't exist
-os.makedirs(directory, exist_ok=True)
-
-# Save the DataFrame as a CSV file in the specified directory
-file_path = os.path.join(directory, 'new_labeled_data.csv')
-df.to_csv(file_path, index=False)
-print(f"New labeled data saved to: {file_path}")
 
 # Print each review with its corresponding predicted label
 for i, (review, prediction) in enumerate(zip(new_data_str, new_predictions_classes)):
@@ -321,17 +311,17 @@ print(f"Percentage of how much people like the place: {label_1_percentage}%")
 print("Final Classification:", final_classification)
 
 
-
-
-# Get a reference to the Firestore client
 db = firestore.client()
 
-# Access the "place" collection and the document with ID "1"
+# Access the "place" collection and the document with ID "-"
 collection_ref = db.collection('place')
-#document_ref = collection_ref.document('-')
+document_ref = collection_ref.document('p29')
+
+# Convert the classification value to a string
+classification_str = str(final_classification)
 
 # Update specific fields in the document
-#document_ref.update({
-#    'classification': final_classification,
-#    'percentage':label_1_percentage
-#})
+document_ref.update({
+   'classification': classification_str,
+   'percentage': label_1_percentage
+})

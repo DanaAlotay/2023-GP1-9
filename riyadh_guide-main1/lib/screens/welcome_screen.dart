@@ -3,6 +3,7 @@ import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/category.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:riyadh_guide/screens/eventDetails.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
 import 'package:riyadh_guide/screens/news.dart';
 import 'package:riyadh_guide/screens/search.dart';
@@ -16,12 +17,12 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   //final TextEditingController searchController = TextEditingController();
   int currentTab = 0;
-  String username ='';
+  String username = '';
 
   // Get the current user
-  void fetchUserName(){
-  User? currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
+  void fetchUserName() {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
       String uid = currentUser.uid;
 
       FirebaseFirestore.instance
@@ -42,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-     fetchUserName();
+    fetchUserName();
     fetchPlaceNames().then((names) {
       setState(() {
         placeList = names;
@@ -151,9 +152,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           aspectRatio: 1.45, // to control the width-to-height ratio
         ),
         items: <Widget>[
-          makeItem2(image: 'lib/icons/news1.jpeg', title: 'عرض مسرحي'),
-          makeItem2(image: 'lib/icons/news2.jpeg', title: 'جروفز'),
-          makeItem2(image: 'lib/icons/news3.jpeg', title: 'واجهة روشن'),
+          makeItem2(
+              image: 'lib/icons/news1.jpeg',
+              title: 'عرض مسرحي',
+              context: context),
+          makeItem2(
+              image: 'lib/icons/news2.jpeg', title: 'جروفز', context: context),
+          makeItem2(
+              image: 'lib/icons/news3.jpeg',
+              title: 'واجهة روشن',
+              context: context),
           // Add more items here
         ],
       )),
@@ -384,16 +392,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(right: 10.0),
                         child: Text(
-                        " أهلًا "+ username,
-                        textAlign: TextAlign.right,
-                         style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 33,
-                        fontWeight: FontWeight.bold,
+                          " أهلًا " + username,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 33,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                       ),
-                      ),
-                      
                     ),
                     SizedBox(
                       height: 30,
@@ -495,8 +502,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 //class news
-makeItem2({image, title, isCenterItem = false}) {
+makeItem2({image, title, isCenterItem = false, context}) {
   return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                eventDetails(eventID: "kTrZs2a8k10KqaJEMnzb")),
+      );
+    },
     child: AspectRatio(
       aspectRatio: 1.5,
       child: Container(
