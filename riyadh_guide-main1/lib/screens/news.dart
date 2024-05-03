@@ -1,4 +1,9 @@
+
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:riyadh_guide/screens/Event.dart';
+import 'package:riyadh_guide/screens/EventBox.dart';
 import 'package:riyadh_guide/screens/account.dart';
 import 'package:riyadh_guide/screens/favourites.dart';
 import 'package:riyadh_guide/screens/search.dart';
@@ -16,6 +21,63 @@ class _NewsState extends State<news> {
   int _currentTab = 3;
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  List<Event> events = [
+  // Event data
+];
+
+
+@override
+void initState() {
+  super.initState();
+  _fetchEventData();
+}
+
+ Future<void> _fetchEventData() async {
+  try {
+    final eventCollection = FirebaseFirestore.instance.collection('event');
+    final eventDocuments = await eventCollection.get();
+
+    setState(() {
+      // Clear the events list before populating it with new events
+      events.clear();
+
+      eventDocuments.docs.forEach((doc) {
+        final eventData = doc.data();
+        Event event = Event(
+          name: eventData['name'],
+          description: eventData['description'],
+          startDate: (eventData['start_date'] as Timestamp).toDate(),
+          endDate: (eventData['end_date'] as Timestamp).toDate(),
+          location: eventData['location'],
+          reservation: eventData['reservation'],
+          imageUrl: eventData['images'][0],
+        );
+
+        // Check if the selected day is within the event's start and end dates if (_selectedDay.isAfter(event.startDate) && _selectedDay.isBefore(event.endDate)) {
+          // Add the event to the list only if it falls within the selected date range
+          events.add(event);
+        
+      });
+
+      events.forEach((event) {
+        print('Name: ${event.name}');
+        print('Description: ${event.description}');
+        print('Start Date: ${event.startDate}');
+        print('End Date: ${event.endDate}');
+        print('Location: ${event.location}');
+        print('Reservation: ${event.reservation}');
+        print('Image URL: ${event.imageUrl}');
+        print('---------------------------------------');
+      });
+    });
+  } catch (error) {
+    print("Error fetching event data: $error");
+    // Handle error here
+  }
+}
+
+
+
 
   String _convertToArabicNumerals(int number) {
     final arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -189,18 +251,19 @@ class _NewsState extends State<news> {
               ),
             ),
              SizedBox(height: 25), // Add some space between the calendar and the text
-            Center(
-  child: Text(
-    'لا توجد فعاليات لهذا اليوم',
-    textAlign: TextAlign.center, // Center text horizontally
-    style: TextStyle(
-      fontSize: 20,
-      color: Color.fromARGB(218, 111, 106, 112),
-      // Optionally set font weight
-    ),
-  ),
-)
+           Expanded(
+  child: ListView.builder(
+  itemCount: events.length,
+  itemBuilder: (context, index) {
+    // Check if the selected date is within the start and end dates of the event
+    bool isSelectedDateInRange = _selectedDay.isAfter(events[index].startDate) &&
+        _selectedDay.isBefore(events[index].endDate);
 
+    // Show the event only if the selected date is within the start and end dates
+    return isSelectedDateInRange ? EventBox(event: events[index]) : SizedBox.shrink();
+  },
+),
+),
           ],
         ),
       ),
