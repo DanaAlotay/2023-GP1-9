@@ -110,7 +110,7 @@ class _NewsState extends State<news> {
                           ),
                           PopupMenuItem<String>(
                             value: 'تصنيف',
-                            child: Text('تصنيف'),
+                            child: Text('تصنيف'), //hi
                           ),
                           PopupMenuItem<String>(
                             value: 'تصنيف',
