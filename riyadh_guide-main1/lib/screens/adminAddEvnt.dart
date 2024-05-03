@@ -52,7 +52,10 @@ class _AdminAddEventState extends State {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("تم"),
+              child: Text("تم",
+                                            style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 53, 12, 77)),),
             ),
           ],
         );
