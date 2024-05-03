@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riyadh_guide/screens/AdminEvents.dart';
 import 'package:riyadh_guide/screens/AdminOffers.dart';
 import 'package:riyadh_guide/screens/AdminPlaces.dart';
 import 'package:riyadh_guide/screens/Adminprofile.dart';
@@ -202,6 +203,12 @@ class MyAdminHomePage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Handle the News button click action here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdminEvents(),
+                          ),
+                        );
                       },
                       child: Text('  إدارة الفعاليات و الأخبار '),
                       style: ElevatedButton.styleFrom(
