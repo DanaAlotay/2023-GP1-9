@@ -125,7 +125,7 @@ void initState() {
           children: [
             _buildBottomNavItem(Icons.account_box, 'حسابي', 1),
             _buildBottomNavItem(Icons.search, 'البحث', 2),
-             SizedBox(width: 48), // Placeholder to maintain space
+            SizedBox(width: 48), // Placeholder to maintain space
             _buildBottomNavItem(Icons.newspaper, 'أحداث اليوم', 3),
             _buildBottomNavItem(Icons.favorite, 'المفضلة', 4),
           ],
@@ -251,19 +251,18 @@ void initState() {
               ),
             ),
              SizedBox(height: 25), // Add some space between the calendar and the text
-           Expanded(
-  child: ListView.builder(
-  itemCount: events.length,
-  itemBuilder: (context, index) {
-    // Check if the selected date is within the start and end dates of the event
-    bool isSelectedDateInRange = _selectedDay.isAfter(events[index].startDate) &&
-        _selectedDay.isBefore(events[index].endDate);
+            Center(
+  child: Text(
+    'لا توجد فعاليات لهذا اليوم',
+    textAlign: TextAlign.center, // Center text horizontally
+    style: TextStyle(
+      fontSize: 20,
+      color: Color.fromARGB(218, 111, 106, 112),
+      // Optionally set font weight
+    ),
+  ),
+)
 
-    // Show the event only if the selected date is within the start and end dates
-    return isSelectedDateInRange ? EventBox(event: events[index]) : SizedBox.shrink();
-  },
-),
-),
           ],
         ),
       ),
@@ -272,24 +271,27 @@ void initState() {
 
   Widget _buildBottomNavItem(IconData icon, String label, int index) {
     return Padding(
-      padding: EdgeInsets.only(left: index == 1 ? 10.0 : 0.0, right: index == 4 ? 10.0 : 0.0),
+      padding: EdgeInsets.only(
+          left: index == 1 ? 10.0 : 0.0, right: index == 4 ? 10.0 : 0.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
             icon: Icon(icon),
             onPressed: () {
-               if (_currentTab != index) {
-              setState(() {
-                _currentTab = index;
-                _navigateToScreen(index);
-              });
-            }},
+              if (_currentTab != index) {
+                setState(() {
+                  _currentTab = index;
+                  _navigateToScreen(index);
+                });
+              }
+            },
             color: _currentTab == index ? Colors.white : Colors.black,
           ),
           Text(
             label,
-            style: TextStyle(color: _currentTab == index ? Colors.white : Colors.black),
+            style: TextStyle(
+                color: _currentTab == index ? Colors.white : Colors.black),
           )
         ],
       ),
@@ -335,4 +337,3 @@ void initState() {
     }
   }
 }
-

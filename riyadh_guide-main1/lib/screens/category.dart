@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/account.dart';
@@ -17,6 +18,7 @@ class category extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<category> {
+  bool isFavorite = false;
   int currentTab = 0;
 
   // Define a collection reference to the "places" collection in Firestore
@@ -24,6 +26,84 @@ class _CategoryScreenState extends State<category> {
       FirebaseFirestore.instance.collection('place');
 
   String categoryNameInarabic = '';
+
+  String getCurrentUserID() {
+    String currentUserId = '';
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    if (user != null) {
+      currentUserId = user.uid;
+    }
+
+    return currentUserId;
+  }
+  // Function to add the place to favorites
+void addToFavorites(String placeID) {
+ 
+  String userID = getCurrentUserID(); 
+  
+  // Add the place to favorites
+  FirebaseFirestore.instance
+      .collection('favorites')
+      .doc(userID)
+      .collection('place')
+      .doc(placeID)
+      .set({
+        'placeID': placeID,
+      })
+      .then((value) {
+        
+          ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
+              content: Text('تم إضافة المكان للمفضلة'),
+              backgroundColor: Color.fromARGB(181, 203, 145, 210),
+            ),
+          )
+          .closed;
+      });
+}
+
+Future<bool> checkIfPlaceIsInFavorites(String placeID) async {
+  String userID = getCurrentUserID();
+  
+  try {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('favorites')
+        .doc(userID)
+        .collection('place')
+        .doc(placeID)
+        .get();
+    
+    return snapshot.exists;
+  } catch (e) {
+    print('Error checking favorites: $e');
+    return false; 
+  }
+}
+
+void removeFromFavorites(String placeID) {
+  String userID = getCurrentUserID(); 
+  
+  FirebaseFirestore.instance
+      .collection('favorites')
+      .doc(userID)
+      .collection('place')
+      .doc(placeID)
+      .delete()
+      .then((value) {
+
+        ScaffoldMessenger.of(context)
+          .showSnackBar(
+            SnackBar(
+              content: Text('تم إزالة المكان من المفضلة'),
+              backgroundColor: Color.fromARGB(181, 203, 145, 210),
+            ),
+          )
+          .closed;
+      });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +350,8 @@ class _CategoryScreenState extends State<category> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            Container(
+
+                          Container(
                               height: 250,
                               alignment: Alignment.bottomRight,
                               padding: EdgeInsets.symmetric(
@@ -293,6 +374,45 @@ class _CategoryScreenState extends State<category> {
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   overflow: TextOverflow.fade,
+                                ),
+                              ),
+                            ),
+                            if(getCurrentUserID() !='')
+                            Positioned(
+                              top: 8.0,
+                              right: 8.0,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(27),
+                                  onTap: () async {
+                                    bool isInFavorites = await checkIfPlaceIsInFavorites(placeID);
+                                    if (isInFavorites) {
+                                      removeFromFavorites(placeID);
+                                    } else {
+                                      addToFavorites(placeID);
+                                    }
+                                    // Update the UI immediately
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color.fromARGB(255, 255, 255, 255), // Placeholder color for the filled heart icon
+                                    ),
+                                    child: FutureBuilder<bool>(
+                                      future: checkIfPlaceIsInFavorites(placeID),
+                                      builder: (context, snapshot) {
+                                        final bool isInFavorites = snapshot.data ?? false;
+                                        return Icon(
+                                          isInFavorites ? Icons.favorite : Icons.favorite_border,
+                                          color: isInFavorites ? Color.fromARGB(255, 250, 2, 2) : Color.fromARGB(255, 110, 22, 187),
+                                          size: 27,
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
