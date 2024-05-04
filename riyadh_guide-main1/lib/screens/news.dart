@@ -125,151 +125,204 @@ class _NewsState extends State<news> {
         ),
       ),
       body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TableCalendar(
-              firstDay: DateTime.utc(2020, 01, 01),
-              lastDay: DateTime.utc(2050, 12, 31),
-              focusedDay: _focusedDay,
-              calendarFormat: CalendarFormat.month,
-              availableCalendarFormats: {
-                CalendarFormat.month: 'Month'
-              }, // Only show Month format
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false, // Hide format button
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 13,
               ),
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              locale: 'ar_SA', // Set locale to Arabic in Saudi Arabia
-              calendarStyle: CalendarStyle(
-                // Customize calendar style if needed
-                defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                cellMargin: EdgeInsets.all(4), // Add margin around each cell
-                outsideDaysVisible:
-                    false, // Hide days from previous and next months
-              ),
-              daysOfWeekStyle: DaysOfWeekStyle(
-                // Customize days of week style if needed
-                weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
-                weekendStyle: TextStyle(
-                    color: const Color.fromARGB(255, 0, 0, 0), fontSize: 10.5),
-              ),
-              calendarBuilders: CalendarBuilders(
-                // Customize day builder to use Arabic numerals with a little space
-                selectedBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 82, 29, 107),
-                      shape: BoxShape.circle,
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.filter_list_rounded,
+                    size: 35,
+                    color: Color.fromARGB(255, 53, 3, 109),
+                  ),
+                  onSelected: (String value) {
+                    // Handle filter option selection
+                    print('Selected filter: $value');
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              'تصفية حسب نوع الفعالية',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          PopupMenuItem<String>(
+                            value: 'عروض ',
+                            child: Text('عروض مسرحية'),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'تصنيف',
+                            child: Text('تصنيف'),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'تصنيف',
+                            child: Text('تصنيف'),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            height:
-                                10), // Add space between day name and number
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                defaultBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            height:
-                                10), // Add space between day name and number
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                outsideBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            height:
-                                10), // Add space between day name and number
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                // Ensure the current day is displayed in Arabic numerals
-                todayBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 180, 140, 207),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            height:
-                                10), // Add space between day name and number
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            SizedBox(
-                height: 15), // Add some space between the calendar and the text
-            Text(
-              'الفعاليات:',
-              style: TextStyle(
-                fontSize: 20, // Set the font size
-                fontWeight: FontWeight.bold, // Optionally set font weight
-              ),
-            ),
-            SizedBox(
-                height: 25), // Add some space between the calendar and the text
-            Center(
-              child: Text(
-                'لا توجد فعاليات لهذا اليوم',
-                textAlign: TextAlign.center, // Center text horizontally
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Color.fromARGB(218, 111, 106, 112),
-                  // Optionally set font weight
+                  ],
                 ),
               ),
-            )
-          ],
+              TableCalendar(
+                firstDay: DateTime.utc(2020, 01, 01),
+                lastDay: DateTime.utc(2050, 12, 31),
+                focusedDay: _focusedDay,
+                calendarFormat: CalendarFormat.month,
+                availableCalendarFormats: {
+                  CalendarFormat.month: 'Month'
+                }, // Only show Month format
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false, // Hide format button
+                ),
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                },
+                locale: 'ar_SA', // Set locale to Arabic in Saudi Arabia
+                calendarStyle: CalendarStyle(
+                  // Customize calendar style if needed
+                  defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                  cellMargin: EdgeInsets.all(4), // Add margin around each cell
+                  outsideDaysVisible:
+                      false, // Hide days from previous and next months
+                ),
+                daysOfWeekStyle: DaysOfWeekStyle(
+                  // Customize days of week style if needed
+                  weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
+                  weekendStyle: TextStyle(
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 10.5),
+                ),
+                calendarBuilders: CalendarBuilders(
+                  // Customize day builder to use Arabic numerals with a little space
+                  selectedBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 82, 29, 107),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height:
+                                  10), // Add space between day name and number
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  defaultBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height:
+                                  10), // Add space between day name and number
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  outsideBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height:
+                                  10), // Add space between day name and number
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  // Ensure the current day is displayed in Arabic numerals
+                  todayBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 180, 140, 207),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              height:
+                                  10), // Add space between day name and number
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                  height:
+                      15), // Add some space between the calendar and the text
+              Text(
+                'الفعاليات:',
+                style: TextStyle(
+                  fontSize: 20, // Set the font size
+                  fontWeight: FontWeight.bold, // Optionally set font weight
+                ),
+              ),
+              SizedBox(
+                  height:
+                      25), // Add some space between the calendar and the text
+              Center(
+                child: Text(
+                  'لا توجد فعاليات لهذا اليوم',
+                  textAlign: TextAlign.center, // Center text horizontally
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Color.fromARGB(218, 111, 106, 112),
+                    // Optionally set font weight
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
