@@ -125,19 +125,20 @@ class _NewsState extends State<news> {
         ),
       ),
       body: Center(
-        child: SingleChildScrollView(
+        
+       
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 13,
+                height: 1,
               ),
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(3.0),
                 child: PopupMenuButton<String>(
                   icon: Icon(
                     Icons.filter_list_rounded,
-                    size: 35,
+                    size: 30,
                     color: Color.fromARGB(255, 53, 3, 109),
                   ),
                   onSelected: (String value) {
@@ -178,128 +179,130 @@ class _NewsState extends State<news> {
                 ),
               ),
               TableCalendar(
-                firstDay: DateTime.utc(2020, 01, 01),
-                lastDay: DateTime.utc(2050, 12, 31),
-                focusedDay: _focusedDay,
-                calendarFormat: CalendarFormat.month,
-                availableCalendarFormats: {
-                  CalendarFormat.month: 'Month'
-                }, // Only show Month format
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false, // Hide format button
-                ),
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                },
-                locale: 'ar_SA', // Set locale to Arabic in Saudi Arabia
-                calendarStyle: CalendarStyle(
-                  // Customize calendar style if needed
-                  defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                  cellMargin: EdgeInsets.all(4), // Add margin around each cell
-                  outsideDaysVisible:
-                      false, // Hide days from previous and next months
-                ),
-                daysOfWeekStyle: DaysOfWeekStyle(
-                  // Customize days of week style if needed
-                  weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
-                  weekendStyle: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 10.5),
-                ),
-                calendarBuilders: CalendarBuilders(
-                  // Customize day builder to use Arabic numerals with a little space
-                  selectedBuilder: (context, date, _) {
-                    return Container(
-                      margin: const EdgeInsets.all(4.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 82, 29, 107),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              height:
-                                  10), // Add space between day name and number
-                          Text(
-                            _convertToArabicNumerals(date.day),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  defaultBuilder: (context, date, _) {
-                    return Container(
-                      margin: const EdgeInsets.all(4.0),
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              height:
-                                  10), // Add space between day name and number
-                          Text(
-                            _convertToArabicNumerals(date.day),
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  outsideBuilder: (context, date, _) {
-                    return Container(
-                      margin: const EdgeInsets.all(4.0),
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              height:
-                                  10), // Add space between day name and number
-                          Text(
-                            _convertToArabicNumerals(date.day),
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  // Ensure the current day is displayed in Arabic numerals
-                  todayBuilder: (context, date, _) {
-                    return Container(
-                      margin: const EdgeInsets.all(4.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 180, 140, 207),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              height:
-                                  10), // Add space between day name and number
-                          Text(
-                            _convertToArabicNumerals(date.day),
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+  firstDay: DateTime.utc(2020, 01, 01),
+  lastDay: DateTime.utc(2050, 12, 31),
+  focusedDay: _focusedDay,
+  calendarFormat: CalendarFormat.month,
+  availableCalendarFormats: {
+    CalendarFormat.month: 'Month'
+  },
+  headerStyle: HeaderStyle(
+    formatButtonVisible: false,
+  ),
+  selectedDayPredicate: (day) {
+    return isSameDay(_selectedDay, day);
+  },
+  onDaySelected: (selectedDay, focusedDay) {
+    setState(() {
+      _selectedDay = selectedDay;
+      _focusedDay = focusedDay;
+    });
+  },
+  locale: 'ar_SA',
+  calendarStyle: CalendarStyle(
+    defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
+    cellMargin: EdgeInsets.all(4),
+    outsideDaysVisible: false,
+  ),
+  daysOfWeekStyle: DaysOfWeekStyle(
+    weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
+    weekendStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 10.5),
+  ),
+  calendarBuilders: CalendarBuilders(
+    selectedBuilder: (context, date, _) {
+      return Container(
+        margin: const EdgeInsets.all(4.0),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 82, 29, 107),
+          shape: BoxShape.circle,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            Text(
+              _convertToArabicNumerals(date.day),
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      );
+    },
+    defaultBuilder: (context, date, _) {
+      return Container(
+        margin: const EdgeInsets.all(4.0),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            Text(
+              _convertToArabicNumerals(date.day),
+              style: TextStyle(color: Colors.black),
+            ),
+          ],
+        ),
+      );
+    },
+    outsideBuilder: (context, date, _) {
+      return Container(
+        margin: const EdgeInsets.all(4.0),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            Text(
+              _convertToArabicNumerals(date.day),
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+    },
+    todayBuilder: (context, date, _) {
+      return Container(
+        margin: const EdgeInsets.all(4.0),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 180, 140, 207),
+          shape: BoxShape.circle,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            Text(
+              _convertToArabicNumerals(date.day),
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      );
+    },
+    markerBuilder: (context, date, events) {
+      final hasEvent = events.isNotEmpty;
+      return hasEvent
+          ? Positioned(
+              bottom: 5,
+              child: Container(
+                height: 6,
+                width: 6,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red, // Customize the color of the dot
                 ),
               ),
+            )
+          : SizedBox.shrink();
+    },
+  ),
+),
+
               SizedBox(
                   height:
-                      15), // Add some space between the calendar and the text
+                      5), // Add some space between the calendar and the text
               Text(
                 'الفعاليات:',
                 style: TextStyle(
@@ -309,20 +312,24 @@ class _NewsState extends State<news> {
               ),
               SizedBox(
                   height:
-                      25), // Add some space between the calendar and the text
-              Center(
-                child: Text(
-                  'لا توجد فعاليات لهذا اليوم',
-                  textAlign: TextAlign.center, // Center text horizontally
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Color.fromARGB(218, 111, 106, 112),
-                    // Optionally set font weight
-                  ),
-                ),
-              )
+                      5), // Add some space between the calendar and the text
+    Expanded(
+  child: 
+  ListView.builder(
+  itemCount: events.length,
+  
+  itemBuilder: (context, index) {
+    // Check if the selected date is within the start and end dates of the event
+    bool isSelectedDateInRange = _selectedDay.isAfter(events[index].startDate) &&
+        _selectedDay.isBefore(events[index].endDate);
+
+    // Show the event only if the selected date is within the start and end dates
+    return isSelectedDateInRange ? EventBox(event: events[index]) : SizedBox.shrink();
+  },
+),
+),            
             ],
-          ),
+          
         ),
       ),
     );
