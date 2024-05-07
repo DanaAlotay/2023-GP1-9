@@ -306,7 +306,10 @@ class _AdminEventsState extends State<AdminEvents> {
                                   // Add more fields as needed
                                 ],
                               ),
-                              trailing: IconButton(
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
                                 icon: Icon(Icons.delete),
                                 onPressed: () {
                                   // Show confirmation dialog
@@ -359,7 +362,14 @@ class _AdminEventsState extends State<AdminEvents> {
                                   );
                                 },
                               ),
-           
+                             IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      // Handle pinning action here
+                                      // You can define what pinning means for your app
+                                    },
+                                  ),
+                                ],)
                             ),
                           ),
                         );
