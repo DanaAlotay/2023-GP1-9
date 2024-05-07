@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart'; // Import for FirebaseStorage
 import 'package:image_picker/image_picker.dart'; // Import for ImagePicker
-import 'package:riyadh_guide/screens/AdminEvents.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
+import 'package:riyadh_guide/screens/AdminEvents.dart';
+import 'package:uuid/uuid.dart';
 
+class AdminEditEvent extends StatefulWidget {
+  final DocumentSnapshot<Map<String, dynamic>> eventData;
 
-class AdminAddEvent extends StatefulWidget {
-  const AdminAddEvent({Key? key}) : super(key: key);
-
+  AdminEditEvent({required this.eventData});
   @override
-  _AdminAddEventState createState() => _AdminAddEventState();
+  _AdminEditEventState createState() => _AdminEditEventState();
 }
 
-class _AdminAddEventState extends State {
-  TextEditingController _startdateController = TextEditingController();
+class _AdminEditEventState extends State<AdminEditEvent> {
+   TextEditingController _startdateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _endDateController = TextEditingController();
@@ -29,6 +31,49 @@ class _AdminAddEventState extends State {
   bool isDefaultImageSelected =
       false; // Flag to track if default image is selected
  bool _isLoading = false;
+ // initState method to set initial values for text controllers
+  @override
+  void initState() {
+    super.initState();
+    // Set initial values for text controllers with data from widget.eventData
+    
+    _nameController.text = widget.eventData['name'] ?? '';
+    _timeController.text = widget.eventData['time'] ?? '';
+    _startdateController.text = widget.eventData['start_date']?.toDate().toString() ?? '';
+    _endDateController.text = widget.eventData['end_date']?.toDate().toString() ?? '';
+    _descriptionController.text = widget.eventData['description'] ?? '';
+    _locationController.text = widget.eventData['location'] ?? '';
+    _reservationController.text = widget.eventData['reservation'] ?? '';
+
+// Fetch image URLs from Firestore and download images
+  List<String> imageUrls = List<String>.from(widget.eventData['images'] ?? []);
+  downloadImages(imageUrls);
+}
+// Function to download images from Firebase Storage based on image URLs
+void downloadImages(List<String> imageUrls) async {
+  List<File> downloadedImages = [];
+  for (String imageUrl in imageUrls) {
+    try {
+      // Download image from Firebase Storage using its URL
+      http.Response response = await http.get(Uri.parse(imageUrl));
+      if (response.statusCode == 200) {
+        // Save the downloaded image to a temporary file
+        Directory tempDir = await getTemporaryDirectory();
+        File tempFile = File('${tempDir.path}/${Uuid().v4()}');
+        await tempFile.writeAsBytes(response.bodyBytes);
+        // Add the downloaded image file to the list
+        downloadedImages.add(tempFile);
+      }
+    } catch (e) {
+      print('Error downloading image: $e');
+    }
+  }
+  // Update the _images list with downloaded images
+  setState(() {
+    _images = downloadedImages;
+  });
+}
+
 // Function to add event to Firestore
   void _addEventToFirestore() async {
      // Validate if all fields are not empty
@@ -72,42 +117,33 @@ class _AdminAddEventState extends State {
 
 // Upload images to Firebase Storage and get their URLs
     List<String> imageUrls = await uploadImages();
-// Add event details along with image URLs to Firestore
-    FirebaseFirestore.instance.collection('event').add({
-      'time': _timeController.text,
-      'start_date': startTimestamp,
-      'description': _descriptionController.text,
-      'end_date': endTimestamp,
-      'images': imageUrls, // Update to store image URLs
-      'location': _locationController.text,
-      'name': _nameController.text,
-      'reservation': _reservationController.text,
-    }).then((value) {
-      // Clear text controllers after adding event
-      _startdateController.clear();
-      _timeController.clear();
-      _descriptionController.clear();
-      _endDateController.clear();
-      _imagesController.clear();
-      _locationController.clear();
-      _nameController.clear();
-      _reservationController.clear();
-      // Navigate to adminEvents screen
+  // Update event details in Firestore
+  FirebaseFirestore.instance.collection('event').doc(widget.eventData.id).update({
+    'name': _nameController.text,
+    'time': _timeController.text,
+    'start_date': startTimestamp,
+    'end_date': endTimestamp,
+    'description': _descriptionController.text,
+    'location': _locationController.text,
+    'reservation': _reservationController.text,
+    'images': imageUrls, // Update to store image URLs
+  }).then((value) {
+    // Navigate to adminEvents screen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => AdminEvents()),
     );
-    // Show SnackBar to notify the user of successful addition
+    // Show SnackBar to notify the user of successful update
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('تمت الاضافة بنجاح'),
+        content: Text('تم التعديل بنجاح'),
         backgroundColor: Color.fromARGB(181, 203, 145, 210),
       ),
     );
-    }).catchError((error) {
-      // Handle errors
-    });
-  }
+  }).catchError((error) {
+    // Handle errors
+  });
+}
 Future<String?> getApiKey() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection('api_keys')
@@ -206,39 +242,40 @@ Future<String?> getApiKey() async {
   }
 
 // Function to pick image from gallery or camera
-  void pickImage(ImageSource source) async {
-    if (isDefaultImageSelected) {
-      setState(() {
-        _images.removeWhere((image) =>
-            image.path ==
-            'lib/icons/defaultImg.jpeg'); // Remove the default image from the list
-        isDefaultImageSelected = false;
-      });
-    }
-    final pickedImage = await ImagePicker().pickImage(source: source);
-
-    if (pickedImage != null) {
-      final imageFile = File(pickedImage.path);
-      setState(() {
-        _images.add(imageFile);
-      });
-    } else if (_images.isEmpty) {
-      setState(() {
-        isDefaultImageSelected = true;
-      });
-    }
+ void pickImage(ImageSource source) async {
+  if (isDefaultImageSelected) {
+    setState(() {
+      _images.removeWhere((image) =>
+          image.path ==
+          'lib/icons/defaultImg.jpeg'); // Remove the default image from the list
+      isDefaultImageSelected = false;
+    });
   }
+  final pickedImage = await ImagePicker().pickImage(source: source);
+
+  if (pickedImage != null) {
+    final imageFile = File(pickedImage.path);
+    setState(() {
+      _images.add(imageFile);
+    });
+  } else if (_images.isEmpty) {
+    setState(() {
+      isDefaultImageSelected = true;
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('إضافة فعالية أو خبر جديد'),
+          title: Text('التعديل على فعالية أو خبر'),
           backgroundColor: Color.fromARGB(255, 66, 49, 76),
           automaticallyImplyLeading: false,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: () {
+            onPressed: () { 
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -682,7 +719,7 @@ Container(
         ElevatedButton(
           onPressed: _addEventToFirestore,
           child: Text(
-            'اضافة الفعالية أو الخبر',
+            'حفظ التعديلات على الفعالية أو الخبر',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           style: ElevatedButton.styleFrom(
@@ -698,4 +735,5 @@ Container(
   ),
 ));
 }
+
 }
