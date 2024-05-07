@@ -1,7 +1,10 @@
 class Event {
   final String name;
   final String description;
-  
+  final String classification;
+
+  final String id;
+
   final DateTime startDate;
   final DateTime endDate;
   final String location;
@@ -9,6 +12,7 @@ class Event {
   final String imageUrl;
 
   Event({
+    required this.id,
     required this.name,
     required this.description,
     required this.startDate,
@@ -16,5 +20,6 @@ class Event {
     required this.location,
     required this.reservation,
     required this.imageUrl,
+    required this.classification,
   });
 }

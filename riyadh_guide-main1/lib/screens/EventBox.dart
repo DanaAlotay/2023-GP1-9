@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:riyadh_guide/screens/Event.dart';
+import 'package:riyadh_guide/screens/eventDetails.dart';
 
 class EventBox extends StatelessWidget {
   final Event event;
@@ -35,7 +36,6 @@ class EventBox extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-
           if (event.imageUrl != null) const SizedBox(width: 10.0),
           Expanded(
             child: Column(
@@ -43,17 +43,28 @@ class EventBox extends StatelessWidget {
               children: [
                 Text(
                   event.name,
-                  style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   event.description.substring(0, 20) + "...",
                   style: const TextStyle(fontSize: 14.0),
                 ),
-                Text(
-                  "See More",
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.blue,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => eventDetails(eventID: event.id),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "للمزيد",
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ],
