@@ -24,6 +24,17 @@ class _AdminAddEventState extends State {
   TextEditingController _locationController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _reservationController = TextEditingController();
+  TextEditingController _classificationController = TextEditingController();
+
+  List<String> _classification = [
+  'المغامرات',
+  'الافتتاحات',
+  'العروض',
+  'الحفلات',
+];
+
+String? _selectedClassification;
+
 
   List<File> _images = []; // List to store picked images
   bool isDefaultImageSelected =
@@ -38,7 +49,8 @@ class _AdminAddEventState extends State {
       _endDateController.text.isEmpty ||
       _locationController.text.isEmpty ||
       _nameController.text.isEmpty ||
-      _reservationController.text.isEmpty) {
+      _reservationController.text.isEmpty ||
+      _classificationController.text.isEmpty) {
     // Show a message to the user that all fields are required
     showDialog(
       context: context,
@@ -74,6 +86,7 @@ class _AdminAddEventState extends State {
     List<String> imageUrls = await uploadImages();
 // Add event details along with image URLs to Firestore
     FirebaseFirestore.instance.collection('event').add({
+      'classification':_classificationController.text,
       'time': _timeController.text,
       'start_date': startTimestamp,
       'description': _descriptionController.text,
@@ -84,6 +97,7 @@ class _AdminAddEventState extends State {
       'reservation': _reservationController.text,
     }).then((value) {
       // Clear text controllers after adding event
+      _classificationController.clear();
       _startdateController.clear();
       _timeController.clear();
       _descriptionController.clear();
@@ -255,7 +269,64 @@ Future<String?> getApiKey() async {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                
 // Text form fields for event details
+// Wrap the SizedBox with a Row
+           Row(
+  children: [
+    Expanded(
+      child: InputDecorator(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          prefixIcon: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'lib/icons/c.jpeg',
+                  width: 30,
+                  height: 30,
+                ),
+                SizedBox(width: 8),
+                
+              ],
+            ),
+          ),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 13.0, horizontal: 13.0),
+        ),
+        child: DropdownButton<String>(
+          value: _selectedClassification,
+          icon: Icon(Icons.arrow_drop_down),
+          iconSize: 24,
+          elevation: 16,
+          style: TextStyle(fontSize: 15, color: Colors.black),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedClassification = newValue!;
+            });
+          },
+          items: <String>[
+            'المغامرات',
+            'الافتتاحات',
+            'العروض',
+            'الحفلات',
+          ].map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    ),
+    SizedBox(width: 8), // Spacer
+  ],
+),
+
 
             SizedBox(height: 10),
             TextFormField(
