@@ -19,6 +19,8 @@ class _NewsState extends State<news> {
   int _currentTab = 3;
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  String _selectedClassification =
+      ''; // Variable to store the selected classification
   List<Event> events = [
     // Event data
   ];
@@ -35,12 +37,14 @@ class _NewsState extends State<news> {
       final eventDocuments = await eventCollection.get();
 
       setState(() {
-        // Clear the events list before populating it with new events
         events.clear();
 
         eventDocuments.docs.forEach((doc) {
+          final eventId = doc.id; // Retrieve the document ID
           final eventData = doc.data();
+
           Event event = Event(
+            id: eventId,
             name: eventData['name'],
             description: eventData['description'],
             startDate: (eventData['start_date'] as Timestamp).toDate(),
@@ -48,14 +52,14 @@ class _NewsState extends State<news> {
             location: eventData['location'],
             reservation: eventData['reservation'],
             imageUrl: eventData['images'][0],
+            classification: eventData['classification'],
           );
 
-          // Check if the selected day is within the event's start and end dates if (_selectedDay.isAfter(event.startDate) && _selectedDay.isBefore(event.endDate)) {
-          // Add the event to the list only if it falls within the selected date range
           events.add(event);
         });
 
         events.forEach((event) {
+          print('ID: ${event.id}'); // Print the ID
           print('Name: ${event.name}');
           print('Description: ${event.description}');
           print('Start Date: ${event.startDate}');
@@ -125,211 +129,215 @@ class _NewsState extends State<news> {
         ),
       ),
       body: Center(
-        
-       
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 1,
-              ),
-              Padding(
-                padding: EdgeInsets.all(3.0),
-                child: PopupMenuButton<String>(
-                  icon: Icon(
-                    Icons.filter_list_rounded,
-                    size: 30,
-                    color: Color.fromARGB(255, 53, 3, 109),
-                  ),
-                  onSelected: (String value) {
-                    // Handle filter option selection
-                    print('Selected filter: $value');
-                  },
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem<String>(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              'تصفية حسب نوع الفعالية',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 1,
+            ),
+            Padding(
+              padding: EdgeInsets.all(3.0),
+              child: PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.filter_list_rounded,
+                  size: 30,
+                  color: Color.fromARGB(255, 53, 3, 109),
+                ),
+                onSelected: (String value) {
+                  // Handle filter option selection
+                  setState(() {
+                    _selectedClassification = value;
+                  });
+                },
+                itemBuilder: (BuildContext context) => [
+                  PopupMenuItem<String>(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text(
+                            'تصفية حسب نوع الفعالية',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Divider(),
-                          PopupMenuItem<String>(
-                            value: 'عروض ',
-                            child: Text('عروض مسرحية'),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'تصنيف',
-                            child: Text('تصنيف'),
-                          ),
-                          PopupMenuItem<String>(
-                            value: 'تصنيف',
-                            child: Text('تصنيف'),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Divider(),
+                        PopupMenuItem<String>(
+                          value: 'عروض',
+                          child: Text('عروض '),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'حفلات',
+                          child: Text('حفلات موسيقية'),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'افتتاحات',
+                          child: Text('افتتاحات'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              TableCalendar(
-  firstDay: DateTime.utc(2020, 01, 01),
-  lastDay: DateTime.utc(2050, 12, 31),
-  focusedDay: _focusedDay,
-  calendarFormat: CalendarFormat.month,
-  availableCalendarFormats: {
-    CalendarFormat.month: 'Month'
-  },
-  headerStyle: HeaderStyle(
-    formatButtonVisible: false,
-  ),
-  selectedDayPredicate: (day) {
-    return isSameDay(_selectedDay, day);
-  },
-  onDaySelected: (selectedDay, focusedDay) {
-    setState(() {
-      _selectedDay = selectedDay;
-      _focusedDay = focusedDay;
-    });
-  },
-  locale: 'ar_SA',
-  calendarStyle: CalendarStyle(
-    defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
-    cellMargin: EdgeInsets.all(4),
-    outsideDaysVisible: false,
-  ),
-  daysOfWeekStyle: DaysOfWeekStyle(
-    weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
-    weekendStyle: TextStyle(color: const Color.fromARGB(255, 0, 0, 0), fontSize: 10.5),
-  ),
-  calendarBuilders: CalendarBuilders(
-    selectedBuilder: (context, date, _) {
-      return Container(
-        margin: const EdgeInsets.all(4.0),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 82, 29, 107),
-          shape: BoxShape.circle,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              _convertToArabicNumerals(date.day),
-              style: TextStyle(color: Colors.white),
             ),
-          ],
-        ),
-      );
-    },
-    defaultBuilder: (context, date, _) {
-      return Container(
-        margin: const EdgeInsets.all(4.0),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              _convertToArabicNumerals(date.day),
-              style: TextStyle(color: Colors.black),
-            ),
-          ],
-        ),
-      );
-    },
-    outsideBuilder: (context, date, _) {
-      return Container(
-        margin: const EdgeInsets.all(4.0),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              _convertToArabicNumerals(date.day),
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-      );
-    },
-    todayBuilder: (context, date, _) {
-      return Container(
-        margin: const EdgeInsets.all(4.0),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Color.fromARGB(255, 180, 140, 207),
-          shape: BoxShape.circle,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              _convertToArabicNumerals(date.day),
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      );
-    },
-    markerBuilder: (context, date, events) {
-      final hasEvent = events.isNotEmpty;
-      return hasEvent
-          ? Positioned(
-              bottom: 5,
-              child: Container(
-                height: 6,
-                width: 6,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red, // Customize the color of the dot
-                ),
+            TableCalendar(
+              firstDay: DateTime.utc(2020, 01, 01),
+              lastDay: DateTime.utc(2050, 12, 31),
+              focusedDay: _focusedDay,
+              calendarFormat: CalendarFormat.month,
+              availableCalendarFormats: {CalendarFormat.month: 'Month'},
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
               ),
-            )
-          : SizedBox.shrink();
-    },
-  ),
-),
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              locale: 'ar_SA',
+              calendarStyle: CalendarStyle(
+                defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                cellMargin: EdgeInsets.all(4),
+                outsideDaysVisible: false,
+              ),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
+                weekendStyle: TextStyle(
+                    color: const Color.fromARGB(255, 0, 0, 0), fontSize: 10.5),
+              ),
+              calendarBuilders: CalendarBuilders(
+                selectedBuilder: (context, date, _) {
+                  return Container(
+                    margin: const EdgeInsets.all(4.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 82, 29, 107),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 10),
+                        Text(
+                          _convertToArabicNumerals(date.day),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                defaultBuilder: (context, date, _) {
+                  return Container(
+                    margin: const EdgeInsets.all(4.0),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 10),
+                        Text(
+                          _convertToArabicNumerals(date.day),
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                outsideBuilder: (context, date, _) {
+                  return Container(
+                    margin: const EdgeInsets.all(4.0),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 10),
+                        Text(
+                          _convertToArabicNumerals(date.day),
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                todayBuilder: (context, date, _) {
+                  return Container(
+                    margin: const EdgeInsets.all(4.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 180, 140, 207),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 10),
+                        Text(
+                          _convertToArabicNumerals(date.day),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                markerBuilder: (context, date, events) {
+                  final hasEvent = events.isNotEmpty;
+                  return hasEvent
+                      ? Positioned(
+                          bottom: 5,
+                          child: Container(
+                            height: 6,
+                            width: 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color:
+                                  Colors.red, // Customize the color of the dot
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink();
+                },
+              ),
+            ),
 
-              SizedBox(
-                  height:
-                      5), // Add some space between the calendar and the text
-              Text(
-                'الفعاليات:',
-                style: TextStyle(
-                  fontSize: 20, // Set the font size
-                  fontWeight: FontWeight.bold, // Optionally set font weight
-                ),
+            SizedBox(
+                height: 5), // Add some space between the calendar and the text
+            Text(
+              'الفعاليات:',
+              style: TextStyle(
+                fontSize: 20, // Set the font size
+                fontWeight: FontWeight.bold, // Optionally set font weight
               ),
-              SizedBox(
-                  height:
-                      5), // Add some space between the calendar and the text
-    Expanded(
-  child: 
-  ListView.builder(
-  itemCount: events.length,
-  
-  itemBuilder: (context, index) {
-    // Check if the selected date is within the start and end dates of the event
-    bool isSelectedDateInRange = _selectedDay.isAfter(events[index].startDate) &&
-        _selectedDay.isBefore(events[index].endDate);
+            ),
+            SizedBox(
+                height: 5), // Add some space between the calendar and the text
+            Expanded(
+              child: ListView.builder(
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  // Check if the selected date is within the start and end dates of the event
+                  bool isSelectedDateInRange =
+                      _selectedDay.isAfter(events[index].startDate) &&
+                          _selectedDay.isBefore(events[index].endDate);
 
-    // Show the event only if the selected date is within the start and end dates
-    return isSelectedDateInRange ? EventBox(event: events[index]) : SizedBox.shrink();
-  },
-),
-),            
-            ],
-          
+                  bool hasSelectedClassification = _selectedClassification ==
+                          null ||
+                      _selectedClassification.isEmpty ||
+                      events[index].classification == _selectedClassification;
+
+                  // Show the event only if the selected date is within the start and end dates
+                  // and the event has the selected classification
+                  return isSelectedDateInRange && hasSelectedClassification
+                      ? EventBox(event: events[index])
+                      : SizedBox.shrink();
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
