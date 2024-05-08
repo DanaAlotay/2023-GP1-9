@@ -156,9 +156,11 @@ String _getMonthName(int month) {
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riyadh_guide/screens/adminAddEvnt.dart';
+import 'package:riyadh_guide/screens/adminEditEvent.dart';
 import 'package:riyadh_guide/screens/adminHome.dart';
 
 class AdminEvents extends StatefulWidget {
+  
   @override
   _AdminEventsState createState() => _AdminEventsState();
 }
@@ -362,13 +364,23 @@ class _AdminEventsState extends State<AdminEvents> {
                                   );
                                 },
                               ),
-                             IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      // Handle pinning action here
-                                      // You can define what pinning means for your app
-                                    },
-                                  ),
+IconButton(
+  icon: Icon(Icons.edit),
+  onPressed: () async {
+    // Fetch the event data from the database
+    DocumentSnapshot<Map<String, dynamic>> eventData = await FirebaseFirestore.instance.collection('event').doc(event.id).get();
+    
+    // Navigate to the edit screen and pass the event data
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdminEditEvent(eventData: eventData),
+      ),
+    );
+  },
+),
+
+
                                 ],)
                             ),
                           ),
