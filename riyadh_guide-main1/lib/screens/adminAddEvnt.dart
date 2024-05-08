@@ -418,6 +418,11 @@ Future<String?> getApiKey() async {
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
     ),
+    prefix: Image.asset(
+      'lib/icons/calendar.png', // Adjust the path to your image
+      width: 17, // Adjust the width as needed
+      height: 17, // Adjust the height as needed
+    ),
   ),
   style: TextStyle(fontSize: 16, color: Colors.black),
 ),
@@ -463,6 +468,11 @@ TextFormField(
     labelStyle: TextStyle(fontSize: 16),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
+    ),
+    prefix: Image.asset(
+      'lib/icons/calendar.png', // Adjust the path to your image
+      width: 17, // Adjust the width as needed
+      height: 17, // Adjust the height as needed
     ),
   ),
   style: TextStyle(fontSize: 16, color: Colors.black),
