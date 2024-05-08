@@ -176,6 +176,10 @@ class _NewsState extends State<news> {
                           value: 'افتتاحات',
                           child: Text('افتتاحات'),
                         ),
+                        PopupMenuItem<String>(
+                          value: 'مغامرات',
+                          child: Text('مغامرات'),
+                        ),
                       ],
                     ),
                   ),
