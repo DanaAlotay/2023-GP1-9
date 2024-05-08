@@ -183,18 +183,31 @@ class MyAdminHomePage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildSquare(
-                        text1: '21',
-                        text2: ' فعالية',
-                        icon: Icons.celebration,
+                      FutureBuilder<int>(
+                        future: _getEventsCount(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // If still loading, return a placeholder or loading indicator
+                            return _buildSquare(
+                                text1: '0', text2: 'فعالية', icon: Icons.celebration);
+                            // imagePath: 'lib/icons/location-pin.png');
+                          } else {
+                            // Display the places count
+                            return _buildSquare(
+                                text1: '${snapshot.data}',
+                                text2: 'فعالية',
+                                icon: Icons.place);
+                            //imagePath: 'lib/icons/location-pin.png');
+                          }
+                        },
                       ),
-                      //  imagePath: 'lib/icons/fireworks.png'),
                       SizedBox(width: 10),
                       _buildSquare(
                         text1: '6',
                         text2: ' تصنيفات',
                         icon: Icons.category,
-                      ),
+                      ),//celebration
                       // imagePath: 'lib/icons/choose.png'),
                     ],
                   ),
@@ -298,6 +311,16 @@ class MyAdminHomePage extends StatelessWidget {
       return querySnapshot.size;
     } catch (e) {
       print('Error getting users count: $e');
+      return 0;
+    }
+  }
+
+    Future<int> _getEventsCount() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection('event').get();
+      return querySnapshot.size;
+    } catch (e) {
+      print('Error getting events count: $e');
       return 0;
     }
   }
