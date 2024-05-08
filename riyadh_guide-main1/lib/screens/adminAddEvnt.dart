@@ -418,10 +418,13 @@ Future<String?> getApiKey() async {
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
     ),
-    prefix: Image.asset(
-      'lib/icons/calendar.png', // Adjust the path to your image
-      width: 17, // Adjust the width as needed
-      height: 17, // Adjust the height as needed
+    prefixIcon: Padding(
+      padding: EdgeInsets.all(8),
+      child: Image.asset(
+        'lib/icons/calendar.png', // Adjust the image path as per your file structure
+        width: 20,
+        height: 20,
+      ),
     ),
   ),
   style: TextStyle(fontSize: 16, color: Colors.black),
@@ -469,10 +472,13 @@ TextFormField(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
     ),
-    prefix: Image.asset(
-      'lib/icons/calendar.png', // Adjust the path to your image
-      width: 17, // Adjust the width as needed
-      height: 17, // Adjust the height as needed
+    prefixIcon: Padding(
+      padding: EdgeInsets.all(8),
+      child: Image.asset(
+        'lib/icons/calendar.png', // Adjust the image path as per your file structure
+        width: 20,
+        height: 20,
+      ),
     ),
   ),
   style: TextStyle(fontSize: 16, color: Colors.black),

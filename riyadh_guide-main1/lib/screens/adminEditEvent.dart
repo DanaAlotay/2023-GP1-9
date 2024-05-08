@@ -449,6 +449,14 @@ Row(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
     ),
+    prefixIcon: Padding(
+      padding: EdgeInsets.all(8),
+      child: Image.asset(
+        'lib/icons/calendar.png', // Adjust the image path as per your file structure
+        width: 20,
+        height: 20,
+      ),
+    ),
   ),
   style: TextStyle(fontSize: 16, color: Colors.black),
 ),
@@ -494,6 +502,14 @@ TextFormField(
     labelStyle: TextStyle(fontSize: 16),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
+    ),
+    prefixIcon: Padding(
+      padding: EdgeInsets.all(8),
+      child: Image.asset(
+        'lib/icons/calendar.png', // Adjust the image path as per your file structure
+        width: 20,
+        height: 20,
+      ),
     ),
   ),
   style: TextStyle(fontSize: 16, color: Colors.black),
