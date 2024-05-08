@@ -197,7 +197,7 @@ class MyAdminHomePage extends StatelessWidget {
                             return _buildSquare(
                                 text1: '${snapshot.data}',
                                 text2: 'فعالية',
-                                icon: Icons.place);
+                                icon: Icons.celebration);
                             //imagePath: 'lib/icons/location-pin.png');
                           }
                         },
