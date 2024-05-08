@@ -26,6 +26,16 @@ class _AdminEditEventState extends State<AdminEditEvent> {
   TextEditingController _locationController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _reservationController = TextEditingController();
+  TextEditingController _classificationController = TextEditingController();
+
+  List<String> _classification = [
+  'مغامرات',
+    'افتتاحات',
+    'عروض',
+    'حفلات',
+];
+
+String? _selectedClassification;
 
   List<File> _images = []; // List to store picked images
   bool isDefaultImageSelected =
@@ -36,7 +46,7 @@ class _AdminEditEventState extends State<AdminEditEvent> {
   void initState() {
     super.initState();
     // Set initial values for text controllers with data from widget.eventData
-    
+    _selectedClassification = widget.eventData['classification'] ?? null; 
     _nameController.text = widget.eventData['name'] ?? '';
     _timeController.text = widget.eventData['time'] ?? '';
     _startdateController.text = widget.eventData['start_date']?.toDate().toString() ?? '';
@@ -77,7 +87,7 @@ void downloadImages(List<String> imageUrls) async {
 // Function to add event to Firestore
   void _addEventToFirestore() async {
      // Validate if all fields are not empty
-  if (_startdateController.text.isEmpty ||
+  if (_selectedClassification == null || _startdateController.text.isEmpty ||
       _timeController.text.isEmpty ||
       _descriptionController.text.isEmpty ||
       _endDateController.text.isEmpty ||
@@ -119,6 +129,7 @@ void downloadImages(List<String> imageUrls) async {
     List<String> imageUrls = await uploadImages();
   // Update event details in Firestore
   FirebaseFirestore.instance.collection('event').doc(widget.eventData.id).update({
+    'classification':_selectedClassification,
     'name': _nameController.text,
     'time': _timeController.text,
     'start_date': startTimestamp,
@@ -293,6 +304,60 @@ Future<String?> getApiKey() async {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
 // Text form fields for event details
+Row(
+  children: [
+    Expanded(
+      child: InputDecorator(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          prefixIcon: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'lib/icons/c.jpeg',
+                  width: 30,
+                  height: 30,
+                ),
+                SizedBox(width: 8),
+                
+              ],
+            ),
+          ),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 13.0, horizontal: 13.0),
+        ),
+        child: DropdownButton<String>(
+          value: _selectedClassification,
+          icon: Icon(Icons.arrow_drop_down),
+          iconSize: 24,
+          elevation: 16,
+          style: TextStyle(fontSize: 15, color: Colors.black),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedClassification = newValue!;
+            });
+          },
+          items: <String>[
+            'مغامرات',
+            'افتتاحات',
+            'عروض',
+            'حفلات',
+          ].map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
+      ),
+    ),
+    SizedBox(width: 8), // Spacer
+  ],
+),
 
             SizedBox(height: 10),
             TextFormField(

@@ -24,13 +24,13 @@ class _AdminAddEventState extends State {
   TextEditingController _locationController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _reservationController = TextEditingController();
-  TextEditingController _classificationController = TextEditingController();
+  //TextEditingController _classificationController = TextEditingController();
 
   List<String> _classification = [
-  'المغامرات',
-  'الافتتاحات',
-  'العروض',
-  'الحفلات',
+    'مغامرات',
+    'افتتاحات',
+    'عروض',
+    'حفلات',
 ];
 
 String? _selectedClassification;
@@ -50,7 +50,7 @@ String? _selectedClassification;
       _locationController.text.isEmpty ||
       _nameController.text.isEmpty ||
       _reservationController.text.isEmpty ||
-      _classificationController.text.isEmpty) {
+      _selectedClassification == null) {
     // Show a message to the user that all fields are required
     showDialog(
       context: context,
@@ -86,7 +86,7 @@ String? _selectedClassification;
     List<String> imageUrls = await uploadImages();
 // Add event details along with image URLs to Firestore
     FirebaseFirestore.instance.collection('event').add({
-      'classification':_classificationController.text,
+      'classification':_selectedClassification,
       'time': _timeController.text,
       'start_date': startTimestamp,
       'description': _descriptionController.text,
@@ -97,7 +97,7 @@ String? _selectedClassification;
       'reservation': _reservationController.text,
     }).then((value) {
       // Clear text controllers after adding event
-      _classificationController.clear();
+      _selectedClassification = null;
       _startdateController.clear();
       _timeController.clear();
       _descriptionController.clear();
@@ -310,10 +310,10 @@ Future<String?> getApiKey() async {
             });
           },
           items: <String>[
-            'المغامرات',
-            'الافتتاحات',
-            'العروض',
-            'الحفلات',
+            'مغامرات',
+            'افتتاحات',
+            'عروض',
+            'حفلات',
           ].map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
