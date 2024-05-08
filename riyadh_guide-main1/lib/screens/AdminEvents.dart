@@ -257,7 +257,8 @@ class _AdminEventsState extends State<AdminEvents> {
                     ),
                   );
                 },
-                child: Text('إضافة فعالية أو خبر جديد'),
+                child: Text('إضافة فعالية أو خبر جديد',style: TextStyle(
+                                              color: Color.fromARGB(255, 255, 255, 255),),),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 66, 49, 76),
                   minimumSize: Size(
@@ -291,13 +292,21 @@ class _AdminEventsState extends State<AdminEvents> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6.0),
                           child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  15.0), // Adjust the border radius as needed
+                              side: BorderSide(
+                                  color:Color.fromARGB(255, 244, 238, 245), 
+                                  width: 1.0), // Set border color and width
+                            ),
+                            color: Color.fromARGB(255, 244, 238, 245), // Set the background color of the card
                             child: ListTile(
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('اسم الفعالية: ${event['name']}'),
-                                  SizedBox(height: 10), // Add space between title and subtitles
-                                ],
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('اسم الفعالية: ${event['name']}'),
+                                    SizedBox(height:10), // Add space between title and subtitles
+                                  ],
                               ),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,22 +372,29 @@ class _AdminEventsState extends State<AdminEvents> {
                                     },
                                   );
                                 },
-                              ),
-IconButton(
-  icon: Icon(Icons.edit),
-  onPressed: () async {
-    // Fetch the event data from the database
-    DocumentSnapshot<Map<String, dynamic>> eventData = await FirebaseFirestore.instance.collection('event').doc(event.id).get();
-    
-    // Navigate to the edit screen and pass the event data
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AdminEditEvent(eventData: eventData),
-      ),
-    );
-  },
-),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () async {
+                                        // Fetch the event data from the database
+                                        DocumentSnapshot<Map<String, dynamic>>
+                                            eventData = await FirebaseFirestore
+                                                .instance
+                                                .collection('event')
+                                                .doc(event.id)
+                                                .get();
+
+                                        // Navigate to the edit screen and pass the event data
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                AdminEditEvent(
+                                                    eventData: eventData),
+                                          ),
+                                        );
+                                      },
+                                    ),
 
 
                                 ],)

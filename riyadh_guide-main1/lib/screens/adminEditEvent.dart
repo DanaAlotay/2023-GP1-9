@@ -785,7 +785,7 @@ Container(
           onPressed: _addEventToFirestore,
           child: Text(
             'حفظ التعديلات على الفعالية أو الخبر',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 255, 255, 255)),
           ),
           style: ElevatedButton.styleFrom(
             primary: Color.fromARGB(255, 66, 49, 76),
