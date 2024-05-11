@@ -21,9 +21,7 @@ class _NewsState extends State<news> {
   DateTime _selectedDay = DateTime.now();
   String _selectedClassification =
       ''; // Variable to store the selected classification
-  List<Event> events = [
-    // Event data
-  ];
+  List<Event> events = [];
 
   @override
   void initState() {
@@ -46,28 +44,16 @@ class _NewsState extends State<news> {
           Event event = Event(
             id: eventId,
             name: eventData['name'],
-            description: eventData['description'],
+            description: eventData['description'] ?? '',
             startDate: (eventData['start_date'] as Timestamp).toDate(),
             endDate: (eventData['end_date'] as Timestamp).toDate(),
-            location: eventData['location'],
-            reservation: eventData['reservation'],
-            imageUrl: eventData['images'][0],
-            classification: eventData['classification'],
+            location: eventData['location'] ?? '',
+            reservation: eventData['reservation'] ?? '',
+            imageUrl: eventData['images'][0] ?? '',
+            classification: eventData['classification'] ?? '',
           );
 
           events.add(event);
-        });
-
-        events.forEach((event) {
-          print('ID: ${event.id}'); // Print the ID
-          print('Name: ${event.name}');
-          print('Description: ${event.description}');
-          print('Start Date: ${event.startDate}');
-          print('End Date: ${event.endDate}');
-          print('Location: ${event.location}');
-          print('Reservation: ${event.reservation}');
-          print('Image URL: ${event.imageUrl}');
-          print('---------------------------------------');
         });
       });
     } catch (error) {
@@ -128,220 +114,249 @@ class _NewsState extends State<news> {
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.all(3.0),
-              child: PopupMenuButton<String>(
-                icon: Icon(
-                  Icons.filter_list_rounded,
-                  size: 30,
-                  color: Color.fromARGB(255, 53, 3, 109),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 1,
+              ),
+              Padding(
+                padding: EdgeInsets.all(3.0),
+                child: PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.filter_list_rounded,
+                    size: 30,
+                    color: Color.fromARGB(255, 53, 3, 109),
+                  ),
+                  onSelected: (String value) {
+                    // Handle filter option selection
+                    setState(() {
+                      _selectedClassification = value;
+                    });
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              'تصفية حسب نوع الفعالية',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          PopupMenuItem<String>(
+                            value: 'عروض',
+                            child: Text('عروض '),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'حفلات',
+                            child: Text('حفلات موسيقية'),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'افتتاحات',
+                            child: Text('افتتاحات'),
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'مغامرات',
+                            child: Text('مغامرات'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                onSelected: (String value) {
-                  // Handle filter option selection
+              ),
+              TableCalendar(
+                firstDay: DateTime.utc(2020, 01, 01),
+                lastDay: DateTime.utc(2050, 12, 31),
+                focusedDay: _focusedDay,
+                calendarFormat: CalendarFormat.month,
+                availableCalendarFormats: {CalendarFormat.month: 'Month'},
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                ),
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
-                    _selectedClassification = value;
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
                   });
                 },
-                itemBuilder: (BuildContext context) => [
-                  PopupMenuItem<String>(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            'تصفية حسب نوع الفعالية',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                locale: 'ar_SA',
+                calendarStyle: CalendarStyle(
+                  defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                  cellMargin: EdgeInsets.all(4),
+                  outsideDaysVisible: false,
+                ),
+                daysOfWeekStyle: DaysOfWeekStyle(
+                  weekdayStyle:
+                      TextStyle(color: Colors.black, fontSize: 10.5),
+                  weekendStyle: TextStyle(
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 10.5),
+                ),
+                calendarBuilders: CalendarBuilders(
+                  selectedBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 82, 29, 107),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.white),
                           ),
-                        ),
-                        Divider(),
-                        PopupMenuItem<String>(
-                          value: 'عروض',
-                          child: Text('عروض '),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'حفلات',
-                          child: Text('حفلات موسيقية'),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'افتتاحات',
-                          child: Text('افتتاحات'),
-                        ),
-                        PopupMenuItem<String>(
-                          value: 'مغامرات',
-                          child: Text('مغامرات'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            TableCalendar(
-              firstDay: DateTime.utc(2020, 01, 01),
-              lastDay: DateTime.utc(2050, 12, 31),
-              focusedDay: _focusedDay,
-              calendarFormat: CalendarFormat.month,
-              availableCalendarFormats: {CalendarFormat.month: 'Month'},
-              headerStyle: HeaderStyle(
-                formatButtonVisible: false,
-              ),
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              locale: 'ar_SA',
-              calendarStyle: CalendarStyle(
-                defaultTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                cellMargin: EdgeInsets.all(4),
-                outsideDaysVisible: false,
-              ),
-              daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle: TextStyle(color: Colors.black, fontSize: 10.5),
-                weekendStyle: TextStyle(
-                    color: const Color.fromARGB(255, 0, 0, 0), fontSize: 10.5),
-              ),
-              calendarBuilders: CalendarBuilders(
-                selectedBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 82, 29, 107),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 10),
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                defaultBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 10),
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                outsideBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 10),
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                todayBuilder: (context, date, _) {
-                  return Container(
-                    margin: const EdgeInsets.all(4.0),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 180, 140, 207),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 10),
-                        Text(
-                          _convertToArabicNumerals(date.day),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                markerBuilder: (context, date, events) {
-                  final hasEvent = events.isNotEmpty;
-                  return hasEvent
-                      ? Positioned(
-                          bottom: 5,
-                          child: Container(
-                            height: 6,
-                            width: 6,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color:
-                                  Colors.red, // Customize the color of the dot
-                            ),
+                        ],
+                      ),
+                    );
+                  },
+                  defaultBuilder: (context, date, _) {
+                    // Check if the current date has events
+                    bool hasEvents = events.any((event) =>
+                        event.startDate.isBefore(date) &&
+                        event.endDate.isAfter(date));
+
+                    // Define the color based on whether the date has events
+                    Color textColor = hasEvents ? Color.fromARGB(255, 170, 21, 153) : Colors.black;
+
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: textColor),
                           ),
-                        )
-                      : SizedBox.shrink();
-                },
+                        ],
+                      ),
+                    );
+                  },
+                  outsideBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  todayBuilder: (context, date, _) {
+                    return Container(
+                      margin: const EdgeInsets.all(4.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 180, 140, 207),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            _convertToArabicNumerals(date.day),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  markerBuilder: (context, date, events) {
+                    final hasEvent = events.isNotEmpty;
+                    return hasEvent
+                        ? Positioned(
+                            bottom: 5,
+                            child: Container(
+                              height: 6,
+                              width: 6,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors
+                                    .red, // Customize the color of the dot
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink();
+                  },
+                ),
               ),
-            ),
 
-            SizedBox(
-                height: 5), // Add some space between the calendar and the text
-            Text(
-              'الفعاليات:',
-              style: TextStyle(
-                fontSize: 20, // Set the font size
-                fontWeight: FontWeight.bold, // Optionally set font weight
-              ),
-            ),
-            SizedBox(
-                height: 5), // Add some space between the calendar and the text
-            Expanded(
-              child: ListView.builder(
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  // Check if the selected date is within the start and end dates of the event
-                  bool isSelectedDateInRange =
-                      _selectedDay.isAfter(events[index].startDate) &&
-                          _selectedDay.isBefore(events[index].endDate);
+              SizedBox(
+  height: 5,
+), // Add some space between the calendar and the text
+Text(
+  'الفعاليات:',
+  style: TextStyle(
+    fontSize: 20, // Set the font size
+    fontWeight: FontWeight.bold, // Optionally set font weight
+  ),
+),
+SizedBox(
+  height: 5,
+), // Add some space between the calendar and the text
+Container(
+  height: events.any((event) =>
+      _selectedDay.isAfter(event.startDate) &&
+      _selectedDay.isBefore(event.endDate)) ? null : 50.0, // Set a fixed height if there are no events for the selected date
+  child: events.any((event) =>
+      _selectedDay.isAfter(event.startDate) &&
+      _selectedDay.isBefore(event.endDate))
+      ? ListView.builder(
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemCount: events.length,
+    itemBuilder: (context, index) {
+      // Check if the selected date is within the start and end dates of the event
+      bool isSelectedDateInRange =
+      _selectedDay.isAfter(events[index].startDate) &&
+          _selectedDay.isBefore(events[index].endDate);
 
-                  bool hasSelectedClassification = _selectedClassification ==
-                          null ||
-                      _selectedClassification.isEmpty ||
-                      events[index].classification == _selectedClassification;
+      bool hasSelectedClassification = _selectedClassification ==
+          null ||
+          _selectedClassification.isEmpty ||
+          events[index].classification == _selectedClassification;
 
-                  // Show the event only if the selected date is within the start and end dates
-                  // and the event has the selected classification
-                  return isSelectedDateInRange && hasSelectedClassification
-                      ? EventBox(event: events[index])
-                      : SizedBox.shrink();
-                },
-              ),
-            ),
-          ],
+      // Show the event only if the selected date is within the start and end dates
+      // and the event has the selected classification
+      return isSelectedDateInRange && hasSelectedClassification
+          ? EventBox(event: events[index])
+          : SizedBox.shrink();
+    },
+  )
+      : Center(
+    child: Text(
+      'لا يوجد فعاليات اليوم',
+      style: TextStyle(fontSize: 18),
+    ),
+  ),
+),
+
+            ],
+          ),
         ),
       ),
     );
