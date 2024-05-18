@@ -332,7 +332,7 @@ class _AdminEventsState extends State<AdminEvents> {
                                         style: TextStyle(
                                               color: Color.fromARGB(
                                                   255, 53, 12, 77)),),
-                                        content: Text('هل أنت متأكد من رغبتك في حذف هذه الفعالية؟',
+                                        content: Text('هل أنت متأكد من رغبتك في حذف هذه الفعالية أو الخبر؟',
                                         style: TextStyle(
                                               color: Color.fromARGB(228, 106, 57, 117)),),
                                         actions: <Widget>[
@@ -355,7 +355,7 @@ class _AdminEventsState extends State<AdminEvents> {
                                               Navigator.of(context).pop(); // Close dialog
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
-                                                  content: Text('تم حذف الفعالية بنجاح'),
+                                                  content: Text('تم حذف الفعاليةأو الخبر بنجاح'),
                                                   duration: Duration(seconds: 2),
                                             backgroundColor:
                                                 Color.fromARGB(181, 203, 145, 210),
