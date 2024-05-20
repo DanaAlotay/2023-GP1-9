@@ -18,6 +18,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   //final TextEditingController searchController = TextEditingController();
   int currentTab = 0;
   String username = '';
+  List<Map<String, dynamic>?> eventList = [];
 
   // Get the current user
   void fetchUserName() {
@@ -49,6 +50,36 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         placeList = names;
       });
     });
+    fetchEventsThisWeek().then((events) {
+      setState(() {
+        eventList = events;
+      });
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> fetchEventsThisWeek() async {
+    DateTime now = DateTime.now();
+    DateTime startOfWeek =
+        DateTime(now.year, now.month, now.day - now.weekday + 1, 0, 0, 0, 0);
+    DateTime endOfWeek = DateTime(
+        now.year, now.month, now.day - now.weekday + 7, 23, 59, 59, 999);
+
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection('event')
+        .where('start_date',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
+        .where('start_date', isLessThanOrEqualTo: Timestamp.fromDate(endOfWeek))
+        .get();
+
+    List<Map<String, dynamic>> events = snapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data()!;
+      data['start_date'] = (data['start_date'] as Timestamp).toDate();
+      data['eventId'] = doc.id; // Store the document ID separately
+      return data;
+    }).toList();
+
+    return events;
   }
 
   Future<List<String>> fetchPlaceNames() async {
@@ -131,7 +162,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     String categoryID = '';
     var str = <Widget>[
       Text(
-        "آخر الأخبار",
+        "يحدث هذا الأسبوع ",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.grey[800],
@@ -143,28 +174,34 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       ),
       //Start news
       Container(
-          child: CarouselSlider(
-        options: CarouselOptions(
-          enlargeCenterPage: true,
-          enableInfiniteScroll: true,
-          viewportFraction:
-              0.65, // to control the visible portion of adjacent images
-          aspectRatio: 1.45, // to control the width-to-height ratio
-        ),
-        items: <Widget>[
-          makeItem2(
-              image: 'lib/icons/news1.jpeg',
-              title: 'عرض مسرحي',
-              context: context),
-          makeItem2(
-              image: 'lib/icons/news2.jpeg', title: 'جروفز', context: context),
-          makeItem2(
-              image: 'lib/icons/news3.jpeg',
-              title: 'واجهة روشن',
-              context: context),
-          // Add more items here
-        ],
-      )),
+        child: eventList.length == 1
+            ? makeItem2(
+                image: eventList[0]?['images'][0] as String,
+                title: eventList[0]?['name'] as String,
+                context: context,
+                eventId: eventList[0]?['eventId'] as String,
+              )
+            : CarouselSlider(
+                options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: true,
+                  viewportFraction: 0.65,
+                  aspectRatio: 1.45,
+                ),
+                items: eventList.map((event) {
+                  List<dynamic>? images = event?['images'] as List<dynamic>?;
+
+                  return makeItem2(
+                    image: (images != null && images.isNotEmpty)
+                        ? images[0] as String
+                        : '',
+                    title: event?['name'] as String? ?? '',
+                    context: context,
+                    eventId: event?['eventId'] as String?,
+                  );
+                }).toList(),
+              ),
+      ),
       // End News
       SizedBox(
         height: 30,
@@ -502,14 +539,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 //class news
-makeItem2({image, title, isCenterItem = false, context}) {
+/*makeItem2({image, title, isCenterItem = false, context, eventId}) {
   return GestureDetector(
     onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                eventDetails(eventID: "kTrZs2a8k10KqaJEMnzb")),
+          builder: (context) => eventDetails(eventID: eventId),
+        ),
       );
     },
     child: AspectRatio(
@@ -541,6 +578,67 @@ makeItem2({image, title, isCenterItem = false, context}) {
                   Colors.black.withOpacity(.8),
                   Colors.black.withOpacity(.2),
                 ])),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Text(
+                title,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+*/
+
+Widget makeItem2({
+  required dynamic image,
+  required dynamic title,
+  dynamic isCenterItem = false,
+  required BuildContext context,
+  required dynamic eventId,
+}) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => eventDetails(eventID: eventId),
+        ),
+      );
+    },
+    child: AspectRatio(
+      aspectRatio: 1.5,
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            if (!isCenterItem)
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                spreadRadius: 0.5,
+                blurRadius: 5,
+                offset: isCenterItem ? Offset(0, 0) : Offset(0, 3),
+              ),
+          ],
+          borderRadius: BorderRadius.circular(20),
+          image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                colors: [
+                  Colors.black.withOpacity(.8),
+                  Colors.black.withOpacity(.2),
+                ],
+              ),
+            ),
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Text(
